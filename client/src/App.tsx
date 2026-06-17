@@ -11,6 +11,7 @@ import ProductsPage from "./pages/Products";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import CareersPage from "./pages/Careers";
+import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/privacy-policy" component={PrivacyPolicyPage} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

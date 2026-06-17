@@ -21,6 +21,7 @@ const footerLinks = {
     { label: "About Us", href: "/about" },
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
   ],
 };
 
@@ -145,7 +146,7 @@ export default function Footer() {
             © {new Date().getFullYear()} American Group LLC & SafeCodeX Research Center Pvt. Ltd. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Privacy Policy</a>
+            <Link href="/privacy-policy" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Privacy Policy</Link>
             <a href="#" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Terms of Service</a>
             <span className="text-xs font-mono text-slate-700">v2.0.0</span>
           </div>
