@@ -217,10 +217,11 @@ export default function Home() {
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14 reveal">
-            <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Our Companies</div>
+              <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Our Organization</div>
             <h2 className="text-4xl lg:text-5xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-              A binational technology group
+              One company, two locations
             </h2>
+            <p className="text-slate-500 mt-3 max-w-xl mx-auto text-sm">American Group LLC is the parent organization. SafeCodeX Research Center is our India engineering office — same team, same mission.</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -249,7 +250,7 @@ export default function Home() {
               </div>
               <div className="bg-white border border-slate-100 p-6 group-hover:border-indigo-200 transition-colors">
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                  A California-based S-Corp technology holding company operating across six distinct business verticals — from on-device LLMs and Wear OS apps to multi-cloud control planes and orbital edge-cloud orchestrators.
+                  The parent organization — a California-based S-Corp technology company operating across six business verticals. From on-device LLMs and Wear OS apps to multi-cloud control planes and orbital edge-cloud orchestrators. This is the primary entity behind all 77 products.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-5">
                   {["77 Active Repos", "6 Verticals", "20+ Mobile Apps", "8 Enterprise Platforms"].map((tag) => (
@@ -287,10 +288,10 @@ export default function Home() {
               </div>
               <div className="bg-white border border-slate-100 p-6 group-hover:border-amber-200 transition-colors">
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                  India's premier software outsourcing and research & development center. Specializing in AI, IoT, blockchain, and emerging technologies — transforming visions into reality with world-class engineering talent.
+                  Our India engineering office — incorporated as SafeCodeX Research Center Pvt. Ltd. to enable local R&D operations and talent access. Same organization, same standards, operating from India to serve global clients.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-5">
-                  {["Software Outsourcing", "AI Research", "R&D Services", "IT Consulting"].map((tag) => (
+                  {["India Office", "R&D Hub", "Engineering Talent", "Software Outsourcing"].map((tag) => (
                     <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{tag}</span>
                   ))}
                 </div>

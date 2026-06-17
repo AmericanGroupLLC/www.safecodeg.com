@@ -111,14 +111,21 @@ export default function AGLPage() {
               className="h-14 w-14 object-contain brightness-200"
             />
             <div>
-              <div className="text-white/50 text-xs font-mono uppercase tracking-widest">🇺🇸 Santa Clara, California · S-Corp</div>
+              <div className="text-white/50 text-xs font-mono uppercase tracking-widest">🇺🇸 Headquarters · Santa Clara, California · S-Corp</div>
             </div>
+          </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-semibold mb-5"
+            style={{ background: "oklch(0.52 0.22 270 / 0.2)", color: "oklch(0.75 0.15 270)", border: "1px solid oklch(0.52 0.22 270 / 0.35)" }}>
+            🏢 Parent Organization · All 77 Products
           </div>
           <h1 className="text-5xl lg:text-7xl font-bold text-white mb-5" style={{ fontFamily: "'Playfair Display', serif" }}>
             American Group LLC
           </h1>
-          <p className="text-xl text-white/70 max-w-2xl mb-8 leading-relaxed">
-            A California-based S-Corp technology holding company shipping products across Mobile, Enterprise AI, FinTech, CyberSecurity, Spatial Computing, and IoT & Hardware — built in California, shipped worldwide.
+          <p className="text-xl text-white/70 max-w-2xl mb-4 leading-relaxed">
+            The parent organization — a California-based S-Corp technology company shipping 77 products across Mobile, Enterprise AI, FinTech, CyberSecurity, Spatial Computing, and IoT & Hardware.
+          </p>
+          <p className="text-sm text-white/45 max-w-xl mb-8 font-mono">
+            With our India engineering office, SafeCodeX Research Center, we operate as a single unified organization across two continents.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link

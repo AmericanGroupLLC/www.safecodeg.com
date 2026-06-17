@@ -7,8 +7,8 @@ import { Github, Linkedin, Youtube, Facebook, Mail, MapPin, Phone } from "lucide
 
 const footerLinks = {
   companies: [
-    { label: "American Group LLC", href: "/american-group-llc" },
-    { label: "SafeCodeX Research Center", href: "/safecodex-research" },
+    { label: "🇺🇸 American Group LLC (HQ)", href: "/american-group-llc" },
+    { label: "🇮🇳 SafeCodeX — India Office", href: "/safecodex-research" },
   ],
   products: [
     { label: "All 77 Products", href: "/products" },
@@ -57,7 +57,7 @@ export default function Footer() {
               <span style={{ color: "oklch(0.78 0.18 75)" }}>& SafeCodeX Research</span>
             </h3>
             <p className="text-sm text-slate-400 mt-3 leading-relaxed max-w-xs">
-              Two continents. One standard of excellence. Building the future of technology from California to India.
+              One organization. Two locations. American Group LLC is headquartered in Santa Clara, CA — with SafeCodeX Research Center as our India engineering office.
             </p>
             <div className="flex items-center gap-1 mt-4">
               <span className="text-xl">🇺🇸</span>
@@ -84,7 +84,7 @@ export default function Footer() {
 
           {/* Links columns */}
           <div>
-            <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-500 mb-4">Companies</h4>
+            <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-500 mb-4">Our Offices</h4>
             <ul className="space-y-2.5">
               {footerLinks.companies.map((link) => (
                 <li key={link.href}>

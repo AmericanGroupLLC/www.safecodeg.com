@@ -10,11 +10,11 @@ import { Menu, X, ChevronDown } from "lucide-react";
 const navLinks = [
   { label: "Home", href: "/" },
   {
-    label: "Companies",
+    label: "Our Offices",
     href: "#",
     children: [
-      { label: "🇺🇸 American Group LLC", href: "/american-group-llc", desc: "Santa Clara, California" },
-      { label: "🇮🇳 SafeCodeX Research", href: "/safecodex-research", desc: "India R&D Center" },
+      { label: "🇺🇸 American Group LLC", href: "/american-group-llc", desc: "HQ · Santa Clara, California" },
+      { label: "🇮🇳 SafeCodeX Research", href: "/safecodex-research", desc: "India Office · Pvt. Ltd." },
     ],
   },
   { label: "Products", href: "/products" },
