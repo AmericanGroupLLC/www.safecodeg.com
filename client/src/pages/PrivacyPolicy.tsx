@@ -20,8 +20,8 @@ import {
 
 const LAST_UPDATED = "June 17, 2026";
 const EFFECTIVE_DATE = "June 17, 2026";
-const CONTACT_EMAIL = "support@safecodeg.com";
-const PRIVACY_EMAIL = "privacy@safecodeg.com";
+const CONTACT_EMAIL = "contact@safecodeg.com";
+const PRIVACY_EMAIL = "contact@safecodeg.com";
 const COMPANY_NAME = "American Group LLC";
 const INDIA_ENTITY = "SafeCodeX Research Center Pvt. Ltd.";
 const HQ_ADDRESS = "Santa Clara, California, USA";
@@ -668,17 +668,17 @@ export default function PrivacyPolicyPage() {
                     entity: "American Group LLC",
                     role: "Data Controller (USA)",
                     address: "Santa Clara, California, USA",
+                    phone: "+1 (510) 458-0959",
                     email: PRIVACY_EMAIL,
-                    support: CONTACT_EMAIL,
                     flag: "🇺🇸",
                     color: "oklch(0.52 0.22 270)",
                   },
                   {
                     entity: "SafeCodeX Research Center Pvt. Ltd.",
                     role: "Data Processor (India)",
-                    address: "India",
+                    address: "Hyderabad, India",
+                    phone: "+91 74168 66689",
                     email: PRIVACY_EMAIL,
-                    support: CONTACT_EMAIL,
                     flag: "🇮🇳",
                     color: "oklch(0.78 0.18 75)",
                   },
@@ -694,17 +694,18 @@ export default function PrivacyPolicyPage() {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm text-slate-600">
                         <MapPin className="h-3.5 w-3.5 shrink-0" style={{ color: c.color }} />
-                        {c.address}
-                      </div>
+                  {c.address}
+                       </div>
+                       {c.phone && (
+                        <div className="flex items-center gap-2 text-sm text-slate-600">
+                          <span className="h-3.5 w-3.5 shrink-0 text-xs" style={{ color: c.color }}>📞</span>
+                          <a href={`tel:${c.phone.replace(/[^+\d]/g, '')}`} className="hover:underline">{c.phone}</a>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2 text-sm text-slate-600">
                         <Mail className="h-3.5 w-3.5 shrink-0" style={{ color: c.color }} />
                         <a href={`mailto:${c.email}`} className="hover:underline">{c.email}</a>
-                        <span className="text-xs text-slate-400">(Privacy)</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <Mail className="h-3.5 w-3.5 shrink-0" style={{ color: c.color }} />
-                        <a href={`mailto:${c.support}`} className="hover:underline">{c.support}</a>
-                        <span className="text-xs text-slate-400">(Support)</span>
+                        <span className="text-xs text-slate-400">(Privacy / Support)</span>
                       </div>
                     </div>
                   </div>

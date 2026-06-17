@@ -127,8 +127,16 @@ export default function Footer() {
                 <span className="text-xs">Santa Clara, CA, USA</span>
               </div>
               <div className="flex items-start gap-2 text-slate-400">
+                <Phone className="h-3.5 w-3.5 mt-0.5 shrink-0 text-slate-500" />
+                <span className="text-xs">🇺🇸 +1 (510) 458-0959</span>
+              </div>
+              <div className="flex items-start gap-2 text-slate-400">
                 <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0 text-[oklch(0.78_0.18_75)]" />
-                <span className="text-xs">India R&D Center</span>
+                <span className="text-xs">Hyderabad, India</span>
+              </div>
+              <div className="flex items-start gap-2 text-slate-400">
+                <Phone className="h-3.5 w-3.5 mt-0.5 shrink-0 text-[oklch(0.78_0.18_75)]" />
+                <span className="text-xs">🇮🇳 +91 74168 66689</span>
               </div>
               <div className="flex items-start gap-2 text-slate-400">
                 <Mail className="h-3.5 w-3.5 mt-0.5 shrink-0 text-slate-500" />

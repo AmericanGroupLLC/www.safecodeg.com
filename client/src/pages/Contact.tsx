@@ -77,8 +77,12 @@ export default function ContactPage() {
                     <span className="text-sm text-slate-600">Santa Clara, California, USA</span>
                   </div>
                   <div className="flex items-start gap-3">
+                    <Phone className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
+                    <a href="tel:+15104580959" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">+1 (510) 458-0959</a>
+                  </div>
+                  <div className="flex items-start gap-3">
                     <Mail className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
-                    <a href="mailto:contact@americangroupllc.com" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">contact@americangroupllc.com</a>
+                    <a href="mailto:contact@safecodeg.com" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">contact@safecodeg.com</a>
                   </div>
                   <div className="flex items-start gap-3">
                     <Github className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
@@ -99,15 +103,15 @@ export default function ContactPage() {
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
-                    <span className="text-sm text-slate-600">India R&D Center</span>
+                    <span className="text-sm text-slate-600">Hyderabad, India</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Phone className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
+                    <a href="tel:+917416866689" className="text-sm text-slate-600 hover:text-amber-600 transition-colors">+91 74168 66689</a>
                   </div>
                   <div className="flex items-start gap-3">
                     <Mail className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
                     <a href="mailto:contact@safecodeg.com" className="text-sm text-slate-600 hover:text-amber-600 transition-colors">contact@safecodeg.com</a>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Phone className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
-                    <span className="text-sm text-slate-600">Available via email & chat</span>
                   </div>
                 </div>
               </div>
