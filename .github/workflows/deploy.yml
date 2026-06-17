@@ -62,10 +62,12 @@ jobs:
       - name: Show build output
         run: ls -la dist/public/
 
-      # ── 8. Deploy via FTP (plain FTP — HostGator standard) ───────────────
-      # Fix for "421 Home directory not available":
-      # Use plain FTP protocol (not FTPS) and set server-dir to /
-      # HostGator FTP home dir IS public_html for this account type
+      # ── 8. Deploy via FTP to HostGator ───────────────────────────────────
+      # Notes:
+      # - HostGator home dir is /home2/safecode (seen in cPanel as /home2/safecode)
+      # - FTP account home is already scoped to public_html
+      # - Using server-dir: public_html/ (relative to FTP home /home2/safecode)
+      # - dangerous-clean-slate: true removes old WordPress files first
       - name: Deploy to HostGator via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -73,20 +75,31 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
-          # Use plain ftp — HostGator shared hosting works best with this
           protocol: ftp
           local-dir: ./dist/public/
-          # Use / — the FTP account's home dir IS already public_html
-          server-dir: /
-          dangerous-clean-slate: false
+          # Relative to the FTP account's home (/home2/safecode)
+          server-dir: public_html/
+          # Clean slate: removes old WordPress files, deploys fresh React site
+          dangerous-clean-slate: true
           log-level: verbose
-          # Exclude hidden/source files
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
 
-      # ── 9. Summary ───────────────────────────────────────────────────────
+      # ── 9. Verify ────────────────────────────────────────────────────────
+      - name: Verify site is live
+        run: |
+          sleep 5
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://safecodeg.com || echo "000")
+          echo "HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ]; then
+            echo "✅ safecodeg.com is live!"
+          else
+            echo "⚠️  Status $HTTP_STATUS — DNS may still be propagating, check in 5 mins"
+          fi
+
+      # ── 10. Summary ──────────────────────────────────────────────────────
       - name: Deployment summary
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
