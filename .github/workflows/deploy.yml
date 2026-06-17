@@ -1,0 +1,95 @@
+name: Build & Deploy to HostGator
+
+# Triggers on every push to main branch
+on:
+  push:
+    branches:
+      - main
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build React App & Deploy via FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout code ─────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Node.js ─────────────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # ── 3. Install pnpm ───────────────────────────────────────────────────
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      # ── 4. Cache pnpm store ───────────────────────────────────────────────
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # ── 5. Install dependencies ───────────────────────────────────────────
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ── 6. Build production bundle ────────────────────────────────────────
+      - name: Build production bundle
+        run: pnpm run build
+        env:
+          # Vite analytics (optional — safe to leave as empty strings)
+          VITE_ANALYTICS_ENDPOINT: ${{ secrets.VITE_ANALYTICS_ENDPOINT || '' }}
+          VITE_ANALYTICS_WEBSITE_ID: ${{ secrets.VITE_ANALYTICS_WEBSITE_ID || '' }}
+          VITE_APP_ID: ${{ secrets.VITE_APP_ID || 'agl-scg-website' }}
+          VITE_APP_TITLE: ${{ secrets.VITE_APP_TITLE || 'American Group LLC' }}
+
+      # ── 7. Deploy to HostGator via FTP ────────────────────────────────────
+      - name: Deploy to HostGator via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          # FTP server — use your HostGator FTP hostname
+          # Usually: ftp.safecodeg.com  OR  your server IP
+          server: ${{ secrets.FTP_SERVER }}
+
+          # FTP username from HostGator cPanel → FTP Accounts
+          username: ${{ secrets.FTP_USERNAME }}
+
+          # FTP password from HostGator cPanel → FTP Accounts
+          password: ${{ secrets.FTP_PASSWORD }}
+
+          # Local folder to upload (Vite outputs to dist/public)
+          local-dir: ./dist/public/
+
+          # Remote directory on HostGator — public_html for root domain
+          server-dir: /public_html/
+
+          # Only upload changed files (faster deploys)
+          dangerous-clean-slate: false
+
+          # Exclude node_modules and source files
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/src/**
+
+      # ── 8. Notify on success ──────────────────────────────────────────────
+      - name: Deployment complete
+        run: |
+          echo "✅ Deployment to safecodeg.com completed successfully!"
+          echo "🌐 Live at: https://safecodeg.com"
