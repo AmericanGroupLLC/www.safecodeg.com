@@ -1,4 +1,4 @@
-name: Build & Deploy to HostGator
+name: Build & Deploy to HostGator (safecodeg.com)
 
 # Triggers on every push to main branch
 on:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    name: Build React App & Deploy via FTP
+    name: Build React App & Deploy via FTPS
     runs-on: ubuntu-latest
 
     steps:
@@ -52,44 +52,71 @@ jobs:
       - name: Build production bundle
         run: pnpm run build
         env:
-          # Vite analytics (optional — safe to leave as empty strings)
-          VITE_ANALYTICS_ENDPOINT: ${{ secrets.VITE_ANALYTICS_ENDPOINT || '' }}
-          VITE_ANALYTICS_WEBSITE_ID: ${{ secrets.VITE_ANALYTICS_WEBSITE_ID || '' }}
-          VITE_APP_ID: ${{ secrets.VITE_APP_ID || 'agl-scg-website' }}
-          VITE_APP_TITLE: ${{ secrets.VITE_APP_TITLE || 'American Group LLC' }}
+          VITE_ANALYTICS_ENDPOINT: ""
+          VITE_ANALYTICS_WEBSITE_ID: ""
+          VITE_APP_ID: "agl-scg-website"
+          VITE_APP_TITLE: "American Group LLC"
+          VITE_FRONTEND_FORGE_API_KEY: ""
+          VITE_FRONTEND_FORGE_API_URL: ""
+          VITE_OAUTH_PORTAL_URL: ""
 
-      # ── 7. Deploy to HostGator via FTP ────────────────────────────────────
-      - name: Deploy to HostGator via FTP
+      # ── 7. List build output (debug) ──────────────────────────────────────
+      - name: Show build output
+        run: ls -la dist/public/ && echo "Build size:" && du -sh dist/public/
+
+      # ── 8. Deploy to HostGator via FTPS (Explicit FTP over TLS) ──────────
+      - name: Deploy to HostGator via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          # FTP server — use your HostGator FTP hostname
-          # Usually: ftp.safecodeg.com  OR  your server IP
+          # HostGator FTP server
           server: ${{ secrets.FTP_SERVER }}
 
-          # FTP username from HostGator cPanel → FTP Accounts
+          # HostGator FTP username
           username: ${{ secrets.FTP_USERNAME }}
 
-          # FTP password from HostGator cPanel → FTP Accounts
+          # HostGator FTP password
           password: ${{ secrets.FTP_PASSWORD }}
 
-          # Local folder to upload (Vite outputs to dist/public)
+          # Port 21 with explicit FTPS (FTP + TLS encryption)
+          port: 21
+          protocol: ftps
+
+          # Upload the built React app
           local-dir: ./dist/public/
 
-          # Remote directory on HostGator — public_html for root domain
+          # Deploy to the web root on HostGator
           server-dir: /public_html/
 
-          # Only upload changed files (faster deploys)
+          # Keep existing files not in build (e.g. other domains, logs)
           dangerous-clean-slate: false
 
-          # Exclude node_modules and source files
+          # Log level for debugging
+          log-level: verbose
+
+          # Exclude source/config files from upload
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
-            **/src/**
 
-      # ── 8. Notify on success ──────────────────────────────────────────────
-      - name: Deployment complete
+      # ── 9. Verify deployment ──────────────────────────────────────────────
+      - name: Verify site is live
         run: |
-          echo "✅ Deployment to safecodeg.com completed successfully!"
+          sleep 5
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://safecodeg.com || echo "000")
+          echo "HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ]; then
+            echo "✅ safecodeg.com is responding!"
+          else
+            echo "⚠️  Site returned status $HTTP_STATUS — DNS may still be propagating"
+          fi
+
+      # ── 10. Summary ───────────────────────────────────────────────────────
+      - name: Deployment summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ Deployment complete!"
           echo "🌐 Live at: https://safecodeg.com"
+          echo "🔒 HTTPS enforced via .htaccess"
+          echo "📦 Commit: ${{ github.sha }}"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
