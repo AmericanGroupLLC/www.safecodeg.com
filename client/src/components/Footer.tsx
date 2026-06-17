@@ -22,6 +22,8 @@ const footerLinks = {
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
     { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Support Center", href: "/support" },
   ],
 };
 
@@ -161,7 +163,8 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-4">
               <Link href="/privacy-policy" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Privacy Policy</Link>
-              <a href="#" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Terms of Service</a>
+              <Link href="/terms" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Terms of Service</Link>
+              <Link href="/support" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Support</Link>
               <span className="text-xs font-mono text-slate-700">v2.0.0</span>
             </div>
           </div>

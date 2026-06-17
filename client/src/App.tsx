@@ -12,6 +12,8 @@ import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import CareersPage from "./pages/Careers";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
+import SupportPage from "./pages/Support";
+import TermsPage from "./pages/Terms";
 import AIChatWidget from "./components/AIChatWidget";
 
 function Router() {
@@ -25,6 +27,8 @@ function Router() {
       <Route path="/careers" component={CareersPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/privacy-policy" component={PrivacyPolicyPage} />
+      <Route path="/support" component={SupportPage} />
+      <Route path="/terms" component={TermsPage} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

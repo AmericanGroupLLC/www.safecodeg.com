@@ -13,9 +13,9 @@ RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # ── Remove www (canonical URL = safecodeg.com) ──────────────
-# Uncomment if you want to redirect www.safecodeg.com → safecodeg.com
-# RewriteCond %{HTTP_HOST} ^www\.safecodeg\.com [NC]
-# RewriteRule ^(.*)$ https://safecodeg.com/$1 [L,R=301]
+# Redirect www.safecodeg.com → safecodeg.com
+RewriteCond %{HTTP_HOST} ^www\.safecodeg\.com [NC]
+RewriteRule ^(.*)$ https://safecodeg.com/$1 [L,R=301]
 
 # ── React SPA Routing ────────────────────────────────────────
 # Serve index.html for all routes (React Router handles routing)

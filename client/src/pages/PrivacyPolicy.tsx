@@ -616,7 +616,7 @@ export default function PrivacyPolicyPage() {
                 {[
                   "Using the 'Delete Account' option in the app's Settings menu",
                   `Emailing us at ${PRIVACY_EMAIL} with subject line "Data Deletion Request"`,
-                  "Submitting a request through our support portal at support@safecodeg.com",
+                  `Submitting a request through our support page at https://safecodeg.com/support`,
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
                     <span className="h-5 w-5 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5"
@@ -724,7 +724,7 @@ export default function PrivacyPolicyPage() {
               <div className="flex flex-wrap gap-4 mt-4">
                 <Link href="/contact" className="text-xs text-indigo-600 hover:underline">Contact Us</Link>
                 <Link href="/about" className="text-xs text-indigo-600 hover:underline">About Us</Link>
-                <a href={`mailto:${PRIVACY_EMAIL}`} className="text-xs text-indigo-600 hover:underline">privacy@safecodeg.com</a>
+                <a href={`mailto:${PRIVACY_EMAIL}`} className="text-xs text-indigo-600 hover:underline">{PRIVACY_EMAIL}</a>
               </div>
             </div>
 
