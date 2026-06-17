@@ -12,6 +12,7 @@ import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import CareersPage from "./pages/Careers";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
+import AIChatWidget from "./components/AIChatWidget";
 
 function Router() {
   return (
@@ -37,6 +38,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <AIChatWidget />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

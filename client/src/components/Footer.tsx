@@ -149,15 +149,27 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-slate-600">
-            © {new Date().getFullYear()} American Group LLC & SafeCodeX Research Center Pvt. Ltd. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4">
-            <Link href="/privacy-policy" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Privacy Policy</Link>
-            <a href="#" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Terms of Service</a>
-            <span className="text-xs font-mono text-slate-700">v2.0.0</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Copyright full line */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3">
+            <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+              <p className="text-xs text-slate-600">
+                &copy; {new Date().getFullYear()} <span className="text-slate-500 font-medium">American Group LLC</span> &amp; <span className="text-slate-500 font-medium">SafeCodeX Research Center Pvt. Ltd.</span>
+              </p>
+              <span className="hidden sm:inline text-slate-700">·</span>
+              <p className="text-xs text-slate-700">All rights reserved.</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy-policy" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Privacy Policy</Link>
+              <a href="#" className="text-xs text-slate-600 hover:text-slate-400 transition-colors">Terms of Service</a>
+              <span className="text-xs font-mono text-slate-700">v2.0.0</span>
+            </div>
           </div>
+          {/* Trademark sub-line */}
+          <p className="text-center text-xs text-slate-800 mt-2">
+            American Group LLC is a registered company in California, USA. SafeCodeX Research Center Pvt. Ltd. is incorporated in India.
+            All product names, logos, and brands are property of their respective owners.
+          </p>
         </div>
       </div>
     </footer>
