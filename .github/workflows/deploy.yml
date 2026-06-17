@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    name: Build React App & Deploy via lftp
+    name: Build React App & Deploy via SSH/rsync
     runs-on: ubuntu-latest
 
     steps:
@@ -60,36 +60,25 @@ jobs:
 
       # ── 7. Show build output ─────────────────────────────────────────────
       - name: Show build output
-        run: ls -la dist/public/
+        run: ls -la dist/public/ && du -sh dist/public/
 
-      # ── 8. Install lftp ──────────────────────────────────────────────────
-      - name: Install lftp
-        run: sudo apt-get install -y lftp
-
-      # ── 9. Deploy via lftp mirror ─────────────────────────────────────────
-      # lftp is more robust than FTP-Deploy-Action for HostGator shared hosting
-      # It uses FTP with TLS (ftps://) and mirrors the local build to remote
-      - name: Deploy to HostGator via lftp
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USER: ${{ secrets.FTP_USERNAME }}
-          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+      # ── 8. Setup SSH key ─────────────────────────────────────────────────
+      - name: Setup SSH key
         run: |
-          lftp -c "
-            set ftp:ssl-allow yes;
-            set ftp:ssl-force no;
-            set ftp:passive-mode yes;
-            set net:timeout 30;
-            set net:max-retries 3;
-            set net:reconnect-interval-base 5;
-            open ftp://$FTP_SERVER;
-            user $FTP_USER $FTP_PASS;
-            mirror --reverse --delete --verbose \
-              --exclude .git \
-              --exclude node_modules \
-              ./dist/public/ /public_html/;
-            bye;
-          "
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          # Also add by hostname
+          ssh-keyscan -H ftp.safecodeg.com >> ~/.ssh/known_hosts 2>/dev/null
+
+      # ── 9. Deploy via rsync over SSH ─────────────────────────────────────
+      - name: Deploy to HostGator via rsync
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p 22" \
+            dist/public/ \
+            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/public_html/
 
       # ── 10. Verify ───────────────────────────────────────────────────────
       - name: Verify site is live
@@ -100,7 +89,7 @@ jobs:
           if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ]; then
             echo "✅ safecodeg.com is live!"
           else
-            echo "⚠️  Status $HTTP_STATUS — DNS may still be propagating"
+            echo "⚠️  Status $HTTP_STATUS — check DNS or SSH deploy logs above"
           fi
 
       # ── 11. Summary ──────────────────────────────────────────────────────
