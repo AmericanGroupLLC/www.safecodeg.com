@@ -26,7 +26,7 @@ function useReveal() {
 }
 
 const SUPPORT_EMAIL = "contact@safecodeg.com";
-const USA_PHONE = "+1 (510) 458-0959";
+const USA_PHONE = "+1 (510) 458-9059";
 const INDIA_PHONE = "+91 74168 66689";
 
 const categories = [
@@ -300,7 +300,7 @@ export default function Support() {
                     <Mail className="h-4 w-4 text-indigo-500 shrink-0" />
                     <span className="text-sm text-slate-700 group-hover:text-indigo-700">{SUPPORT_EMAIL}</span>
                   </a>
-                  <a href={`tel:+15104580959`}
+                  <a href={`tel:+15104589059`}
                     className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-indigo-50 transition-colors group">
                     <Phone className="h-4 w-4 text-indigo-500 shrink-0" />
                     <span className="text-sm text-slate-700 group-hover:text-indigo-700">{USA_PHONE}</span>

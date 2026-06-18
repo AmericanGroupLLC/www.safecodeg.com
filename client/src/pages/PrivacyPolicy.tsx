@@ -668,7 +668,7 @@ export default function PrivacyPolicyPage() {
                     entity: "American Group LLC",
                     role: "Data Controller (USA)",
                     address: "Santa Clara, California, USA",
-                    phone: "+1 (510) 458-0959",
+                    phone: "+1 (510) 458-9059",
                     email: PRIVACY_EMAIL,
                     flag: "🇺🇸",
                     color: "oklch(0.52 0.22 270)",

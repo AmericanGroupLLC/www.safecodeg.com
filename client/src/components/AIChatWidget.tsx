@@ -49,9 +49,9 @@ const FAQ: Record<string, string> = {
   "what do you do":
     "American Group LLC is a US-based software company with 77 products across 6 verticals — Enterprise AI, Consumer Mobile, FinTech, CyberSecurity, Spatial SaaS, and IoT. Our India engineering office, SafeCodeX Research Center, is based in Hyderabad.",
   "where are you located":
-    "We have two offices:\n🇺🇸 Santa Clara, California, USA — +1 (510) 458-0959\n🇮🇳 Hyderabad, India — +91 74168 66689\n📧 contact@safecodeg.com",
+    "We have two offices:\n🇺🇸 Santa Clara, California, USA — +1 (510) 458-9059\n🇮🇳 Hyderabad, India — +91 74168 66689\n📧 contact@safecodeg.com",
   "how can i contact you":
-    "You can reach us at contact@safecodeg.com, call +1 (510) 458-0959 (USA) or +91 74168 66689 (India). Or I can help you send a message right now!",
+    "You can reach us at contact@safecodeg.com, call +1 (510) 458-9059 (USA) or +91 74168 66689 (India). Or I can help you send a message right now!",
   "what products do you have":
     "We have 77 products across 6 verticals. Visit our Products page for the full list, or ask me about a specific category like FinTech, AI tools, health apps, or cybersecurity.",
   "do you offer outsourcing":
@@ -160,7 +160,7 @@ export default function AIChatWidget() {
         } else if (lower.includes("contact")) {
           setStep("faq");
           pushBot(
-            "📞 You can reach us at:\n\n🇺🇸 USA: +1 (510) 458-0959\n🇮🇳 India: +91 74168 66689\n📧 contact@safecodeg.com\n\nOr I can help you send a message right now!",
+            "📞 You can reach us at:\n\n🇺🇸 USA: +1 (510) 458-9059\n🇮🇳 India: +91 74168 66689\n📧 contact@safecodeg.com\n\nOr I can help you send a message right now!",
             ["Send a message", "Ask something else"]
           );
         } else {

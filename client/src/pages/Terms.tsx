@@ -289,7 +289,7 @@ export default function Terms() {
                       <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-2 text-indigo-600 hover:underline">
                         <Mail className="h-3.5 w-3.5" /> {CONTACT_EMAIL}
                       </a>
-                      <div className="font-mono text-xs">+1 (510) 458-0959</div>
+                      <div className="font-mono text-xs">+1 (510) 458-9059</div>
                     </div>
                   </div>
                   <div className="p-5 rounded-2xl border border-slate-100 bg-slate-50">
