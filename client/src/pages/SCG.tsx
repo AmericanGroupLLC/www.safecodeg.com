@@ -396,35 +396,6 @@ export default function SCGPage() {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-20" style={{ background: "oklch(0.97 0.005 255)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-            <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Leadership</div>
-            <h2 className="text-4xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Meet the team
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { name: "Mark Wagh", role: "Founder & CEO", flag: "🇺🇸", initial: "M", color: "oklch(0.52 0.22 270)" },
-              { name: "Maria Rhodes", role: "Lead Web Developer", flag: "🇺🇸", initial: "M", color: "oklch(0.72 0.14 165)" },
-              { name: "Ruby Wilson", role: "HR Director", flag: "🇮🇳", initial: "R", color: "oklch(0.78 0.18 75)" },
-              { name: "Siddartha Andalu", role: "Mobile App Tester", flag: "🇮🇳", initial: "SA", color: "oklch(0.65 0.16 310)" },
-            ].map((person, i) => (
-              <div key={person.name} className={`reveal reveal-delay-${i + 1} text-center p-6 rounded-2xl border border-slate-100 bg-white product-card`}>
-                <div className="h-16 w-16 rounded-full flex items-center justify-center font-bold text-white text-lg mx-auto mb-4"
-                  style={{ background: `linear-gradient(135deg, ${person.color}, ${person.color.replace(")", " / 0.7)")})` }}>
-                  {person.initial}
-                </div>
-                <div className="font-bold text-slate-900 mb-1">{person.flag} {person.name}</div>
-                <div className="text-sm text-slate-500">{person.role}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-20" style={{ background: "oklch(0.14 0.04 255)" }}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">

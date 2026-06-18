@@ -389,65 +389,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
-          LEADERSHIP TEASER
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="lg:w-1/2 reveal">
-              <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Leadership</div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Visionary leadership
-                <br />
-                <span className="gradient-text-gold">driving innovation</span>
-              </h2>
-              <p className="text-slate-600 leading-relaxed mb-8">
-                Our leadership team combines Silicon Valley expertise with deep research capabilities from India's brightest engineering minds. Together, we are building the next generation of technology companies.
-              </p>
-              <div className="flex flex-wrap gap-6">
-                {[
-                  { name: "Mark Wagh", role: "Founder & CEO", flag: "🇺🇸" },
-                  { name: "Maria Rhodes", role: "Lead Developer", flag: "🇺🇸" },
-                  { name: "Ruby Wilson", role: "HR Director", flag: "🇮🇳" },
-                ].map((person) => (
-                  <div key={person.name} className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-sm">
-                      {person.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-slate-800">{person.flag} {person.name}</div>
-                      <div className="text-xs text-slate-400">{person.role}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
-              >
-                Meet the full team <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-            <div className="lg:w-1/2 reveal reveal-delay-2">
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: Target, label: "Mission-Driven", desc: "Every product solves a real problem" },
-                  { icon: Zap, label: "Fast Execution", desc: "77 repos, always shipping" },
-                  { icon: Globe, label: "Global Reach", desc: "Built for worldwide markets" },
-                  { icon: Star, label: "Quality First", desc: "Zero compromises on excellence" },
-                ].map((item, i) => (
-                  <div key={item.label} className={`p-5 rounded-2xl border border-slate-100 bg-slate-50 reveal reveal-delay-${i + 1}`}>
-                    <item.icon className="h-6 w-6 text-indigo-600 mb-3" />
-                    <div className="font-semibold text-slate-800 text-sm mb-1">{item.label}</div>
-                    <div className="text-xs text-slate-500">{item.desc}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ═══════════════════════════════════════════════════
           TECH TICKER

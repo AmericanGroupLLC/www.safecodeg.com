@@ -130,34 +130,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-            <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Leadership</div>
-            <h2 className="text-4xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Meet the leadership team
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {[
-              { name: "Mark Wagh", role: "Founder & CEO", flag: "🇺🇸", color: "from-indigo-100 to-indigo-200", text: "text-indigo-700" },
-              { name: "Maria Rhodes", role: "Lead Web Developer", flag: "🇺🇸", color: "from-blue-100 to-blue-200", text: "text-blue-700" },
-              { name: "Ruby Wilson", role: "HR Director", flag: "🇮🇳", color: "from-amber-100 to-amber-200", text: "text-amber-700" },
-              { name: "Michael Vaughn", role: "Senior Developer", flag: "🇺🇸", color: "from-green-100 to-green-200", text: "text-green-700" },
-              { name: "John Smith", role: "Web Developer", flag: "🇺🇸", color: "from-purple-100 to-purple-200", text: "text-purple-700" },
-            ].map((person, i) => (
-              <div key={person.name} className={`reveal reveal-delay-${i + 1} text-center p-6 rounded-2xl border border-slate-100 bg-slate-50`}>
-                <div className={`h-16 w-16 rounded-full bg-gradient-to-br ${person.color} flex items-center justify-center ${person.text} font-bold text-xl mx-auto mb-4`}>
-                  {person.name.charAt(0)}
-                </div>
-                <div className="font-bold text-slate-900 text-sm mb-1">{person.flag} {person.name}</div>
-                <div className="text-xs text-slate-500">{person.role}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-20" style={{ background: "oklch(0.14 0.04 255)" }}>
