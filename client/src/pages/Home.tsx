@@ -137,8 +137,7 @@ export default function Home() {
               <span className="text-base">🇺🇸</span>
               <span>Santa Clara, California</span>
               <span className="text-white/30">·</span>
-              <span className="text-base">🇮🇳</span>
-              <span>India R&D Center</span>
+              <span className="px-2 py-0.5 rounded-full text-xs font-mono" style={{background: "oklch(0.52 0.22 270 / 0.3)"}}>S-Corp · Est. 2018</span>
             </div>
 
             {/* Main headline */}
@@ -146,15 +145,15 @@ export default function Home() {
               className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.05] mb-6"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              Two continents.
+              American Group LLC.
               <br />
-              <span style={{ color: "oklch(0.78 0.18 75)" }}>One standard</span>
+              <span style={{ color: "oklch(0.78 0.18 75)" }}>Building the future</span>
               <br />
-              of excellence.
+              of technology.
             </h1>
 
             <p className="text-lg sm:text-xl text-white/70 max-w-2xl mb-10 leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              American Group LLC and SafeCodeX Research Center — delivering world-class software outsourcing, frontier AI research, and 77 products across 6 verticals. Built in California, researched in India, shipped worldwide.
+              A California-based technology company delivering world-class software outsourcing, 77 innovative products across 6 verticals, and enterprise-grade IT solutions — shipped worldwide from Santa Clara.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -219,14 +218,14 @@ export default function Home() {
           <div className="text-center mb-14 reveal">
               <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Our Organization</div>
             <h2 className="text-4xl lg:text-5xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-              One company, two locations
+              American Group LLC
             </h2>
-            <p className="text-slate-500 mt-3 max-w-xl mx-auto text-sm">American Group LLC is the parent organization. SafeCodeX Research Center is our India engineering office — same team, same mission.</p>
+            <p className="text-slate-500 mt-3 max-w-xl mx-auto text-sm">Headquartered in Santa Clara, California — with a backend operations office in Hyderabad, India managed through SafeCodeX Research Center Pvt. Ltd.</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* AGL Card */}
-            <div className="reveal reveal-delay-1 rounded-2xl overflow-hidden group cursor-pointer" onClick={() => window.location.href = "/american-group-llc"}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* AGL Card — takes 2/3 width on desktop */}
+            <div className="reveal reveal-delay-1 rounded-2xl overflow-hidden group cursor-pointer lg:col-span-2" onClick={() => window.location.href = "/american-group-llc"}>
               <div
                 className="relative h-64 overflow-hidden"
                 style={{
@@ -288,15 +287,15 @@ export default function Home() {
               </div>
               <div className="bg-white border border-slate-100 p-6 group-hover:border-amber-200 transition-colors">
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                  Our India engineering office — incorporated as SafeCodeX Research Center Pvt. Ltd. to enable local R&D operations and talent access. Same organization, same standards, operating from India to serve global clients.
+                  Backend operations & delivery support — our Hyderabad office handles 10% of project execution, QA, and R&D support under AGL's direction.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-5">
-                  {["India Office", "R&D Hub", "Engineering Talent", "Software Outsourcing"].map((tag) => (
+                  {["India Ops", "QA & Testing", "Delivery Support"].map((tag) => (
                     <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{tag}</span>
                   ))}
                 </div>
                 <Link href="/safecodex-research" className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-800 transition-colors">
-                  Explore SafeCodeX <ArrowRight className="h-3.5 w-3.5" />
+                  India Office <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
             </div>
@@ -418,7 +417,7 @@ export default function Home() {
             <span style={{ color: "oklch(0.78 0.18 75)" }}>of technology together.</span>
           </h2>
           <p className="text-white/60 text-lg mb-10 max-w-2xl mx-auto">
-            Partner with American Group LLC and SafeCodeX Research Center to unlock the full potential of your projects.
+            Partner with American Group LLC to unlock the full potential of your technology projects. We build, ship, and scale — from California to the world.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
@@ -429,12 +428,12 @@ export default function Home() {
               Start a Project <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href="https://safecodeg.com"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/products"
+              target="_self"
+              rel=""
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white border border-white/20 hover:bg-white/10 transition-all btn-press"
             >
-              Visit SafeCodeG.com <ExternalLink className="h-4 w-4" />
+              View Our Products <ExternalLink className="h-4 w-4" />
             </a>
           </div>
         </div>

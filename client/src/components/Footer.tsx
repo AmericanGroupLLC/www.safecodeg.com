@@ -1,14 +1,14 @@
 /**
  * Footer Component — "Luminous Clarity" Design System
- * Deep navy background, dual-company branding
+ * Deep navy background, AGL-primary brand
  */
 import { Link } from "wouter";
 import { Github, Linkedin, Youtube, Facebook, Mail, MapPin, Phone } from "lucide-react";
 
 const footerLinks = {
   companies: [
-    { label: "🇺🇸 American Group LLC (HQ)", href: "/american-group-llc" },
-    { label: "🇮🇳 SafeCodeX — India Office", href: "/safecodex-research" },
+    { label: "🇺🇸 American Group LLC", href: "/american-group-llc" },
+    { label: "🇮🇳 India Operations", href: "/safecodex-research" },
   ],
   products: [
     { label: "All 77 Products", href: "/products" },
@@ -48,25 +48,17 @@ export default function Footer() {
                 alt="AGL"
                 className="h-9 w-9 object-contain brightness-200"
               />
-              <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/scg-logo-W2HQYWhiqBqMj8z6dwYjXz.webp"
-                alt="SCG"
-                className="h-8 w-8 object-contain"
-              />
+
             </div>
             <h3 className="font-bold text-lg text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
               American Group LLC
-              <br />
-              <span style={{ color: "oklch(0.78 0.18 75)" }}>& SafeCodeX Research</span>
             </h3>
             <p className="text-sm text-slate-400 mt-3 leading-relaxed max-w-xs">
-              One organization. Two locations. American Group LLC is headquartered in Santa Clara, CA — with SafeCodeX Research Center as our India engineering office.
+              A California-based technology company delivering world-class software outsourcing, 77 products across 6 verticals, and enterprise-grade IT solutions — shipped worldwide.
             </p>
             <div className="flex items-center gap-1 mt-4">
               <span className="text-xl">🇺🇸</span>
-              <span className="text-slate-500 text-xs mx-1">×</span>
-              <span className="text-xl">🇮🇳</span>
-              <span className="text-xs text-slate-500 ml-2 font-mono">Global · Always On</span>
+              <span className="text-xs text-slate-500 ml-2 font-mono">Santa Clara, CA · Est. 2018</span>
             </div>
             {/* Socials */}
             <div className="flex items-center gap-3 mt-6">
@@ -87,7 +79,7 @@ export default function Footer() {
 
           {/* Links columns */}
           <div>
-            <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-500 mb-4">Our Offices</h4>
+            <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-500 mb-4">Company</h4>
             <ul className="space-y-2.5">
               {footerLinks.companies.map((link) => (
                 <li key={link.href}>
@@ -156,7 +148,7 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3">
             <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
               <p className="text-xs text-slate-600">
-                &copy; {new Date().getFullYear()} <span className="text-slate-500 font-medium">American Group LLC</span> &amp; <span className="text-slate-500 font-medium">SafeCodeX Research Center Pvt. Ltd.</span>
+                &copy; {new Date().getFullYear()} <span className="text-slate-500 font-medium">American Group LLC</span> 
               </p>
               <span className="hidden sm:inline text-slate-700">·</span>
               <p className="text-xs text-slate-700">All rights reserved.</p>
@@ -170,8 +162,8 @@ export default function Footer() {
           </div>
           {/* Trademark sub-line */}
           <p className="text-center text-xs text-slate-800 mt-2">
-            American Group LLC is a registered company in California, USA. SafeCodeX Research Center Pvt. Ltd. is incorporated in India.
-            All product names, logos, and brands are property of their respective owners.
+            American Group LLC is a registered company in California, USA. All product names, logos, and brands are property of their respective owners.
+            India operations managed by SafeCodeX Research Center Pvt. Ltd., Hyderabad.
           </p>
         </div>
       </div>

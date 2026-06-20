@@ -20,7 +20,7 @@ function useReveal() {
 
 const timeline = [
   { year: "2018", title: "Founded in California", desc: "American Group LLC incorporated as an S-Corp in Santa Clara, California with a vision to build world-class software products." },
-  { year: "2019", title: "SafeCodeX India Established", desc: "SafeCodeX Research Center Pvt. Ltd. founded in India, creating a binational R&D powerhouse." },
+  { year: "2019", title: "India Operations Office", desc: "SafeCodeX Research Center Pvt. Ltd. established in Hyderabad, India to support backend delivery, QA, and R&D operations." },
   { year: "2020", title: "First 10 Products Launched", desc: "Initial product portfolio launched across mobile and enterprise verticals, establishing market presence." },
   { year: "2021", title: "AI Research Division", desc: "Dedicated AI research division established, focusing on frontier LLM research and cognitive computing." },
   { year: "2022", title: "50 Active Repositories", desc: "Portfolio expanded to 50+ active repositories across 5 business verticals with global client base." },
@@ -31,10 +31,10 @@ const timeline = [
 const values = [
   { icon: Target, title: "Mission-Driven", desc: "Every product we build solves a real problem for real people. We don't build for the sake of building." },
   { icon: Zap, title: "Relentless Execution", desc: "77 repositories. Always shipping. We believe in momentum, iteration, and delivering value continuously." },
-  { icon: Globe, title: "Global by Default", desc: "Built in California, researched in India, shipped worldwide. Our products are designed for global markets from day one." },
+  { icon: Globe, title: "Global by Default", desc: "Headquartered in California, with backend operations in India. Our products are designed for global markets from day one." },
   { icon: Star, title: "Excellence Without Compromise", desc: "We hold ourselves to the highest standards of engineering, design, and user experience." },
   { icon: Users, title: "People First", desc: "Our team is our greatest asset. We invest in talent, culture, and creating an environment where innovation thrives." },
-  { icon: Award, title: "Research-Led Innovation", desc: "Our India R&D center ensures we stay at the frontier of AI, IoT, blockchain, and emerging technologies." },
+  { icon: Award, title: "Research-Led Innovation", desc: "Our India operations team ensures we stay at the frontier of AI, IoT, blockchain, and emerging technologies." },
 ];
 
 export default function AboutPage() {
@@ -49,12 +49,12 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-xs font-mono font-semibold uppercase tracking-widest text-white/40 mb-3">About Us</div>
           <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Two continents.
+            American Group LLC.
             <br />
-            <span style={{ color: "oklch(0.78 0.18 75)" }}>One mission.</span>
+            <span style={{ color: "oklch(0.78 0.18 75)" }}>Our Story.</span>
           </h1>
           <p className="text-xl text-white/60 max-w-2xl">
-            We are a binational technology group combining Silicon Valley innovation with India's world-class engineering talent to build the future of software.
+            A California-based technology company building world-class software products, enterprise IT solutions, and 77 innovative apps — shipped worldwide from Santa Clara.
           </p>
         </div>
         <div className="relative">
@@ -78,7 +78,7 @@ export default function AboutPage() {
                   American Group LLC was founded with a simple but ambitious belief: that the best technology companies are built by combining the best of multiple worlds. Silicon Valley provides the market insight, the ambition, and the access to capital. India provides the engineering depth, the research rigor, and the talent density.
                 </p>
                 <p>
-                  Together, American Group LLC and SafeCodeX Research Center form a uniquely positioned technology group — one that can move with the speed of a startup while delivering the quality and scale of an enterprise.
+                  American Group LLC is a uniquely positioned technology company — one that moves with the speed of a startup while delivering the quality and scale of an enterprise. Our Hyderabad operations office (SafeCodeX Research Center Pvt. Ltd.) handles 10% of backend delivery and QA support.
                 </p>
                 <p>
                   Today, our 77 active repositories span six distinct business verticals, each engineered to operate independently while sharing a common identity platform, backend gateway, and CI/CD infrastructure. We build the entire stack — from on-device LLMs and Wear OS apps to multi-cloud control planes and orbital edge-cloud orchestrators.

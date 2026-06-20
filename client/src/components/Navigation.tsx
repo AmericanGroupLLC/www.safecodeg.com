@@ -1,7 +1,7 @@
 /**
  * Navigation Component — "Luminous Clarity" Design System
  * Transparent on top, frosted glass on scroll
- * Dual-company identity with 🇺🇸🇮🇳 badge
+ * AGL-first identity — American Group LLC primary brand
  */
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
@@ -10,11 +10,11 @@ import { Menu, X, ChevronDown } from "lucide-react";
 const navLinks = [
   { label: "Home", href: "/" },
   {
-    label: "Our Offices",
+    label: "About Us",
     href: "#",
     children: [
       { label: "🇺🇸 American Group LLC", href: "/american-group-llc", desc: "HQ · Santa Clara, California" },
-      { label: "🇮🇳 SafeCodeX Research", href: "/safecodex-research", desc: "India Office · Pvt. Ltd." },
+      { label: "🇮🇳 India Operations", href: "/safecodex-research", desc: "Hyderabad · SafeCodeX Pvt. Ltd." },
     ],
   },
   { label: "Products", href: "/products" },
@@ -61,18 +61,14 @@ export default function Navigation() {
                   alt="AGL Logo"
                   className="h-8 w-8 object-contain"
                 />
-                <img
-                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/scg-logo-W2HQYWhiqBqMj8z6dwYjXz.webp"
-                  alt="SCG Logo"
-                  className="h-7 w-7 object-contain"
-                />
+
               </div>
               <div className="hidden sm:block">
                 <div className={`font-bold text-sm leading-tight tracking-tight transition-colors ${scrolled || !isHome ? "text-[oklch(0.22_0.06_255)]" : "text-white"}`}>
-                  AGL <span className="text-[oklch(0.52_0.22_270)]">&</span> SafeCodeX
+                  American Group LLC
                 </div>
                 <div className={`text-[10px] font-mono tracking-widest uppercase transition-colors ${scrolled || !isHome ? "text-slate-400" : "text-white/60"}`}>
-                  🇺🇸 California · India 🇮🇳
+                  🇺🇸 Santa Clara, California
                 </div>
               </div>
             </Link>
