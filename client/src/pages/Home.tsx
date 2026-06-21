@@ -1,440 +1,470 @@
 /**
- * Home Page — "Luminous Clarity" Design System
- * Hero + Stats + Companies + Services + Products Preview + CTA
+ * Home Page — Enterprise-Grade Redesign
+ * Design: Dark premium, cinematic hero, Fortune 500 quality
+ * AGL-dominant: 90% American Group LLC, 10% SafeCodeX ops
  */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
+import { motion } from "framer-motion";
+import {
+  ArrowRight, Brain, Smartphone, Globe, Shield, Code2, Cpu,
+  TrendingUp, Users, Zap, Star, CheckCircle, ChevronRight,
+  BarChart3, Lock, Cloud, Layers
+} from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ArrowRight, ExternalLink, Code2, Brain, Shield, Smartphone, Globe, Cpu, ChevronRight, Star, Zap, Target } from "lucide-react";
 
-// Animated counter component
-function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const hasRun = useRef(false);
-
+// Animated counter hook
+function useCounter(target: number, duration = 2000, start = false) {
+  const [count, setCount] = useState(0);
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasRun.current) {
-            hasRun.current = true;
-            const duration = 2000;
-            const start = Date.now();
-            const tick = () => {
-              const elapsed = Date.now() - start;
-              const progress = Math.min(elapsed / duration, 1);
-              const eased = 1 - Math.pow(1 - progress, 3);
-              el.textContent = Math.round(eased * target) + suffix;
-              if (progress < 1) requestAnimationFrame(tick);
-            };
-            requestAnimationFrame(tick);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, suffix]);
-
-  return <span ref={ref}>0{suffix}</span>;
+    if (!start) return;
+    let startTime: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [target, duration, start]);
+  return count;
 }
 
-// Scroll reveal setup
+// Scroll reveal hook
 function useReveal() {
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("visible");
-        });
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
+      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }),
+      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
     );
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 }
 
 const verticals = [
-  { icon: Brain, label: "Enterprise AI & DevTools", count: "14", color: "oklch(0.52 0.22 270)" },
-  { icon: Smartphone, label: "Consumer Mobile", count: "22", color: "oklch(0.72 0.14 165)" },
-  { icon: Globe, label: "FinTech & E-Commerce", count: "12", color: "oklch(0.78 0.18 75)" },
-  { icon: Shield, label: "CyberSecurity & Infra", count: "11", color: "oklch(0.55 0.18 30)" },
-  { icon: Code2, label: "Spatial & Industry SaaS", count: "10", color: "oklch(0.65 0.16 310)" },
-  { icon: Cpu, label: "IoT & Hardware", count: "8", color: "oklch(0.60 0.15 200)" },
+  { icon: <Brain className="w-6 h-6" />, title: "Enterprise AI & DevTools", count: 12, color: "#6366F1", desc: "LLMs, RAG pipelines, cognitive agents, and developer productivity platforms.", slug: "enterprise-ai" },
+  { icon: <Smartphone className="w-6 h-6" />, title: "Consumer Mobile", count: 18, color: "#8B5CF6", desc: "Cross-platform iOS & Android apps serving millions of daily active users.", slug: "mobile" },
+  { icon: <TrendingUp className="w-6 h-6" />, title: "FinTech & E-Commerce", count: 14, color: "#10B981", desc: "Personal finance, market intelligence, payments, and commerce platforms.", slug: "fintech" },
+  { icon: <Shield className="w-6 h-6" />, title: "CyberSecurity & Infra", count: 8, color: "#EF4444", desc: "SIEM, threat hunting, zero-trust networking, and enterprise infrastructure.", slug: "cybersecurity" },
+  { icon: <Globe className="w-6 h-6" />, title: "Travel & Aviation", count: 6, color: "#3B82F6", desc: "Real-time flight tracking, trip management, and aviation intelligence.", slug: "travel" },
+  { icon: <Cpu className="w-6 h-6" />, title: "Health & Wellness", count: 10, color: "#F59E0B", desc: "Fitness OS, nutrition tracking, mental wellness, and Wear OS integration.", slug: "health" },
+  { icon: <Code2 className="w-6 h-6" />, title: "E-Commerce & Deals", count: 5, color: "#EC4899", desc: "Smart shopping, deal aggregation, price tracking, and loyalty platforms.", slug: "ecommerce" },
+  { icon: <Users className="w-6 h-6" />, title: "Social & Lifestyle", count: 4, color: "#06B6D4", desc: "P2P gaming, social experiences, and community-driven mobile applications.", slug: "social" },
 ];
 
-const services = [
-  {
-    icon: Code2,
-    title: "Software Outsourcing",
-    desc: "End-to-end custom software development, mobile apps, and cloud platforms — delivered on time, within budget.",
-    color: "oklch(0.52 0.22 270)",
-  },
-  {
-    icon: Brain,
-    title: "AI & R&D Services",
-    desc: "Frontier research in AI, IoT, blockchain, and emerging technologies. We transform ideas into competitive advantages.",
-    color: "oklch(0.78 0.18 75)",
-  },
-  {
-    icon: Shield,
-    title: "CyberSecurity",
-    desc: "Enterprise-grade security infrastructure, threat intelligence, and compliance solutions for modern businesses.",
-    color: "oklch(0.55 0.18 30)",
-  },
-  {
-    icon: Zap,
-    title: "Product Engineering",
-    desc: "From concept to launch — we build, test, and ship 77+ products across 6 verticals with zero compromises.",
-    color: "oklch(0.72 0.14 165)",
-  },
+const featuredProducts = [
+  { slug: "cognicore", name: "CogniCore AI", tagline: "Enterprise cognitive AI platform", icon: "🧠", color: "#6366F1", tag: "Enterprise AI" },
+  { slug: "myhealth", name: "MyHealth", tagline: "Personal fitness OS for Android & Wear OS", icon: "❤️", color: "#EF4444", tag: "Health" },
+  { slug: "aeroswift", name: "AeroSwift", tagline: "Real-time flight tracking & aviation data", icon: "✈️", color: "#3B82F6", tag: "Travel" },
+  { slug: "apexmarketwatch", name: "ApexMarketWatch", tagline: "Real-time markets & hedge fund filings", icon: "📈", color: "#F59E0B", tag: "FinTech" },
+  { slug: "offlinebuddy", name: "OfflineBuddy", tagline: "On-device LLM — works fully offline", icon: "🤖", color: "#06B6D4", tag: "AI" },
+  { slug: "securecore", name: "SecureCore", tagline: "Enterprise security operations platform", icon: "🛡️", color: "#EF4444", tag: "Security" },
 ];
+
+const differentiators = [
+  { icon: <Zap className="w-5 h-5" />, title: "Ship in Weeks, Not Years", desc: "Our battle-tested product development framework takes ideas from concept to App Store in 6–12 weeks." },
+  { icon: <Lock className="w-5 h-5" />, title: "Security by Default", desc: "Every product is built with end-to-end encryption, SOC 2 compliance, and zero-trust architecture from day one." },
+  { icon: <Cloud className="w-5 h-5" />, title: "Cloud-Native Scale", desc: "Serverless, containerized, auto-scaling infrastructure that handles 1 user or 10 million without code changes." },
+  { icon: <BarChart3 className="w-5 h-5" />, title: "Data-Driven Everything", desc: "Built-in analytics, A/B testing, and ML pipelines in every product so you always know what's working." },
+  { icon: <Layers className="w-5 h-5" />, title: "Full-Stack Ownership", desc: "We own the entire stack — design, engineering, QA, DevOps, and post-launch support under one roof." },
+  { icon: <Star className="w-5 h-5" />, title: "Enterprise-Grade Quality", desc: "99.9% uptime SLAs, 24/7 monitoring, and dedicated support for every product we ship." },
+];
+
+const stats = [
+  { value: 77, suffix: "+", label: "Products Shipped", icon: "📦" },
+  { value: 8, suffix: "", label: "Industry Verticals", icon: "🏭" },
+  { value: 6, suffix: "+", label: "Years of Excellence", icon: "🏆" },
+  { value: 99, suffix: ".9%", label: "Uptime SLA", icon: "⚡" },
+];
+
+function StatCard({ value, suffix, label, icon, start }: { value: number; suffix: string; label: string; icon: string; start: boolean }) {
+  const count = useCounter(value, 2200, start);
+  return (
+    <div className="text-center p-8 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] transition-all">
+      <div className="text-3xl mb-3">{icon}</div>
+      <div className="text-5xl font-bold text-white mb-2" style={{ fontFamily: "Sora, sans-serif" }}>
+        {count}{suffix}
+      </div>
+      <div className="text-slate-400 text-sm font-medium">{label}</div>
+    </div>
+  );
+}
 
 export default function Home() {
   useReveal();
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [statsStarted, setStatsStarted] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setStatsStarted(true); },
+      { threshold: 0.3 }
+    );
+    if (statsRef.current) observer.observe(statsRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: "#070B14", color: "white" }}>
       <Navigation />
 
-      {/* ═══════════════════════════════════════════════════
-          HERO SECTION
-      ═══════════════════════════════════════════════════ */}
-      <section
-        className="relative min-h-screen flex items-center overflow-hidden"
-        style={{
-          background: "oklch(0.14 0.04 255)",
-        }}
-      >
-        {/* Hero background image */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: `url(https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/hero-bg-oEb7iPGD3yJxqUDGfa3cGo.webp)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, oklch(0.14 0.04 255) 40%, oklch(0.20 0.08 270) 100%)" }} />
-
-        {/* Decorative outline numbers */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 opacity-5 select-none pointer-events-none hidden lg:block">
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "22rem", fontWeight: 900, color: "transparent", WebkitTextStroke: "2px white", lineHeight: 1 }}>
-            77
-          </span>
+      {/* ── HERO ─────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <img
+            src="/manus-storage/agl-hero-enterprise_4169f7a3.jpg"
+            alt="AGL Hero"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,11,20,0.97) 0%, rgba(7,11,20,0.85) 50%, rgba(7,11,20,0.75) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.15), transparent 60%)" }} />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-20">
+        {/* Animated grid */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20">
           <div className="max-w-4xl">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white/80 text-sm font-medium mb-8">
-              <span className="text-base">🇺🇸</span>
-              <span>Santa Clara, California</span>
-              <span className="text-white/30">·</span>
-              <span className="px-2 py-0.5 rounded-full text-xs font-mono" style={{background: "oklch(0.52 0.22 270 / 0.3)"}}>S-Corp · Est. 2018</span>
-            </div>
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-8">
+                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+                Santa Clara, California · Est. 2018
+              </div>
+            </motion.div>
 
-            {/* Main headline */}
-            <h1
-              className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.05] mb-6"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="font-bold leading-[1.05] mb-6"
+              style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.8rem, 6vw, 5rem)" }}
             >
-              American Group LLC.
-              <br />
-              <span style={{ color: "oklch(0.78 0.18 75)" }}>Building the future</span>
-              <br />
-              of technology.
-            </h1>
+              Building the Future of{" "}
+              <span style={{ background: "linear-gradient(135deg, #818CF8, #6366F1, #A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                Enterprise Technology
+              </span>
+            </motion.h1>
 
-            <p className="text-lg sm:text-xl text-white/70 max-w-2xl mb-10 leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              A California-based technology company delivering world-class software outsourcing, 77 innovative products across 6 verticals, and enterprise-grade IT solutions — shipped worldwide from Santa Clara.
-            </p>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl text-slate-300 leading-relaxed mb-10 max-w-2xl"
+            >
+              American Group LLC is a California-based technology company delivering 77+ enterprise-grade products across AI, mobile, FinTech, cybersecurity, and health — trusted by businesses and consumers worldwide.
+            </motion.p>
 
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-2 px-7 py-4 rounded-xl font-semibold text-white transition-all btn-press shadow-lg"
-                style={{ background: "oklch(0.52 0.22 270)", boxShadow: "0 8px 32px oklch(0.52 0.22 270 / 0.4)" }}
-              >
-                Explore All 77 Products
-                <ArrowRight className="h-4 w-4" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="flex flex-wrap gap-4"
+            >
+              <Link href="/products">
+                <button className="group flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
+                  Explore 77 Products
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
               </Link>
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 px-7 py-4 rounded-xl font-semibold text-white border border-white/20 hover:bg-white/10 transition-all btn-press"
-              >
-                Our Story
-                <ChevronRight className="h-4 w-4" />
+              <Link href="/contact">
+                <button className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold border border-white/15 text-white hover:bg-white/10 transition-all duration-200">
+                  Request a Demo
+                </button>
               </Link>
-            </div>
+            </motion.div>
+
+            {/* Trust badges */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="flex flex-wrap items-center gap-6 mt-12 pt-10 border-t border-white/8"
+            >
+              {["iOS & Android", "Enterprise Ready", "SOC 2 Compliant", "99.9% Uptime"].map((badge) => (
+                <div key={badge} className="flex items-center gap-2 text-slate-400 text-sm">
+                  <CheckCircle className="w-4 h-4 text-indigo-400" />
+                  {badge}
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
 
-        {/* Bottom diagonal cut */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 80L1440 0V80H0Z" fill="white" />
-          </svg>
-        </div>
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #070B14)" }} />
       </section>
 
-      {/* ═══════════════════════════════════════════════════
-          STATS BAR
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
-            {[
-              { value: 77, suffix: "", label: "Active Products", color: "oklch(0.52 0.22 270)" },
-              { value: 6, suffix: "", label: "Business Verticals", color: "oklch(0.78 0.18 75)" },
-              { value: 20, suffix: "+", label: "Mobile Apps", color: "oklch(0.72 0.14 165)" },
-              { value: 28, suffix: "", label: "Future Roadmap", color: "oklch(0.22 0.06 255)" },
-            ].map((stat, i) => (
-              <div key={i} className="reveal text-center" style={{ transitionDelay: `${i * 80}ms` }}>
-                <div
-                  className="text-5xl lg:text-6xl font-bold mb-2 stat-number"
-                  style={{ color: stat.color }}
-                >
-                  <CountUp target={stat.value} suffix={stat.suffix} />
-                </div>
-                <div className="text-sm font-medium text-slate-500 uppercase tracking-widest">{stat.label}</div>
-              </div>
+      {/* ── STATS ────────────────────────────────────────── */}
+      <section className="py-20 border-y border-white/5" ref={statsRef}>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {stats.map((s, i) => (
+              <StatCard key={i} {...s} start={statsStarted} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
-          COMPANIES SECTION
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-              <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Our Organization</div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-              American Group LLC
+      {/* ── PRODUCT VERTICALS ────────────────────────────── */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="reveal mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-4">
+              <Layers className="w-3 h-3" /> Product Portfolio
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "Sora, sans-serif" }}>
+              8 Verticals. 77+ Products.
             </h2>
-            <p className="text-slate-500 mt-3 max-w-xl mx-auto text-sm">Headquartered in Santa Clara, California — with a backend operations office in Hyderabad, India managed through SafeCodeX Research Center Pvt. Ltd.</p>
+            <p className="text-slate-400 text-lg max-w-2xl">
+              From AI infrastructure to consumer mobile apps, AGL builds and ships enterprise-grade software across every major technology vertical.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* AGL Card — takes 2/3 width on desktop */}
-            <div className="reveal reveal-delay-1 rounded-2xl overflow-hidden group cursor-pointer lg:col-span-2" onClick={() => window.location.href = "/american-group-llc"}>
-              <div
-                className="relative h-64 overflow-hidden"
-                style={{
-                  backgroundImage: `url(https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/agl-section-bg-DMovm5egAhSafcXUUAPE6Q.webp)`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0.14 0.04 255) 0%, transparent 60%)" }} />
-                <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                  <img
-                    src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/agl-logo-36D5KR4hiUmfJgg45CfEdv.webp"
-                    alt="AGL"
-                    className="h-10 w-10 object-contain brightness-200"
-                  />
-                  <div>
-                    <div className="text-white font-bold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>American Group LLC</div>
-                    <div className="text-white/60 text-xs font-mono">🇺🇸 Santa Clara, California · S-Corp</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {verticals.map((v, i) => (
+              <Link key={v.slug} href={`/products#${v.slug}`}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                  className="group p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/15 transition-all duration-300 cursor-pointer relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 0% 0%, ${v.color}12, transparent 60%)` }} />
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110" style={{ background: `${v.color}20`, color: v.color }}>
+                      {v.icon}
+                    </div>
+                    <div className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Sora, sans-serif", color: v.color }}>{v.count}</div>
+                    <h3 className="font-semibold text-white text-sm mb-2 leading-tight">{v.title}</h3>
+                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">{v.desc}</p>
+                    <div className="flex items-center gap-1 mt-4 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: v.color }}>
+                      View Products <ChevronRight className="w-3 h-3" />
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="bg-white border border-slate-100 p-6 group-hover:border-indigo-200 transition-colors">
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                  The parent organization — a California-based S-Corp technology company operating across six business verticals. From on-device LLMs and Wear OS apps to multi-cloud control planes and orbital edge-cloud orchestrators. This is the primary entity behind all 77 products.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {["77 Active Repos", "6 Verticals", "20+ Mobile Apps", "8 Enterprise Platforms"].map((tag) => (
-                    <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700">{tag}</span>
-                  ))}
-                </div>
-                <Link href="/american-group-llc" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
-                  Explore AGL <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </div>
-
-            {/* SCG Card */}
-            <div className="reveal reveal-delay-2 rounded-2xl overflow-hidden group cursor-pointer" onClick={() => window.location.href = "/safecodex-research"}>
-              <div
-                className="relative h-64 overflow-hidden"
-                style={{
-                  backgroundImage: `url(https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/scg-section-bg-6MiGbt85QJDHzM3FnDARSD.webp)`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0.18 0.04 75) 0%, transparent 60%)" }} />
-                <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                  <img
-                    src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/scg-logo-W2HQYWhiqBqMj8z6dwYjXz.webp"
-                    alt="SCG"
-                    className="h-10 w-10 object-contain"
-                  />
-                  <div>
-                    <div className="text-white font-bold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>SafeCodeX Research Center</div>
-                    <div className="text-white/60 text-xs font-mono">🇮🇳 India · Pvt. Ltd.</div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white border border-slate-100 p-6 group-hover:border-amber-200 transition-colors">
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                  Backend operations & delivery support — our Hyderabad office handles 10% of project execution, QA, and R&D support under AGL's direction.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {["India Ops", "QA & Testing", "Delivery Support"].map((tag) => (
-                    <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{tag}</span>
-                  ))}
-                </div>
-                <Link href="/safecodex-research" className="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-800 transition-colors">
-                  India Office <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </div>
+                </motion.div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
-          PRODUCT VERTICALS
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14 gap-6">
-            <div className="reveal">
-              <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Product Portfolio</div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-                77 products.
-                <br />
-                <span className="gradient-text-indigo">6 verticals.</span>
+      {/* ── FEATURED PRODUCTS ────────────────────────────── */}
+      <section className="py-24 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-end justify-between mb-12 reveal">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-4">
+                <Star className="w-3 h-3" /> Featured Products
+              </div>
+              <h2 className="text-4xl font-bold text-white" style={{ fontFamily: "Sora, sans-serif" }}>
+                Flagship Applications
               </h2>
             </div>
-            <div className="reveal reveal-delay-2">
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white btn-press"
-                style={{ background: "oklch(0.52 0.22 270)" }}
+            <Link href="/products">
+              <button className="hidden md:flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors group">
+                View all 77 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {featuredProducts.map((p, i) => (
+              <Link key={p.slug} href={`/products/${p.slug}`}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="group p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/20 transition-all duration-300 cursor-pointer relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 20% 20%, ${p.color}12, transparent 60%)` }} />
+                  <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `linear-gradient(90deg, transparent, ${p.color}60, transparent)` }} />
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between mb-5">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ background: `${p.color}15`, border: `1px solid ${p.color}25` }}>
+                        {p.icon}
+                      </div>
+                      <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: `${p.color}20`, color: p.color }}>{p.tag}</span>
+                    </div>
+                    <h3 className="font-bold text-white text-lg mb-2 group-hover:text-indigo-200 transition-colors" style={{ fontFamily: "Sora, sans-serif" }}>{p.name}</h3>
+                    <p className="text-slate-400 text-sm mb-4">{p.tagline}</p>
+                    <div className="flex items-center gap-1 text-xs font-medium" style={{ color: p.color }}>
+                      Learn More <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link href="/products">
+              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20 font-semibold transition-all">
+                Browse All 77 Products <ArrowRight className="w-4 h-4" />
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHY AGL ──────────────────────────────────────── */}
+      <section className="py-24 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="reveal">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6">
+                <Zap className="w-3 h-3" /> Why American Group LLC
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" style={{ fontFamily: "Sora, sans-serif" }}>
+                Enterprise quality.<br />Startup velocity.
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed mb-8">
+                We combine the engineering rigor of a Fortune 500 technology company with the speed and agility of a startup. Every product we ship is battle-tested, secure, and built to scale.
+              </p>
+              <div className="space-y-3">
+                {["Full-stack product development from concept to launch", "Native iOS, Android, and cross-platform Flutter expertise", "Enterprise AI/ML integration with production-grade reliability", "Dedicated QA, DevOps, and post-launch support teams"].map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-slate-300 text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-8 flex gap-4">
+                <Link href="/about">
+                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
+                    About AGL <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+                <Link href="/contact">
+                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 font-semibold transition-all">
+                    Get in Touch
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal reveal-delay-1">
+              {differentiators.map((d, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.07 }}
+                  className="p-5 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] transition-all"
+                >
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 text-indigo-400" style={{ background: "rgba(99,102,241,0.15)" }}>
+                    {d.icon}
+                  </div>
+                  <h4 className="font-semibold text-white text-sm mb-1.5">{d.title}</h4>
+                  <p className="text-slate-500 text-xs leading-relaxed">{d.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── MOBILE APPS SHOWCASE ─────────────────────────── */}
+      <section className="py-24 border-t border-white/5 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="/manus-storage/agl-mobile-apps-bg_8be1d965.jpg" alt="" className="w-full h-full object-cover opacity-10" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #070B14 0%, rgba(7,11,20,0.7) 50%, #070B14 100%)" }} />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16 reveal">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-4">
+              <Smartphone className="w-3 h-3" /> Mobile-First
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "Sora, sans-serif" }}>
+              Available on Every Platform
+            </h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+              Our mobile apps are built with native iOS (Swift), native Android (Kotlin), and cross-platform Flutter — delivering pixel-perfect experiences on every device.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { platform: "iOS", icon: "🍎", color: "#6366F1", desc: "Native Swift development with HealthKit, Core ML, ARKit, and full Apple ecosystem integration.", count: "40+" },
+              { platform: "Android", icon: "🤖", color: "#10B981", desc: "Native Kotlin with Jetpack Compose, Wear OS, Google Health Connect, and Material You design.", count: "45+" },
+              { platform: "Cross-Platform", icon: "⚡", color: "#F59E0B", desc: "Flutter and React Native for maximum reach with a single codebase and native performance.", count: "20+" },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-8 rounded-2xl border border-white/8 bg-white/[0.04] text-center"
               >
-                View All Products <ArrowRight className="h-4 w-4" />
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <div className="text-3xl font-bold mb-1" style={{ color: item.color, fontFamily: "Sora, sans-serif" }}>{item.count}</div>
+                <h3 className="font-bold text-white text-lg mb-3">{item.platform} Apps</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── INDIA OPS (10%) ──────────────────────────────── */}
+      <section className="py-16 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="p-8 rounded-3xl border border-amber-500/15 bg-amber-500/5 reveal">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)" }}>
+                🇮🇳
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="font-bold text-white text-lg" style={{ fontFamily: "Sora, sans-serif" }}>SafeCodeX Research Center — Hyderabad, India</h3>
+                  <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">India Operations</span>
+                </div>
+                <p className="text-slate-400 text-sm leading-relaxed max-w-3xl">
+                  Our Hyderabad-based engineering support office handles QA testing, embedded firmware research, and mobile app testing — supporting AGL's primary product development operations from Santa Clara. SafeCodeX operates as an integral part of the AGL delivery pipeline.
+                </p>
+              </div>
+              <Link href="/safecodex-research">
+                <button className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 text-sm font-medium transition-all">
+                  Learn More <ChevronRight className="w-4 h-4" />
+                </button>
               </Link>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {verticals.map((v, i) => (
-              <Link
-                key={v.label}
-                href="/products"
-                className={`reveal reveal-delay-${i + 1} product-card flex items-center gap-4 p-6 rounded-2xl border border-slate-100 bg-white hover:shadow-lg transition-all`}
-              >
-                <div
-                  className="h-12 w-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: `${v.color.replace(")", " / 0.12)")}` }}
-                >
-                  <v.icon className="h-6 w-6" style={{ color: v.color }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-slate-800 text-sm">{v.label}</div>
-                  <div className="text-xs text-slate-400 mt-0.5 font-mono">{v.count} products</div>
-                </div>
-                <ChevronRight className="h-4 w-4 text-slate-300 shrink-0" />
-              </Link>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
-          SERVICES SECTION
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: "oklch(0.97 0.005 255)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14 reveal">
-            <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">What We Do</div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Accelerating your success
-              <br />
-              <span className="gradient-text-indigo">with innovative IT solutions</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {services.map((s, i) => (
-              <div
-                key={s.title}
-                className={`reveal reveal-delay-${i + 1} p-8 rounded-2xl bg-white border border-slate-100 hover:shadow-lg transition-all group`}
-              >
-                <div
-                  className="h-14 w-14 rounded-2xl flex items-center justify-center mb-5"
-                  style={{ background: `${s.color.replace(")", " / 0.1)")}` }}
-                >
-                  <s.icon className="h-7 w-7" style={{ color: s.color }} />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  {s.title}
-                </h3>
-                <p className="text-slate-600 leading-relaxed text-sm">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* ═══════════════════════════════════════════════════
-          TECH TICKER
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-8 overflow-hidden border-y border-slate-100" style={{ background: "oklch(0.97 0.005 255)" }}>
-        <div className="flex whitespace-nowrap">
-          <div className="marquee-track flex items-center gap-12 px-6">
-            {["React Native", "Swift", "Python", "TypeScript", "Flutter", "Dart", "FastAPI", "Node.js", "AI/ML", "LLM", "RAG", "Blockchain", "IoT", "Wear OS", "ARKit", "WebAssembly", "Kubernetes", "AWS", "GCP", "Azure", "React Native", "Swift", "Python", "TypeScript", "Flutter", "Dart", "FastAPI", "Node.js", "AI/ML", "LLM", "RAG", "Blockchain", "IoT", "Wear OS", "ARKit", "WebAssembly", "Kubernetes", "AWS", "GCP", "Azure"].map((tech, i) => (
-              <span key={i} className="text-sm font-mono font-medium text-slate-400 flex items-center gap-3">
-                <span className="h-1 w-1 rounded-full bg-indigo-300 inline-block" />
-                {tech}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════
-          CTA SECTION
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-24" style={{ background: "oklch(0.14 0.04 255)" }}>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
-          <div className="text-xs font-mono font-semibold uppercase tracking-widest text-white/40 mb-4">Ready to Build?</div>
-          <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Let's shape the future
-            <br />
-            <span style={{ color: "oklch(0.78 0.18 75)" }}>of technology together.</span>
+      {/* ── CTA ──────────────────────────────────────────── */}
+      <section className="py-28 border-t border-white/5 relative overflow-hidden">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(99,102,241,0.12), transparent 70%)" }} />
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center reveal">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6" style={{ fontFamily: "Sora, sans-serif" }}>
+            Ready to build something<br />
+            <span style={{ background: "linear-gradient(135deg, #818CF8, #6366F1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              extraordinary?
+            </span>
           </h2>
-          <p className="text-white/60 text-lg mb-10 max-w-2xl mx-auto">
-            Partner with American Group LLC to unlock the full potential of your technology projects. We build, ship, and scale — from California to the world.
+          <p className="text-slate-400 text-xl mb-10 max-w-2xl mx-auto">
+            Whether you need a custom enterprise application, a mobile app for millions of users, or AI infrastructure for your business — AGL delivers.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white btn-press"
-              style={{ background: "oklch(0.52 0.22 270)", boxShadow: "0 8px 32px oklch(0.52 0.22 270 / 0.4)" }}
-            >
-              Start a Project <ArrowRight className="h-4 w-4" />
+            <Link href="/contact">
+              <button className="group flex items-center gap-2 px-10 py-4 rounded-xl font-semibold text-white transition-all hover:scale-105 active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
+                Start a Project
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
             </Link>
-            <a
-              href="/products"
-              target="_self"
-              rel=""
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white border border-white/20 hover:bg-white/10 transition-all btn-press"
-            >
-              View Our Products <ExternalLink className="h-4 w-4" />
-            </a>
+            <Link href="/products">
+              <button className="flex items-center gap-2 px-10 py-4 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 font-semibold transition-all">
+                Browse Products
+              </button>
+            </Link>
           </div>
         </div>
       </section>

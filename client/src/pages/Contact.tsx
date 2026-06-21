@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Mail, MapPin, Phone, Send, Github, Linkedin, Youtube } from "lucide-react";
+import { Mail, MapPin, Phone, Send, Linkedin, Youtube } from "lucide-react";
 import { toast } from "sonner";
 
 function useReveal() {
@@ -84,10 +84,7 @@ export default function ContactPage() {
                     <Mail className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
                     <a href="mailto:contact@safecodeg.com" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">contact@safecodeg.com</a>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Github className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
-                    <a href="https://github.com/americangroupllc" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-600 hover:text-indigo-600 transition-colors">github.com/americangroupllc</a>
-                  </div>
+
                 </div>
               </div>
 
@@ -121,7 +118,6 @@ export default function ContactPage() {
                 <div className="text-xs font-mono font-semibold uppercase tracking-widest text-slate-400 mb-3">Follow Us</div>
                 <div className="flex gap-3">
                   {[
-                    { icon: Github, href: "https://github.com/americangroupllc", label: "GitHub" },
                     { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
                     { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
                   ].map(({ icon: Icon, href, label }) => (

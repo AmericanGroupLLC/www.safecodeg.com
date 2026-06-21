@@ -15,6 +15,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import SupportPage from "./pages/Support";
 import TermsPage from "./pages/Terms";
 import AIChatWidget from "./components/AIChatWidget";
+import ProductDetailPage from "./pages/ProductDetail";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/american-group-llc" component={AGLPage} />
       <Route path="/safecodex-research" component={SCGPage} />
+      <Route path="/products/:slug" component={ProductDetailPage} />
       <Route path="/products" component={ProductsPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/careers" component={CareersPage} />

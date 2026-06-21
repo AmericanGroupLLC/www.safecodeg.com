@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ArrowRight, ExternalLink, Github, Brain, Smartphone, Globe, Shield, Code2, Cpu, ChevronRight } from "lucide-react";
+import { ArrowRight, ExternalLink, Brain, Smartphone, Globe, Shield, Code2, Cpu, ChevronRight } from "lucide-react";
 
 function useReveal() {
   useEffect(() => {
@@ -135,14 +135,9 @@ export default function AGLPage() {
             >
               Explore All 77 Products <ArrowRight className="h-4 w-4" />
             </Link>
-            <a
-              href="https://americangroupllc.github.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white border border-white/20 hover:bg-white/10 transition-all btn-press"
-            >
-              <Github className="h-4 w-4" /> View on GitHub
-            </a>
+            <Link href="/contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white border border-white/20 hover:bg-white/10 transition-all btn-press">
+              Request a Demo <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0">
@@ -257,9 +252,9 @@ export default function AGLPage() {
             <Link href="/contact" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-white btn-press" style={{ background: "oklch(0.52 0.22 270)" }}>
               Contact Us <ArrowRight className="h-4 w-4" />
             </Link>
-            <a href="https://americangroupllc.github.io" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-slate-700 border border-slate-200 hover:bg-white transition-all btn-press">
-              <ExternalLink className="h-4 w-4" /> Visit AGL Website
-            </a>
+            <Link href="/products" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-semibold text-slate-700 border border-slate-200 hover:bg-white transition-all btn-press">
+              <ExternalLink className="h-4 w-4" /> Explore Products
+            </Link>
           </div>
         </div>
       </section>

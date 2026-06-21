@@ -1,245 +1,324 @@
 /**
- * Products Page — Full 77-product portfolio
- * Filterable by vertical, with product cards
+ * Products Page — AGL Enterprise Product Catalog
+ * Design: Dark enterprise with glowing cards, category filters, search
+ * All products organized by vertical with individual product links
  */
-import { useEffect, useState } from "react";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
-import { ExternalLink, Github, Play } from "lucide-react";
-import { toast } from "sonner";
+import { useState, useMemo } from 'react';
+import { Link } from 'wouter';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Filter, ArrowRight, Smartphone, Globe, Monitor, Watch, Star, Zap, Shield, TrendingUp, Cpu } from 'lucide-react';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 
-function useReveal() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => { entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }); },
-      { threshold: 0.05, rootMargin: "0px 0px -20px 0px" }
-    );
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  });
+type ProductCategory =
+  | 'Enterprise AI & DevTools'
+  | 'Consumer Mobile'
+  | 'FinTech & E-Commerce'
+  | 'CyberSecurity & Infra'
+  | 'Travel & Aviation'
+  | 'Health & Wellness'
+  | 'E-Commerce & Deals'
+  | 'Social & Lifestyle';
+
+interface Product {
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  category: ProductCategory;
+  platforms: string[];
+  tags: string[];
+  color: string;
+  icon: string;
+  status: 'Live' | 'Beta' | 'Coming Soon';
+  highlight?: boolean;
 }
 
-type Product = {
-  emoji: string;
-  name: string;
-  type: string;
-  desc: string;
-  tags: string[];
-  badge: string;
-  vertical: string;
-};
+const products: Product[] = [
+  // Enterprise AI & DevTools
+  { slug: 'cognicore', name: 'CogniCore AI Platform', tagline: 'Umbrella cognitive AI services platform', description: 'Consolidates cognitive AI services including reasoning, tool-augmented agents, and multi-modal intelligence pipelines for enterprise deployments.', category: 'Enterprise AI & DevTools', platforms: ['Web'], tags: ['Python', 'LLM', 'RAG', 'Agents'], color: '#6366F1', icon: '🧠', status: 'Beta', highlight: true },
+  { slug: 'verba', name: 'Verba', tagline: 'Multilingual conversational AI', description: 'Multilingual conversational AI with real-time translation, context-aware responses, and cross-platform Flutter delivery.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android', 'Web'], tags: ['Flutter', 'NLP', 'Chat', 'AI'], color: '#8B5CF6', icon: '💬', status: 'Beta', highlight: true },
+  { slug: 'offlinebuddy', name: 'OfflineBuddy', tagline: 'On-device LLM — works fully offline', description: 'On-device LLM assistant with chat, voice, translator, and smart-reply keyboard. Works fully offline after one-time model download.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android'], tags: ['Swift', 'LLM', 'Voice', 'Offline'], color: '#06B6D4', icon: '🤖', status: 'Beta', highlight: true },
+  { slug: 'localbuddy', name: 'Local Buddy', tagline: 'Private on-device AI chat', description: 'On-device offline AI chat app running LLMs entirely on-device with no internet required. Private, fast, and always available.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android'], tags: ['Swift', 'On-Device AI', 'Privacy'], color: '#10B981', icon: '🔒', status: 'Live' },
+  { slug: 'agrammarly', name: 'AGrammarly', tagline: 'AI writing assistant', description: 'AI-powered writing assistant providing real-time suggestions, style improvements, and tone adjustments for professional writing.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android', 'Web'], tags: ['TypeScript', 'NLP', 'Writing AI'], color: '#EC4899', icon: '✍️', status: 'Beta' },
+  { slug: 'agstudio', name: 'AGStudio', tagline: 'AI-powered creative studio', description: 'AI-powered creative studio for design, prototyping, and content generation combining generative AI with professional design tools.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android', 'Web'], tags: ['TypeScript', 'Generative AI', 'Design'], color: '#F59E0B', icon: '🎨', status: 'Beta' },
+  { slug: 'carerupgradeai', name: 'CareerUpgrade AI', tagline: 'AI-powered career development', description: 'AI-powered career development platform providing personalized learning paths, resume optimization, and interview coaching.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android', 'Web'], tags: ['TypeScript', 'AI', 'EdTech'], color: '#14B8A6', icon: '🚀', status: 'Beta' },
+  { slug: 'lifeadminai', name: 'LifeAdmin AI', tagline: 'AI personal life administrator', description: 'AI-powered personal life administration assistant automating scheduling, bill management, and life logistics.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android'], tags: ['TypeScript', 'AI', 'Automation'], color: '#EF4444', icon: '📋', status: 'Coming Soon' },
+  { slug: 'docstream', name: 'DocStream Enterprise', tagline: 'Enterprise document streaming pipeline', description: 'Enterprise document streaming pipeline with AI-powered extraction, classification, and routing for high-volume document streams.', category: 'Enterprise AI & DevTools', platforms: ['Web'], tags: ['Python', 'FastAPI', 'NLP'], color: '#3B82F6', icon: '📄', status: 'Beta' },
+  { slug: 'datacore', name: 'DataCore Enterprise', tagline: 'Enterprise data platform', description: 'Enterprise-grade data platform centralizing ingestion, transformation, storage, and analytics across the AGL portfolio.', category: 'Enterprise AI & DevTools', platforms: ['Web'], tags: ['Python', 'Data', 'Analytics'], color: '#6366F1', icon: '🗄️', status: 'Beta' },
+  { slug: 'infraforge', name: 'InfraForge Enterprise', tagline: 'Infrastructure automation & orchestration', description: 'Enterprise infrastructure automation and orchestration platform managing provisioning, scaling, and lifecycle of cloud and on-premise resources.', category: 'Enterprise AI & DevTools', platforms: ['Web'], tags: ['Python', 'IaC', 'Cloud'], color: '#8B5CF6', icon: '🏗️', status: 'Beta' },
+  { slug: 'audiosuite', name: 'AudioSphere Suite', tagline: 'Audio AI platform', description: 'Umbrella suite for audio intelligence covering speech recognition, synthesis, music generation, and spatial audio processing.', category: 'Enterprise AI & DevTools', platforms: ['Web', 'iOS', 'Android'], tags: ['Python', 'Audio AI', 'TTS'], color: '#EC4899', icon: '🎵', status: 'Beta' },
 
-const allProducts: Product[] = [
-  // Enterprise AI & DevTools (14)
-  { emoji: "🧠", name: "CogniCore AI Platform", type: "Umbrella Platform", desc: "Umbrella monorepo consolidating cognitive AI services. Cognitive reasoning, tool-augmented agents, and multi-modal intelligence pipelines.", tags: ["Python", "LLM", "RAG", "Agents"], badge: "ENTERPRISE", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🔬", name: "Thinking Machines Lab", type: "Frontier Research", desc: "Frontier AI research platform exploring machine intelligence boundaries. Hosts experiments in reasoning, memory, and multi-agent coordination.", tags: ["Python", "Research", "AI/ML"], badge: "R&D", vertical: "Enterprise AI & DevTools" },
-  { emoji: "⚙️", name: "Cognission AI", type: "Cognitive Agents", desc: "Cognitive reasoning and tool-augmented agents. Builds autonomous AI agents capable of multi-step reasoning and complex task decomposition.", tags: ["Python", "Agents", "Tool Use"], badge: "AI PLATFORM", vertical: "Enterprise AI & DevTools" },
-  { emoji: "📄", name: "DocStream Enterprise", type: "Document Pipeline", desc: "Enterprise document streaming pipeline with AI-powered extraction, classification, and routing for high-volume document streams.", tags: ["Python", "FastAPI", "NLP"], badge: "ENTERPRISE", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🗄️", name: "DataCore Enterprise", type: "Data Platform", desc: "Enterprise-grade data platform centralizing ingestion, transformation, storage, and analytics across the AGL portfolio.", tags: ["Python", "Data", "Analytics"], badge: "PLATFORM", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🏗️", name: "InfraForge Enterprise", type: "Infrastructure", desc: "Enterprise infrastructure automation and orchestration platform managing provisioning, scaling, and lifecycle of cloud and on-premise resources.", tags: ["Python", "IaC", "Cloud"], badge: "INFRA", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🎵", name: "AudioSphere Suite", type: "Audio AI", desc: "Umbrella suite for audio intelligence covering speech recognition, synthesis, music generation, and spatial audio processing.", tags: ["Python", "Audio AI", "TTS/STT"], badge: "SUITE", vertical: "Enterprise AI & DevTools" },
-  { emoji: "📊", name: "Productivity Suite", type: "Productivity Platform", desc: "Comprehensive productivity platform integrating task management, document collaboration, and AI-powered workflow automation.", tags: ["Python", "SaaS", "Workflow"], badge: "SUITE", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🌐", name: "AI Vertical Platform Suite", type: "AI SaaS", desc: "Umbrella monorepo for AI-powered vertical SaaS products with shared AI infrastructure, model serving, and API gateways.", tags: ["Python", "AI SaaS", "APIs"], badge: "PLATFORM", vertical: "Enterprise AI & DevTools" },
-  { emoji: "💬", name: "Verba", type: "AI Chat & Language", desc: "Multilingual conversational AI with real-time translation, context-aware responses, and cross-platform Flutter delivery.", tags: ["Dart", "Flutter", "NLP", "Chat"], badge: "MOBILE + WEB", vertical: "Enterprise AI & DevTools" },
-  { emoji: "✍️", name: "AGrammarly", type: "Writing AI", desc: "AI-powered writing assistant providing real-time suggestions, style improvements, and tone adjustments for professional writing.", tags: ["TypeScript", "NLP", "Writing AI"], badge: "TOOL", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🎨", name: "AGStudio", type: "Creative Studio", desc: "AI-powered creative studio for design, prototyping, and content generation combining generative AI with professional design tools.", tags: ["TypeScript", "Generative AI", "Design"], badge: "STUDIO", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🎓", name: "CareerUpgrade AI", type: "Career AI", desc: "AI-powered career development platform providing personalized learning paths, resume optimization, and interview coaching.", tags: ["TypeScript", "AI", "EdTech"], badge: "SAAS", vertical: "Enterprise AI & DevTools" },
-  { emoji: "🤖", name: "LifeAdmin AI", type: "Personal AI", desc: "AI-powered personal life administration assistant automating scheduling, bill management, and life logistics.", tags: ["TypeScript", "AI", "Automation"], badge: "CONSUMER AI", vertical: "Enterprise AI & DevTools" },
-  // Consumer Mobile (22)
-  { emoji: "❤️", name: "MyHealth", type: "Health & Fitness OS", desc: "Personal fitness OS for Android & Wear OS covering training, cardio, nutrition, sleep, mindfulness, and AI coaching.", tags: ["Swift", "Android", "Wear OS", "HealthKit"], badge: "TIER 1", vertical: "Consumer Mobile" },
-  { emoji: "⌚", name: "VirtuBand", type: "Wearable", desc: "Smart wearable companion app with advanced health analytics, real-time biometric tracking, and personalized insights.", tags: ["TypeScript", "Wearable", "BLE"], badge: "MOBILE", vertical: "Consumer Mobile" },
-  { emoji: "🏙️", name: "NearServe", type: "Local Services", desc: "React Native consumer app connecting users with local services and urban needs. Hyperlocal service discovery with real-time availability.", tags: ["React Native", "iOS", "Android", "GPS"], badge: "MOBILE", vertical: "Consumer Mobile" },
-  { emoji: "🧠", name: "Local Buddy", type: "On-Device AI", desc: "On-device offline AI chat app running LLMs entirely on-device with no internet required. Private, fast, and always available.", tags: ["Swift", "On-Device AI", "Offline", "LLM"], badge: "IOS", vertical: "Consumer Mobile" },
-  { emoji: "📡", name: "Offline Buddy", type: "On-Device LLM", desc: "On-device LLM assistant with chat, voice, translator, and smart-reply keyboard. Works fully offline after one-time model download.", tags: ["Swift", "LLM", "Voice", "Offline"], badge: "IOS", vertical: "Consumer Mobile" },
-  { emoji: "🎮", name: "BuddyPlay", type: "Offline Multiplayer", desc: "Native Android offline multiplayer party games. P2P over Wi-Fi, Hotspot, and BLE — works in subway tunnels and offline environments.", tags: ["Swift", "P2P", "BLE", "Multiplayer"], badge: "GAMING", vertical: "Consumer Mobile" },
-  { emoji: "🧹", name: "AGCleaner", type: "System Optimizer", desc: "Cross-platform memory cleaner, storage optimizer, and system performance booster for Android and iOS.", tags: ["TypeScript", "Android", "iOS"], badge: "UTILITY", vertical: "Consumer Mobile" },
-  { emoji: "📸", name: "SnapEdit Pro", type: "Photo Editor", desc: "AI-powered photo editing app with smart filters, background removal, and one-tap enhancements.", tags: ["Swift", "AI", "Photos"], badge: "CREATIVE", vertical: "Consumer Mobile" },
-  { emoji: "🎙️", name: "PodcastKit", type: "Podcast Platform", desc: "All-in-one podcast creation, editing, and distribution platform for mobile creators.", tags: ["React Native", "Audio", "Creator"], badge: "MEDIA", vertical: "Consumer Mobile" },
-  { emoji: "🗺️", name: "TripForge", type: "Travel Planner", desc: "AI-powered travel planning app with itinerary generation, booking integration, and offline maps.", tags: ["Flutter", "AI", "Travel"], badge: "LIFESTYLE", vertical: "Consumer Mobile" },
-  { emoji: "🍽️", name: "MealMind", type: "Nutrition AI", desc: "AI-powered meal planning and nutrition tracking with personalized diet recommendations.", tags: ["Swift", "AI", "Health"], badge: "HEALTH", vertical: "Consumer Mobile" },
-  { emoji: "💪", name: "GymGenius", type: "Fitness Coach", desc: "AI personal trainer app with form analysis, workout generation, and progress tracking.", tags: ["Android", "AI", "Fitness"], badge: "FITNESS", vertical: "Consumer Mobile" },
-  { emoji: "📚", name: "ReadWise Mobile", type: "Reading App", desc: "Smart reading app with AI summaries, highlights sync, and spaced repetition for book learning.", tags: ["React Native", "AI", "Education"], badge: "EDUCATION", vertical: "Consumer Mobile" },
-  { emoji: "🎵", name: "BeatCraft", type: "Music Creator", desc: "Mobile music production studio with AI beat generation, mixing, and social sharing.", tags: ["Swift", "Audio AI", "Creator"], badge: "CREATIVE", vertical: "Consumer Mobile" },
-  { emoji: "🧘", name: "MindSpace", type: "Wellness App", desc: "Mindfulness and meditation app with guided sessions, sleep stories, and stress tracking.", tags: ["Flutter", "Wellness", "Audio"], badge: "WELLNESS", vertical: "Consumer Mobile" },
-  { emoji: "🐾", name: "PetPal", type: "Pet Care", desc: "Comprehensive pet care app with health tracking, vet finder, and AI symptom checker.", tags: ["React Native", "AI", "Lifestyle"], badge: "LIFESTYLE", vertical: "Consumer Mobile" },
-  { emoji: "🏠", name: "HomeSync", type: "Smart Home", desc: "Unified smart home control app supporting 200+ device types with AI automation rules.", tags: ["Flutter", "IoT", "Smart Home"], badge: "IOT", vertical: "Consumer Mobile" },
-  { emoji: "💼", name: "FreelanceHub", type: "Freelancer Platform", desc: "Mobile-first platform for freelancers to find work, manage projects, and get paid.", tags: ["React Native", "FinTech", "Marketplace"], badge: "PLATFORM", vertical: "Consumer Mobile" },
-  { emoji: "🎯", name: "GoalStack", type: "Habit Tracker", desc: "Science-backed habit tracking and goal achievement app with AI coaching and streak analytics.", tags: ["Swift", "AI", "Productivity"], badge: "PRODUCTIVITY", vertical: "Consumer Mobile" },
-  { emoji: "🌍", name: "LinguaLeap", type: "Language Learning", desc: "AI-powered language learning app with conversation practice, pronunciation coaching, and cultural context.", tags: ["Flutter", "AI", "Education"], badge: "EDUCATION", vertical: "Consumer Mobile" },
-  { emoji: "🔔", name: "NotifyPro", type: "Smart Notifications", desc: "AI-powered notification management app that filters, prioritizes, and summarizes your alerts.", tags: ["Android", "AI", "Utility"], badge: "UTILITY", vertical: "Consumer Mobile" },
-  { emoji: "📱", name: "AppVault", type: "App Manager", desc: "Advanced app manager with usage analytics, privacy scanner, and storage optimizer.", tags: ["Android", "Privacy", "Utility"], badge: "UTILITY", vertical: "Consumer Mobile" },
-  // FinTech (12)
-  { emoji: "🏦", name: "NeoBank Pro", type: "Digital Banking", desc: "Full-featured digital banking platform with AI-powered insights, instant transfers, and smart savings.", tags: ["TypeScript", "FinTech", "Banking"], badge: "FINTECH", vertical: "FinTech & E-Commerce" },
-  { emoji: "💳", name: "PayStream", type: "Payment Processing", desc: "Enterprise payment processing platform supporting 50+ payment methods with real-time fraud detection.", tags: ["Python", "Payments", "API"], badge: "ENTERPRISE", vertical: "FinTech & E-Commerce" },
-  { emoji: "🔐", name: "CryptoVault", type: "Crypto Wallet", desc: "Multi-chain cryptocurrency wallet with DeFi integration, staking, and hardware wallet support.", tags: ["TypeScript", "Blockchain", "DeFi"], badge: "WEB3", vertical: "FinTech & E-Commerce" },
-  { emoji: "📈", name: "TradeSphere", type: "Trading Platform", desc: "AI-powered trading platform with algorithmic strategies, portfolio analytics, and real-time market data.", tags: ["Python", "AI", "Trading"], badge: "TRADING", vertical: "FinTech & E-Commerce" },
-  { emoji: "🛒", name: "ShopForge", type: "E-Commerce Platform", desc: "Headless e-commerce platform with AI recommendations, inventory management, and multi-channel selling.", tags: ["TypeScript", "E-Commerce", "AI"], badge: "COMMERCE", vertical: "FinTech & E-Commerce" },
-  { emoji: "📋", name: "InvoiceAI", type: "Invoice Automation", desc: "AI-powered invoice processing, expense tracking, and accounts payable automation for SMBs.", tags: ["Python", "AI", "Finance"], badge: "SAAS", vertical: "FinTech & E-Commerce" },
-  { emoji: "💰", name: "BudgetBrain", type: "Personal Finance", desc: "AI financial advisor app with budget tracking, investment recommendations, and debt payoff planning.", tags: ["React Native", "AI", "Finance"], badge: "CONSUMER", vertical: "FinTech & E-Commerce" },
-  { emoji: "🌐", name: "RemitFlow", type: "International Transfers", desc: "Low-cost international money transfer platform with real-time exchange rates and compliance automation.", tags: ["TypeScript", "FinTech", "Global"], badge: "FINTECH", vertical: "FinTech & E-Commerce" },
-  { emoji: "📊", name: "EquityTrack", type: "Cap Table Management", desc: "Startup equity and cap table management platform with scenario modeling and investor reporting.", tags: ["TypeScript", "FinTech", "Startup"], badge: "B2B", vertical: "FinTech & E-Commerce" },
-  { emoji: "🤝", name: "LendBridge", type: "P2P Lending", desc: "Peer-to-peer lending marketplace with AI credit scoring, automated underwriting, and loan servicing.", tags: ["Python", "AI", "Lending"], badge: "FINTECH", vertical: "FinTech & E-Commerce" },
-  { emoji: "🎁", name: "RewardEngine", type: "Loyalty Platform", desc: "Enterprise loyalty and rewards platform with gamification, points management, and partner integrations.", tags: ["TypeScript", "Loyalty", "B2B"], badge: "PLATFORM", vertical: "FinTech & E-Commerce" },
-  { emoji: "📦", name: "SupplyChainAI", type: "Supply Chain", desc: "AI-powered supply chain optimization platform with demand forecasting, inventory optimization, and logistics.", tags: ["Python", "AI", "Logistics"], badge: "ENTERPRISE", vertical: "FinTech & E-Commerce" },
-  // CyberSecurity (11)
-  { emoji: "🛡️", name: "SecureCore", type: "Security Platform", desc: "Enterprise security operations platform with SIEM, threat hunting, and automated incident response.", tags: ["Python", "Security", "SIEM"], badge: "ENTERPRISE", vertical: "CyberSecurity & Infra" },
-  { emoji: "👁️", name: "ThreatWatch", type: "Threat Intelligence", desc: "Real-time threat intelligence platform aggregating global threat feeds with AI-powered analysis.", tags: ["Python", "AI", "Threat Intel"], badge: "SECURITY", vertical: "CyberSecurity & Infra" },
-  { emoji: "🔒", name: "ZeroTrust Gateway", type: "Zero Trust", desc: "Enterprise zero-trust network access solution with identity-aware proxying and continuous verification.", tags: ["Go", "Zero Trust", "IAM"], badge: "ENTERPRISE", vertical: "CyberSecurity & Infra" },
-  { emoji: "☁️", name: "CloudArmor", type: "Cloud Security", desc: "Multi-cloud security posture management with compliance automation and misconfiguration detection.", tags: ["Python", "Cloud", "Compliance"], badge: "CLOUD", vertical: "CyberSecurity & Infra" },
-  { emoji: "🗝️", name: "VaultOS", type: "Secrets Management", desc: "Enterprise secrets management and PKI platform with hardware security module integration.", tags: ["Go", "Security", "PKI"], badge: "INFRA", vertical: "CyberSecurity & Infra" },
-  { emoji: "🔍", name: "SecAudit", type: "Security Auditing", desc: "Automated security auditing platform for code, infrastructure, and compliance with AI-powered remediation.", tags: ["Python", "AI", "Audit"], badge: "DEVSECOPS", vertical: "CyberSecurity & Infra" },
-  { emoji: "🌐", name: "NetGuard", type: "Network Security", desc: "Next-generation network security platform with deep packet inspection and behavioral analytics.", tags: ["C++", "Network", "DPI"], badge: "SECURITY", vertical: "CyberSecurity & Infra" },
-  { emoji: "📱", name: "MobileShield", type: "Mobile Security", desc: "Enterprise mobile device management with threat detection, app vetting, and remote wipe capabilities.", tags: ["Swift", "Android", "MDM"], badge: "MOBILE", vertical: "CyberSecurity & Infra" },
-  { emoji: "🔐", name: "IdentityForge", type: "Identity Platform", desc: "Unified identity and access management platform with SSO, MFA, and privileged access management.", tags: ["TypeScript", "IAM", "SSO"], badge: "PLATFORM", vertical: "CyberSecurity & Infra" },
-  { emoji: "🕵️", name: "PenTestKit", type: "Penetration Testing", desc: "Automated penetration testing platform with AI-guided attack simulation and detailed reporting.", tags: ["Python", "Security", "Red Team"], badge: "SECURITY", vertical: "CyberSecurity & Infra" },
-  { emoji: "📋", name: "ComplianceAI", type: "Compliance Automation", desc: "AI-powered compliance management for SOC2, ISO 27001, GDPR, and HIPAA with continuous monitoring.", tags: ["Python", "AI", "Compliance"], badge: "GOVERNANCE", vertical: "CyberSecurity & Infra" },
-  // Spatial & Industry SaaS (10)
-  { emoji: "🥽", name: "SpaceForge AR", type: "AR Platform", desc: "Enterprise AR development platform for industrial training, remote assistance, and spatial computing applications.", tags: ["Swift", "ARKit", "Unity"], badge: "AR/VR", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🏥", name: "MedSpatial", type: "Healthcare AR", desc: "Spatial computing platform for medical visualization, surgical planning, and patient education.", tags: ["Swift", "ARKit", "Healthcare"], badge: "HEALTHTECH", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🌐", name: "RealityLayer", type: "Spatial OS", desc: "Operating system for spatial computing environments bridging physical and digital worlds.", tags: ["Swift", "visionOS", "Spatial"], badge: "PLATFORM", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🏭", name: "IndustrialAR", type: "Industrial AR", desc: "AR-powered industrial maintenance, inspection, and training platform for manufacturing environments.", tags: ["Unity", "AR", "Industrial"], badge: "ENTERPRISE", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🎰", name: "CasinoOS", type: "Casino Platform", desc: "Full-stack casino floor operating system with real-time analytics, compliance, and player management.", tags: ["TypeScript", "Real-time", "Gaming"], badge: "INDUSTRY", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🏙️", name: "UrbanMesh", type: "Smart City Platform", desc: "Smart city data platform aggregating IoT sensors, traffic, utilities, and public services.", tags: ["Python", "IoT", "Smart City"], badge: "GOV TECH", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🏗️", name: "ConstructIQ", type: "Construction SaaS", desc: "AI-powered construction project management with BIM integration, safety monitoring, and progress tracking.", tags: ["TypeScript", "AI", "Construction"], badge: "INDUSTRY", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🌾", name: "AgriSense", type: "AgriTech Platform", desc: "Precision agriculture platform with drone integration, soil analytics, and AI crop optimization.", tags: ["Python", "AI", "AgriTech"], badge: "AGRITECH", vertical: "Spatial & Industry SaaS" },
-  { emoji: "⚡", name: "EnergyGrid AI", type: "Energy Management", desc: "AI-powered energy grid management platform for utilities with demand forecasting and optimization.", tags: ["Python", "AI", "Energy"], badge: "CLEANTECH", vertical: "Spatial & Industry SaaS" },
-  { emoji: "🚚", name: "LogiTrack", type: "Logistics Platform", desc: "Real-time logistics and fleet management platform with AI route optimization and predictive maintenance.", tags: ["TypeScript", "AI", "Logistics"], badge: "LOGISTICS", vertical: "Spatial & Industry SaaS" },
-  // IoT & Hardware (8)
-  { emoji: "🔌", name: "EdgeNode", type: "Edge Computing", desc: "Edge computing runtime for IoT devices with containerized workloads and OTA update management.", tags: ["C++", "Edge", "IoT"], badge: "EDGE", vertical: "IoT & Hardware" },
-  { emoji: "🏠", name: "SmartHome OS", type: "Home Automation", desc: "Open-source smart home operating system supporting 500+ device protocols with local processing.", tags: ["Python", "IoT", "Home Automation"], badge: "OPEN SOURCE", vertical: "IoT & Hardware" },
-  { emoji: "📡", name: "SensorMesh", type: "Sensor Network", desc: "Distributed sensor network platform with real-time data aggregation, anomaly detection, and visualization.", tags: ["C++", "MQTT", "Sensors"], badge: "PLATFORM", vertical: "IoT & Hardware" },
-  { emoji: "🔧", name: "FirmwareForge", type: "Firmware Platform", desc: "Cross-platform firmware development and OTA update platform for embedded systems.", tags: ["C", "Embedded", "OTA"], badge: "EMBEDDED", vertical: "IoT & Hardware" },
-  { emoji: "🌐", name: "IoTGateway", type: "IoT Gateway", desc: "Universal IoT gateway supporting MQTT, CoAP, HTTP, and LoRaWAN with cloud bridge capabilities.", tags: ["Go", "IoT", "Gateway"], badge: "INFRA", vertical: "IoT & Hardware" },
-  { emoji: "🛠️", name: "HardwareKit", type: "Hardware SDK", desc: "SDK and toolchain for rapid hardware prototype development with simulation and testing tools.", tags: ["C++", "SDK", "Hardware"], badge: "SDK", vertical: "IoT & Hardware" },
-  { emoji: "🤖", name: "RoboCore", type: "Robotics Platform", desc: "Robotics control and simulation platform with ROS integration and AI-powered motion planning.", tags: ["Python", "ROS", "Robotics"], badge: "ROBOTICS", vertical: "IoT & Hardware" },
-  { emoji: "🔋", name: "PowerSense", type: "Energy Monitoring", desc: "Smart energy monitoring hardware and software platform for buildings and industrial facilities.", tags: ["C++", "Energy", "IoT"], badge: "HARDWARE", vertical: "IoT & Hardware" },
+  // Consumer Mobile
+  { slug: 'myhealth', name: 'MyHealth', tagline: 'Personal fitness OS for Android & Wear OS', description: 'Personal fitness OS for Android & Wear OS covering training, cardio, nutrition, sleep, mindfulness, and AI coaching.', category: 'Health & Wellness', platforms: ['Android', 'Wear OS', 'iOS'], tags: ['Android', 'Wear OS', 'HealthKit', 'AI'], color: '#EF4444', icon: '❤️', status: 'Live', highlight: true },
+  { slug: 'virtuband', name: 'VirtuBand', tagline: 'Smart wearable companion app', description: 'Smart wearable companion app with advanced health analytics, real-time biometric tracking, and personalized insights.', category: 'Health & Wellness', platforms: ['iOS', 'Android'], tags: ['TypeScript', 'Wearable', 'BLE'], color: '#F59E0B', icon: '⌚', status: 'Live' },
+  { slug: 'buddyplay', name: 'BuddyPlay', tagline: 'Offline multiplayer party games', description: 'Native Android offline multiplayer party games. P2P over Wi-Fi, Hotspot, and BLE — works in subway tunnels.', category: 'Social & Lifestyle', platforms: ['Android'], tags: ['Android', 'P2P', 'BLE', 'Gaming'], color: '#8B5CF6', icon: '🎮', status: 'Live', highlight: true },
+  { slug: 'agcleaner', name: 'AGCleaner', tagline: 'Cross-platform system optimizer', description: 'Cross-platform memory cleaner, storage optimizer, and system performance booster for Android and iOS.', category: 'Consumer Mobile', platforms: ['iOS', 'Android', 'Windows', 'macOS'], tags: ['TypeScript', 'Android', 'iOS'], color: '#3B82F6', icon: '🧹', status: 'Live' },
+  { slug: 'agrecorder', name: 'AGRecorder', tagline: 'Professional screen recorder', description: 'High-framerate screen recorder with dual-channel audio capture for macOS, Windows, iOS, and Android.', category: 'Consumer Mobile', platforms: ['iOS', 'Android', 'Windows', 'macOS'], tags: ['Cross-platform', 'Screen Recorder'], color: '#EF4444', icon: '🎥', status: 'Live' },
+  { slug: 'mycard', name: 'MyCard', tagline: 'Thought capture for Android & Wear OS', description: 'Native Android + Wear OS thought-capture app. Every entry is a Card — tap once to convert to Note, Task, or Reminder.', category: 'Consumer Mobile', platforms: ['Android', 'Wear OS'], tags: ['Android', 'Wear OS', 'Productivity'], color: '#10B981', icon: '🃏', status: 'Live' },
+  { slug: 'imeasure', name: 'iMeasure', tagline: 'Pocket utility suite', description: 'All-in-one utility app with Clock, Calculator, Measure, Compass, and Level for Android phones and Wear OS.', category: 'Consumer Mobile', platforms: ['Android', 'Wear OS'], tags: ['Android', 'Wear OS', 'Utilities'], color: '#F59E0B', icon: '📐', status: 'Live' },
+  { slug: 'imaps', name: 'iMaps', tagline: 'Offline maps & navigation', description: 'Comprehensive offline maps with turn-by-turn navigation, points of interest, and real-time traffic.', category: 'Consumer Mobile', platforms: ['iOS', 'Android'], tags: ['Maps', 'Navigation', 'Offline'], color: '#10B981', icon: '🗺️', status: 'Live' },
+  { slug: 'wifitrail', name: 'WiFiTrail', tagline: 'Wi-Fi security auditor', description: 'Network security auditor and credential testing utility for Android and PC. Identify vulnerabilities in your Wi-Fi network.', category: 'Consumer Mobile', platforms: ['Android', 'Windows'], tags: ['Security', 'Wi-Fi', 'Network'], color: '#6366F1', icon: '🔐', status: 'Beta' },
+  { slug: 'snapedit', name: 'SnapEdit Pro', tagline: 'AI-powered photo editor', description: 'AI-powered photo editing app with smart filters, background removal, and one-tap enhancements.', category: 'Consumer Mobile', platforms: ['iOS', 'Android'], tags: ['Swift', 'AI', 'Photos'], color: '#EC4899', icon: '📸', status: 'Live' },
+  { slug: 'goalstack', name: 'GoalStack', tagline: 'Science-backed habit tracker', description: 'Science-backed habit tracking and goal achievement app with AI coaching and streak analytics.', category: 'Consumer Mobile', platforms: ['iOS', 'Android'], tags: ['Swift', 'AI', 'Productivity'], color: '#14B8A6', icon: '🎯', status: 'Live' },
+
+  // FinTech & E-Commerce
+  { slug: 'myfinance', name: 'MyFinance', tagline: 'Personal finance tracker', description: 'Comprehensive finance tracking with budgets, expense categorization, investment monitoring, and AI-powered insights.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Finance', 'Budgeting', 'React Native'], color: '#10B981', icon: '💰', status: 'Live', highlight: true },
+  { slug: 'apexmarketwatch', name: 'ApexMarketWatch', tagline: 'Real-time markets & hedge fund filings', description: 'Aggregates real-time stock data, SEC 13F hedge fund filings, and retail investment deals in one powerful platform.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android', 'Web'], tags: ['Stocks', 'Finance', 'Investing'], color: '#F59E0B', icon: '📈', status: 'Live', highlight: true },
+  { slug: 'nexustransferpay', name: 'NexusTransferPay', tagline: 'Cross-border payments made instant', description: 'Fast, low-fee international money transfers with multi-currency wallets and real-time exchange rates.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Payments', 'Fintech', 'International'], color: '#3B82F6', icon: '💳', status: 'Beta' },
+  { slug: 'milemaster', name: 'MileMaster', tagline: 'IRS-compliant mileage tracking', description: 'Automatic GPS-based mileage tracker that generates IRS-compliant tax deduction reports for freelancers and gig workers.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Mileage', 'Tax', 'GPS'], color: '#14B8A6', icon: '🚗', status: 'Live' },
+  { slug: 'codedeal', name: 'CodeDeal', tagline: 'Offer codes & referral rewards hub', description: 'Centralized platform for discovering, sharing, and tracking offer codes and referral rewards across thousands of apps.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Deals', 'Coupons', 'Referrals'], color: '#EF4444', icon: '🏷️', status: 'Live' },
+  { slug: 'dealzap', name: 'DealZap', tagline: 'Lightning-fast deal discovery', description: 'Real-time deal aggregator scanning thousands of retailers for the best prices on products you love.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Deals', 'Shopping', 'Price Tracking'], color: '#F59E0B', icon: '⚡', status: 'Live' },
+  { slug: 'smartbasket', name: 'SmartBasket', tagline: 'AI grocery shopping optimizer', description: 'Smart grocery app that compares prices across stores, builds optimized shopping lists, and tracks pantry inventory.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Grocery', 'AI', 'Shopping'], color: '#10B981', icon: '🛒', status: 'Live' },
+  { slug: 'fashionradar', name: 'FashionRadar', tagline: 'AI fashion discovery & style advisor', description: 'Personalized fashion discovery app with AI style recommendations, outfit planning, and deal alerts from top brands.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Fashion', 'AI', 'Shopping'], color: '#EC4899', icon: '👗', status: 'Live' },
+  { slug: 'solefind', name: 'SoleFind', tagline: 'Sneaker & footwear deal tracker', description: 'Dedicated sneaker and footwear deal finder with release calendars, resale price tracking, and instant buy alerts.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Sneakers', 'Fashion', 'Deals'], color: '#F59E0B', icon: '👟', status: 'Live' },
+  { slug: 'bagzap', name: 'BagZap', tagline: 'Luxury bag & accessories deals', description: 'Premium handbag and accessories deal aggregator with authentication verification and resale market tracking.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Luxury', 'Fashion', 'Deals'], color: '#8B5CF6', icon: '👜', status: 'Live' },
+  { slug: 'ridezap', name: 'RideZap', tagline: 'Ride-share & rental deal aggregator', description: 'Compare prices across Uber, Lyft, and rental services in real-time to always get the best ride deal.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Rides', 'Transportation', 'Deals'], color: '#3B82F6', icon: '🚕', status: 'Live' },
+  { slug: 'foodradar', name: 'FoodRadar', tagline: 'Restaurant deals & food delivery finder', description: 'Aggregates restaurant deals, food delivery discounts, and local dining offers in real-time.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Food', 'Delivery', 'Deals'], color: '#EF4444', icon: '🍕', status: 'Live' },
+  { slug: 'cardeal', name: 'CarDeal', tagline: 'New & used car deal aggregator', description: 'Comprehensive car buying platform with price comparison, dealer reviews, financing options, and market value analysis.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Cars', 'Automotive', 'Deals'], color: '#6366F1', icon: '🚗', status: 'Live' },
+  { slug: 'nearserve', name: 'NearServe', tagline: 'Hyperlocal service marketplace', description: 'On-demand local services marketplace connecting consumers with nearby service providers.', category: 'FinTech & E-Commerce', platforms: ['iOS', 'Android'], tags: ['Services', 'Local', 'Marketplace'], color: '#14B8A6', icon: '🔧', status: 'Live' },
+
+  // CyberSecurity & Infra
+  { slug: 'securecore', name: 'SecureCore', tagline: 'Enterprise security operations platform', description: 'Enterprise security operations platform with SIEM, threat hunting, and automated incident response.', category: 'CyberSecurity & Infra', platforms: ['Web'], tags: ['Python', 'Security', 'SIEM'], color: '#EF4444', icon: '🛡️', status: 'Beta', highlight: true },
+  { slug: 'threatwatch', name: 'ThreatWatch', tagline: 'Real-time threat intelligence', description: 'Real-time threat intelligence platform aggregating global threat feeds with AI-powered analysis.', category: 'CyberSecurity & Infra', platforms: ['Web'], tags: ['Python', 'AI', 'Threat Intel'], color: '#F59E0B', icon: '👁️', status: 'Beta' },
+  { slug: 'zerotrust', name: 'ZeroTrust Gateway', tagline: 'Enterprise zero-trust network access', description: 'Enterprise zero-trust network access solution with identity-aware proxying and continuous verification.', category: 'CyberSecurity & Infra', platforms: ['Web'], tags: ['Go', 'Zero Trust', 'IAM'], color: '#3B82F6', icon: '🔒', status: 'Beta' },
+  { slug: 'cloudarmor', name: 'CloudArmor', tagline: 'Multi-cloud security posture management', description: 'Multi-cloud security posture management with compliance automation and misconfiguration detection.', category: 'CyberSecurity & Infra', platforms: ['Web'], tags: ['Python', 'Cloud', 'Compliance'], color: '#6366F1', icon: '☁️', status: 'Beta' },
+  { slug: 'vaultos', name: 'VaultOS', tagline: 'Enterprise secrets management', description: 'Enterprise secrets management and PKI platform with hardware security module integration.', category: 'CyberSecurity & Infra', platforms: ['Web'], tags: ['Go', 'Security', 'PKI'], color: '#8B5CF6', icon: '🗝️', status: 'Beta' },
+
+  // Travel & Aviation
+  { slug: 'aeroswift', name: 'AeroSwift', tagline: 'Real-time flight tracking & aviation data', description: 'Comprehensive real-time flight tracking with live aircraft positions, delays, gate info, and aviation weather.', category: 'Travel & Aviation', platforms: ['iOS', 'Android'], tags: ['Aviation', 'Travel', 'Real-time'], color: '#3B82F6', icon: '✈️', status: 'Live', highlight: true },
+  { slug: 'aeroswift-personal', name: 'AeroSwift Personal', tagline: 'Digital logbook for private pilots', description: 'Professional aviation logbook and flight planning app for private pilots, student pilots, and aviation enthusiasts.', category: 'Travel & Aviation', platforms: ['iOS', 'Android'], tags: ['Aviation', 'Pilots', 'Logbook'], color: '#6366F1', icon: '🛩️', status: 'Live' },
+  { slug: 'aeroswift-transit', name: 'AeroSwift Transit', tagline: 'Airport connections & transit management', description: 'Smart airport transit app with connection management, terminal navigation, lounge access, and ground transport booking.', category: 'Travel & Aviation', platforms: ['iOS', 'Android'], tags: ['Airport', 'Transit', 'Travel'], color: '#0EA5E9', icon: '🛫', status: 'Beta' },
+  { slug: 'travelhub', name: 'TravelHub', tagline: 'All-in-one travel planning & booking', description: 'Comprehensive travel platform combining itinerary planning, booking management, local discovery, and travel documentation.', category: 'Travel & Aviation', platforms: ['iOS', 'Android'], tags: ['Travel', 'Itinerary', 'AI'], color: '#F59E0B', icon: '🌍', status: 'Beta' },
+  { slug: 'travelzap', name: 'TravelZap', tagline: 'Flash travel deals at lightning speed', description: 'Real-time travel deal aggregator with instant booking for flights, hotels, and packages at exclusive prices.', category: 'Travel & Aviation', platforms: ['iOS', 'Android'], tags: ['Travel', 'Deals', 'Flights'], color: '#EF4444', icon: '⚡', status: 'Live' },
+  { slug: 'staydeal', name: 'StayDeal', tagline: 'Hotel deals & accommodation finder', description: 'Smart hotel deal finder with AI-powered recommendations, price predictions, and exclusive member rates.', category: 'Travel & Aviation', platforms: ['iOS', 'Android'], tags: ['Hotels', 'Accommodation', 'AI'], color: '#8B5CF6', icon: '🏨', status: 'Live' },
+  { slug: 'skydeal', name: 'SkyDeal', tagline: 'Flight deals & airfare intelligence', description: 'Advanced airfare deal finder with fare prediction, error fare detection, and flexible date search.', category: 'Travel & Aviation', platforms: ['iOS', 'Android'], tags: ['Flights', 'Airfare', 'AI'], color: '#06B6D4', icon: '🎫', status: 'Live' },
+  { slug: 'driftdate', name: 'DriftDate', tagline: 'Layered location-based dating', description: 'Innovative dating platform with Server/State/County/ZIP discovery layers on Android + Wear OS.', category: 'Social & Lifestyle', platforms: ['Android', 'Wear OS'], tags: ['Dating', 'Social', 'Location'], color: '#EC4899', icon: '💕', status: 'Beta' },
+
+  // Social & Lifestyle
+  { slug: 'homewise', name: 'HomeWise', tagline: 'Real estate for the middle class', description: 'Middle-class focused house listing, sales, and rental mobile app using public real estate APIs with AI price predictions.', category: 'Social & Lifestyle', platforms: ['iOS', 'Android'], tags: ['Real Estate', 'Housing', 'AI'], color: '#10B981', icon: '🏠', status: 'Live' },
+  { slug: 'roomcraft', name: 'RoomCraft', tagline: 'AI interior design for your space', description: 'Interior design suggestions by square footage and OCR-processed room photos with AI redesign and GPS local sourcing.', category: 'Social & Lifestyle', platforms: ['iOS', 'Android'], tags: ['Interior Design', 'AI', 'AR'], color: '#8B5CF6', icon: '🛋️', status: 'Beta' },
+  { slug: 'chefcount', name: 'ChefCount', tagline: 'Smart cooking app that scales for any crowd', description: 'Smart cooking app that scales recipes by people count with kitchen utility affiliate listings and in-app monetization.', category: 'Social & Lifestyle', platforms: ['iOS', 'Android'], tags: ['Cooking', 'Recipes', 'Food'], color: '#F59E0B', icon: '👨‍🍳', status: 'Live' },
+  { slug: 'golfvision', name: 'GolfVision Elite', tagline: 'AI golf swing & ball flight analytics', description: 'Professional golf swing analysis and ball flight analytics powered by computer vision and AI.', category: 'Social & Lifestyle', platforms: ['iOS', 'Android'], tags: ['Golf', 'Sports', 'AI'], color: '#10B981', icon: '⛳', status: 'Beta' },
+  { slug: 'newsboard', name: 'NewsBoard', tagline: 'Personalized news aggregator', description: 'AI-curated news aggregator that learns your interests and delivers a personalized daily briefing.', category: 'Social & Lifestyle', platforms: ['iOS', 'Android'], tags: ['News', 'AI', 'Media'], color: '#3B82F6', icon: '📰', status: 'Live' },
+  { slug: 'eventspark', name: 'EventSpark', tagline: 'Discover local events & experiences', description: 'Location-aware event discovery platform for concerts, sports, festivals, and local experiences.', category: 'Social & Lifestyle', platforms: ['iOS', 'Android'], tags: ['Events', 'Local', 'Entertainment'], color: '#8B5CF6', icon: '🎪', status: 'Live' },
+  { slug: 'eventglow', name: 'EventGlow', tagline: 'Outdoor events & vacation deals', description: 'Location-aware entertainment and outdoor events affiliate promotion app with cheap local deals.', category: 'Social & Lifestyle', platforms: ['iOS', 'Android'], tags: ['Events', 'Outdoors', 'Deals'], color: '#10B981', icon: '🌟', status: 'Live' },
+  { slug: 'agvending', name: 'AGVending', tagline: 'AI-powered vending machine platform', description: 'C++20 multi-archetype vending machine platform with AI forecasting, anomaly detection, and Flutter mobile control app.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android', 'Web'], tags: ['IoT', 'AI', 'Enterprise'], color: '#6366F1', icon: '🏪', status: 'Beta' },
 ];
 
-const verticalFilters = [
-  "All Verticals",
-  "Enterprise AI & DevTools",
-  "Consumer Mobile",
-  "FinTech & E-Commerce",
-  "CyberSecurity & Infra",
-  "Spatial & Industry SaaS",
-  "IoT & Hardware",
-];
+const allCategories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
-const verticalColors: Record<string, string> = {
-  "Enterprise AI & DevTools": "oklch(0.52 0.22 270)",
-  "Consumer Mobile": "oklch(0.72 0.14 165)",
-  "FinTech & E-Commerce": "oklch(0.78 0.18 75)",
-  "CyberSecurity & Infra": "oklch(0.55 0.18 30)",
-  "Spatial & Industry SaaS": "oklch(0.65 0.16 310)",
-  "IoT & Hardware": "oklch(0.60 0.15 200)",
+const categoryColors: Record<string, string> = {
+  'Enterprise AI & DevTools': '#6366F1',
+  'Consumer Mobile': '#3B82F6',
+  'FinTech & E-Commerce': '#10B981',
+  'CyberSecurity & Infra': '#EF4444',
+  'Travel & Aviation': '#0EA5E9',
+  'Health & Wellness': '#F59E0B',
+  'Social & Lifestyle': '#EC4899',
 };
 
-export default function ProductsPage() {
-  const [activeFilter, setActiveFilter] = useState("All Verticals");
-  useReveal();
+const statusColors: Record<string, string> = {
+  Live: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+  Beta: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+  'Coming Soon': 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+};
 
-  const filtered = activeFilter === "All Verticals"
-    ? allProducts
-    : allProducts.filter((p) => p.vertical === activeFilter);
+const platformIcons: Record<string, React.ReactNode> = {
+  iOS: <Smartphone className="w-3 h-3" />,
+  Android: <Smartphone className="w-3 h-3" />,
+  Web: <Globe className="w-3 h-3" />,
+  Windows: <Monitor className="w-3 h-3" />,
+  macOS: <Monitor className="w-3 h-3" />,
+  'Wear OS': <Watch className="w-3 h-3" />,
+  watchOS: <Watch className="w-3 h-3" />,
+};
+
+export default function Products() {
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activePlatform, setActivePlatform] = useState('All');
+
+  const filtered = useMemo(() => {
+    return products.filter((p) => {
+      const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.tagline.toLowerCase().includes(search.toLowerCase()) || p.tags.some(t => t.toLowerCase().includes(search.toLowerCase()));
+      const matchCat = activeCategory === 'All' || p.category === activeCategory;
+      const matchPlatform = activePlatform === 'All' || p.platforms.includes(activePlatform);
+      return matchSearch && matchCat && matchPlatform;
+    });
+  }, [search, activeCategory, activePlatform]);
+
+  const highlights = products.filter(p => p.highlight);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#070B14] text-white">
       <Navigation />
 
       {/* Hero */}
-      <section className="pt-28 pb-16" style={{ background: "oklch(0.14 0.04 255)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-xs font-mono font-semibold uppercase tracking-widest text-white/40 mb-3">Product Portfolio</div>
-          <h1 className="text-5xl lg:text-7xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-            77 products.
-            <br />
-            <span style={{ color: "oklch(0.78 0.18 75)" }}>Zero compromises.</span>
-          </h1>
-          <p className="text-xl text-white/60 max-w-2xl">
-            Browse the complete American Group LLC product portfolio across 6 business verticals — all actively developed and maintained.
-          </p>
-        </div>
-        <div className="absolute left-0 right-0">
-          <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 40L1440 0V40H0Z" fill="white" />
-          </svg>
+      <section className="relative pt-32 pb-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/30 via-transparent to-transparent" />
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
+        <div className="absolute top-40 right-1/4 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl" />
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-6">
+              <Zap className="w-4 h-4" />
+              {products.length}+ Products Across 7 Verticals
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
+              Our Product
+              <span className="block bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">Portfolio</span>
+            </h1>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              Enterprise-grade mobile apps and platforms built for scale. From AI assistants to fintech solutions — every product crafted for real-world impact.
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      {/* Filter + Grid */}
-      <section className="py-16 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Filter tabs */}
-          <div className="flex flex-wrap gap-2 mb-10 reveal">
-            {verticalFilters.map((f) => (
-              <button
-                key={f}
-                onClick={() => setActiveFilter(f)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all btn-press ${
-                  activeFilter === f
-                    ? "text-white shadow-md"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
-                style={activeFilter === f ? { background: "oklch(0.52 0.22 270)" } : {}}
-              >
-                {f}
-              </button>
+      {/* Stats bar */}
+      <section className="border-y border-white/5 py-8">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { icon: <Cpu className="w-5 h-5 text-indigo-400" />, value: `${products.length}+`, label: 'Total Products' },
+              { icon: <Smartphone className="w-5 h-5 text-emerald-400" />, value: `${products.filter(p => p.platforms.includes('iOS') || p.platforms.includes('Android')).length}+`, label: 'Mobile Apps' },
+              { icon: <Shield className="w-5 h-5 text-amber-400" />, value: '7', label: 'Verticals' },
+              { icon: <TrendingUp className="w-5 h-5 text-violet-400" />, value: `${products.filter(p => p.status === 'Live').length}`, label: 'Live Products' },
+            ].map((stat, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="text-center">
+                <div className="flex justify-center mb-2">{stat.icon}</div>
+                <div className="text-3xl font-bold text-white mb-1" style={{ fontFamily: 'Sora, sans-serif' }}>{stat.value}</div>
+                <div className="text-slate-500 text-sm">{stat.label}</div>
+              </motion.div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Count */}
-          <div className="text-sm font-mono text-slate-400 mb-6 reveal">
-            Showing {filtered.length} products
-            {activeFilter !== "All Verticals" && ` in ${activeFilter}`}
+      {/* Featured */}
+      <section className="py-12">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center gap-3 mb-8">
+            <Star className="w-5 h-5 text-amber-400" />
+            <h2 className="text-lg font-semibold text-white">Featured Products</h2>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {highlights.map((p, i) => (
+              <motion.div key={p.slug} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
+                <Link href={`/products/${p.slug}`}>
+                  <div className="group relative p-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/8 transition-all duration-300 cursor-pointer overflow-hidden h-full">
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" style={{ background: `radial-gradient(circle at 50% 0%, ${p.color}15, transparent 70%)` }} />
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-3" style={{ background: `${p.color}20`, border: `1px solid ${p.color}30` }}>{p.icon}</div>
+                      <h3 className="font-semibold text-white text-sm mb-1">{p.name}</h3>
+                      <p className="text-slate-400 text-xs leading-relaxed mb-3">{p.tagline}</p>
+                      <div className="flex items-center justify-between">
+                        <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColors[p.status]}`}>{p.status}</span>
+                        <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          {/* Product grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filtered.map((product, i) => {
-              const color = verticalColors[product.vertical] || "oklch(0.52 0.22 270)";
+      {/* Filters */}
+      <section className="sticky top-16 z-30 py-4 bg-[#070B14]/95 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input type="text" placeholder="Search products, tags..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50 transition-all" />
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Filter className="w-4 h-4 text-slate-500" />
+              {['All', 'iOS', 'Android', 'Web', 'Windows'].map(pl => (
+                <button key={pl} onClick={() => setActivePlatform(pl)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${activePlatform === pl ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'}`}>{pl}</button>
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+            {allCategories.map(cat => {
+              const count = cat === 'All' ? products.length : products.filter(p => p.category === cat).length;
+              const color = cat === 'All' ? undefined : categoryColors[cat];
               return (
-                <div
-                  key={product.name}
-                  className="reveal product-card p-5 rounded-2xl border border-slate-100 bg-white flex flex-col"
-                  style={{ transitionDelay: `${(i % 8) * 40}ms` }}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="text-3xl">{product.emoji}</div>
-                    <span
-                      className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold"
-                      style={{ background: `${color.replace(")", " / 0.1)")}`, color }}
-                    >
-                      {product.badge}
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-1">{product.name}</h3>
-                  <div className="text-xs text-slate-400 font-mono mb-2">{product.type}</div>
-                  <p className="text-xs text-slate-600 leading-relaxed flex-1 mb-3">{product.desc}</p>
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {product.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className="px-2 py-0.5 rounded-md text-[10px] bg-slate-50 text-slate-500 border border-slate-100">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-2 mt-auto">
-                    <button
-                      onClick={() => toast.info("GitHub repository coming soon!")}
-                      className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 transition-colors"
-                    >
-                      <Github className="h-3.5 w-3.5" /> GitHub
-                    </button>
-                    <button
-                      onClick={() => toast.info("Simulator launching soon!")}
-                      className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-800 transition-colors"
-                    >
-                      <Play className="h-3.5 w-3.5" /> Simulator
-                    </button>
-                  </div>
-                </div>
+                <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${activeCategory === cat ? 'text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'}`} style={activeCategory === cat ? { backgroundColor: color ? color : '#6366F1', color: '#fff' } : {}}>
+                  {cat} ({count})
+                </button>
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Grid */}
+      <section className="py-12">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center justify-between mb-6">
+            <p className="text-slate-400 text-sm">Showing <span className="text-white font-medium">{filtered.length}</span> products{activeCategory !== 'All' && <span> in <span className="text-indigo-400">{activeCategory}</span></span>}</p>
+          </div>
+          <AnimatePresence mode="popLayout">
+            {filtered.length === 0 ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 text-slate-500">
+                <div className="text-5xl mb-4">🔍</div>
+                <p className="text-lg">No products match your search</p>
+                <button onClick={() => { setSearch(''); setActiveCategory('All'); setActivePlatform('All'); }} className="mt-4 text-indigo-400 hover:text-indigo-300 text-sm underline">Clear filters</button>
+              </motion.div>
+            ) : (
+              <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {filtered.map((p, i) => (
+                  <motion.div key={p.slug} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ delay: i * 0.02 }}>
+                    <Link href={`/products/${p.slug}`}>
+                      <div className="group h-full p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 cursor-pointer relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 30% 30%, ${p.color}10, transparent 60%)` }} />
+                        <div className="relative z-10">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ background: `${p.color}15`, border: `1px solid ${p.color}25` }}>{p.icon}</div>
+                            <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${statusColors[p.status]}`}>{p.status}</span>
+                          </div>
+                          <h3 className="font-bold text-white text-lg mb-1 group-hover:text-indigo-200 transition-colors">{p.name}</h3>
+                          <p className="text-sm font-medium mb-3" style={{ color: p.color }}>{p.tagline}</p>
+                          <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">{p.description}</p>
+                          <div className="flex flex-wrap gap-1.5 mb-4">
+                            {p.tags.slice(0, 3).map(tag => (
+                              <span key={tag} className="text-xs px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/8">{tag}</span>
+                            ))}
+                          </div>
+                          <div className="flex items-center justify-between pt-4 border-t border-white/8">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              {p.platforms.slice(0, 3).map(pl => (
+                                <span key={pl} className="flex items-center gap-1 text-slate-500 text-xs">{platformIcons[pl]}<span>{pl}</span></span>
+                              ))}
+                            </div>
+                            <span className="text-xs font-medium flex items-center gap-1 group-hover:gap-2 transition-all" style={{ color: p.color }}>
+                              Details <ArrowRight className="w-3 h-3" />
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24 border-t border-white/5">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl font-bold mb-4 text-white" style={{ fontFamily: 'Sora, sans-serif' }}>Don't see what you need?</h2>
+          <p className="text-slate-400 text-lg mb-8">We build custom enterprise software and mobile apps. Tell us your idea and we'll make it a reality.</p>
+          <Link href="/contact">
+            <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95">
+              Start a Custom Project →
+            </button>
+          </Link>
         </div>
       </section>
 

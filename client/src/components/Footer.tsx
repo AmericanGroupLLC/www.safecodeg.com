@@ -3,7 +3,7 @@
  * Deep navy background, AGL-primary brand
  */
 import { Link } from "wouter";
-import { Github, Linkedin, Youtube, Facebook, Mail, MapPin, Phone } from "lucide-react";
+import { Linkedin, Youtube, Facebook, Mail, MapPin, Phone } from "lucide-react";
 
 const footerLinks = {
   companies: [
@@ -28,7 +28,6 @@ const footerLinks = {
 };
 
 const socials = [
-  { icon: Github, href: "https://github.com/americangroupllc", label: "GitHub" },
   { icon: Linkedin, href: "https://linkedin.com/company/americangroupllc", label: "LinkedIn" },
   { icon: Youtube, href: "https://youtube.com/@americangroupllc", label: "YouTube" },
   { icon: Facebook, href: "https://facebook.com/americangroupllc", label: "Facebook" },
