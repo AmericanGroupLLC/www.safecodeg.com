@@ -1,7 +1,6 @@
 /**
  * Sophia — AGL Customer Success Assistant
- * Human-feeling AI chat with realistic avatar, natural language,
- * variable typing delays, personality, and conversational intelligence.
+ * Dark enterprise theme, updated product info (77 products, 8 verticals)
  */
 
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -61,38 +60,46 @@ function sophiaReply(input: string, state: ConvState): { text: string; delay: nu
 
   if (/product|app|application|software|what do you (make|build|sell|offer)|portfolio/.test(m)) {
     return {
-      text: `We have 77 products across 6 verticals! 🚀\n\nHighlights: eHealth365, HealthTrack Pro (Health & Wellness) · EduPath, KidsCode Academy (Education) · TaskFlow Pro, MeetingMind (Business) · and many more.\n\nWant details on a specific category?`,
+      text: `We have 77 products across 8 verticals! 🚀\n\nHighlights:\n• 🧠 Enterprise AI & DevTools (12 products)\n• 📱 Consumer Mobile (18 products)\n• 💳 FinTech & E-Commerce (14 products)\n• 🛡️ CyberSecurity & Infra (8 products)\n• ✈️ Travel & Aviation (6 products)\n• ❤️ Health & Wellness (10 products)\n\nWant details on a specific category?`,
       delay: 1600,
-      quick: ["Health & Wellness", "Education apps", "Business tools", "All 77 products"],
+      quick: ["Enterprise AI products", "Mobile apps", "FinTech products", "All 77 products"],
     };
   }
 
-  if (/health|wellness|fitness|medical|ehealth/.test(m)) {
-    return { text: `Our Health & Wellness vertical is one of our strongest! 💪 We have 14 apps including eHealth365 (comprehensive tracking), HealthTrack Pro (wearable integration), MindCalm AI (mental wellness), NutriScan, SleepWave, and more. Want details on any specific one?`, delay: 1700 };
+  if (/health|wellness|fitness|medical|myhealth|virtuband/.test(m)) {
+    return { text: `Our Health & Wellness vertical has 10 products! 💪 Highlights: MyHealth (fitness OS for Android & Wear OS), VirtuBand (smart wearable companion), and more. All built with HealthKit, Wear OS, and AI coaching. Want details on any specific one?`, delay: 1700 };
   }
 
-  if (/education|learning|school|kids|teach|study|learn/.test(m)) {
-    return { text: `Our Education & Learning suite has 12 apps! 📚 Highlights: EduPath (personalized learning), LearnSmart (adaptive quizzes), KidsCode Academy (coding for kids 6–14), LanguageBridge (AI language learning), MathMentor Pro. All on iOS, Android, and web!`, delay: 1600 };
+  if (/ai|machine learning|llm|cognicore|offlinebuddy|verba/.test(m)) {
+    return { text: `Our Enterprise AI & DevTools vertical has 12 products! 🧠 Highlights: CogniCore AI Platform (enterprise cognitive AI), OfflineBuddy (on-device LLM, works fully offline), Verba (multilingual conversational AI), DocStream Enterprise, DataCore. Want to know more?`, delay: 1600 };
   }
 
-  if (/business|productivity|task|work|office|enterprise/.test(m)) {
-    return { text: `Our Business & Productivity tools are used by teams worldwide! 💼 Top picks: TaskFlow Pro (project management), MeetingMind (AI meeting notes), DocuSign AI (smart contracts), ExpenseTrack, TeamPulse. Want to know more about any of these?`, delay: 1600 };
+  if (/fintech|finance|banking|payment|money|invest|apexmarket/.test(m)) {
+    return { text: `Our FinTech & E-Commerce vertical has 14 products! 💰 Including ApexMarketWatch (real-time markets & hedge fund filings), BudgetBuddy, CryptoCore, PayFlow, and more. All built with bank-grade security. Interested in any specific one?`, delay: 1600 };
   }
 
-  if (/finance|fintech|banking|payment|money|invest/.test(m)) {
-    return { text: `Our Finance & Security vertical has some really exciting products! 💰 Including BudgetWise AI, CryptoVault, SecurePay, TaxHelper Pro, and InvestIQ. All built with bank-grade security. Interested in any specific one?`, delay: 1600 };
+  if (/travel|aviation|flight|aeroswift/.test(m)) {
+    return { text: `Our Travel & Aviation vertical has 6 products! ✈️ Highlights: AeroSwift (real-time flight tracking & aviation data), TripSync, and more. Perfect for frequent flyers and aviation enthusiasts. Want details?`, delay: 1500 };
+  }
+
+  if (/security|cybersecurity|securecore|threat|zero.?trust/.test(m)) {
+    return { text: `Our CyberSecurity & Infra vertical has 8 products! 🛡️ Highlights: SecureCore (enterprise security operations), ThreatWatch, ZeroTrust Gateway, CloudArmor, VaultOS. Built for enterprise-grade security. Want to know more?`, delay: 1600 };
+  }
+
+  if (/mobile|android|ios|app store|play store/.test(m)) {
+    return { text: `Our Consumer Mobile vertical has 18 products! 📱 Including AGCleaner, AGRecorder, MyCard (Wear OS), iMeasure, iMaps, BuddyPlay, and more. Available on iOS, Android, and Wear OS. Want details on any specific app?`, delay: 1600 };
   }
 
   if (/service|outsourc|develop|build|hire|custom|project/.test(m)) {
     return {
-      text: `We offer end-to-end software development services! 🛠️\n\n• Custom mobile apps (iOS & Android)\n• Web applications & SaaS platforms\n• AI/ML solutions\n• Cloud architecture & DevOps\n• Tech outsourcing (our India team is great for cost-effective dev!)\n\nWant a free consultation?`,
+      text: `We offer end-to-end software development services! 🛠️\n\n• Custom mobile apps (iOS & Android)\n• Web applications & SaaS platforms\n• AI/ML solutions & LLM deployments\n• Cloud architecture & DevOps\n• Tech outsourcing via our India office\n\nWant a free consultation?`,
       delay: 1800,
       quick: ["Get a free consultation", "Tell me about pricing", "India office info"],
     };
   }
 
   if (/price|pricing|cost|how much|rate|quote|budget/.test(m)) {
-    return { text: `Pricing varies by project scope. For custom development, we offer free initial consultations. Enterprise licensing starts at $299/month. Our India team makes outsourcing very cost-effective without compromising quality. Want me to connect you with our sales team for a custom quote?`, delay: 1500, quick: ["Yes, get a quote", "Talk to sales"] };
+    return { text: `Pricing varies by project scope. For custom development, we offer free initial consultations. Enterprise licensing starts at $299/month. Our India team (SafeCodeX Research Center) makes outsourcing very cost-effective without compromising quality. Want me to connect you with our sales team?`, delay: 1500, quick: ["Yes, get a quote", "Talk to sales"] };
   }
 
   if (/contact|email|phone|call|reach|address|location|where are you/.test(m)) {
@@ -105,9 +112,9 @@ function sophiaReply(input: string, state: ConvState): { text: string; delay: nu
 
   if (/job|career|hiring|work|position|opening|apply|join|intern/.test(m)) {
     return {
-      text: `We're always looking for talented people! 🌟\n\nCurrent openings:\n• Senior React Developer\n• Mobile App Dev (React Native)\n• AI/ML Engineer\n• DevOps Engineer\n• UI/UX Designer\n• QA Engineer\n\nWant me to help you apply? I can collect your info and pass it to our HR team!`,
+      text: `We're always looking for talented people! 🌟\n\nCurrent openings:\n• Senior AI/ML Engineer\n• iOS Developer (Swift)\n• Full-Stack Engineer (TypeScript)\n• Cybersecurity Engineer\n• Android Developer (Kotlin)\n• DevOps / Cloud Engineer\n\nEmail careers@safecodeg.com or visit our Careers page!`,
       delay: 1600,
-      quick: ["Yes, I want to apply", "Tell me more"],
+      quick: ["Visit Careers page", "Tell me more"],
     };
   }
 
@@ -120,14 +127,14 @@ function sophiaReply(input: string, state: ConvState): { text: string; delay: nu
   }
 
   if (/india|hyderabad|safecodex|safecode/.test(m)) {
-    return { text: `Our India engineering office — SafeCodeX Research Center — is in Hyderabad! 🇮🇳 Same team, same standards as our California HQ. India phone: +91 74168 66689 or contact@safecodeg.com`, delay: 1500 };
+    return { text: `Our India engineering office — SafeCodeX Research Center Pvt. Ltd. — is in Hyderabad! 🇮🇳 They handle QA, backend delivery, embedded firmware research, and mobile development support. India phone: +91 74168 66689`, delay: 1500 };
   }
 
   if (/california|santa clara|silicon valley|usa|us office/.test(m)) {
     return { text: `We're based in Santa Clara, California — right in Silicon Valley! 🇺🇸 Our HQ is where leadership, product strategy, and client relations are based. US phone: +1 (510) 458-9059`, delay: 1400 };
   }
 
-  if (/send (a )?(message|email|inquiry)|contact (you|the team)|get in touch|reach out|talk to (someone|a human|a person)/.test(m)) {
+  if (/send (a )?(message|email|inquiry)|contact (you|the team)|get in touch|reach out|talk to (someone|a human)/.test(m)) {
     return { text: `Of course! I'll help you get in touch with our team. It'll just take a minute. 😊\n\nFirst — what's your name?`, delay: 1200 };
   }
 
@@ -145,7 +152,7 @@ function sophiaReply(input: string, state: ConvState): { text: string; delay: nu
   }
 
   if (/77|all products|full list|complete list/.test(m)) {
-    return { text: `We have 77 products across 6 categories! Browse the full portfolio at safecodeg.com/products — filterable by category and searchable. Want me to highlight any specific vertical?`, delay: 1400, quick: ["Health & Wellness", "Business tools", "Education", "Finance & Security"] };
+    return { text: `We have 77 products across 8 verticals! Browse the full portfolio at safecodeg.com/products — filterable by category and searchable. Want me to highlight any specific vertical?`, delay: 1400, quick: ["Health & Wellness", "Enterprise AI", "FinTech", "CyberSecurity"] };
   }
 
   const fallbacks = [
@@ -185,11 +192,11 @@ function handleForm(input: string, state: ConvState): { text: string; delay: num
 function TypingDots() {
   return (
     <div className="flex items-end gap-2 mb-3">
-      <img src={SOPHIA_AVATAR} alt="Sophia" className="w-7 h-7 rounded-full object-cover flex-shrink-0 ring-2 ring-white shadow-sm" />
-      <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm border border-slate-100">
+      <img src={SOPHIA_AVATAR} alt="Sophia" className="w-7 h-7 rounded-full object-cover flex-shrink-0 ring-2 ring-indigo-500/30" />
+      <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
         <div className="flex gap-1 items-center h-4">
           {[0, 150, 300].map((d) => (
-            <span key={d} className="w-2 h-2 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: `${d}ms` }} />
+            <span key={d} className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: `${d}ms` }} />
           ))}
         </div>
       </div>
@@ -277,6 +284,8 @@ export default function AIChatWidget() {
     "View Privacy Policy": "/privacy-policy",
     "Visit contact page": "/contact",
     "Visit support page": "/support",
+    "Visit Careers page": "/careers",
+    "All 77 products": "/products",
   };
 
   return (
@@ -285,26 +294,26 @@ export default function AIChatWidget() {
       {isOpen && (
         <div
           className={`fixed bottom-24 right-5 z-50 flex flex-col shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 ${minimized ? "h-16" : "h-[560px]"}`}
-          style={{ width: "360px", maxWidth: "calc(100vw - 2.5rem)", background: "oklch(0.97 0.003 255)", border: "1px solid oklch(0.90 0.01 255)" }}
+          style={{ width: "360px", maxWidth: "calc(100vw - 2.5rem)", background: "#0A0F1E", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 25px 80px rgba(0,0,0,0.7), 0 0 40px rgba(99,102,241,0.1)" }}
         >
           {/* Header */}
-          <div className="flex items-center gap-3 px-4 py-3 flex-shrink-0" style={{ background: "oklch(0.14 0.04 255)" }}>
+          <div className="flex items-center gap-3 px-4 py-3 flex-shrink-0" style={{ background: "rgba(99,102,241,0.15)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             <div className="relative">
-              <img src={SOPHIA_AVATAR} alt="Sophia" className="w-10 h-10 rounded-full object-cover ring-2 ring-white/30" />
-              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white" style={{ background: "oklch(0.72 0.18 145)" }} />
+              <img src={SOPHIA_AVATAR} alt="Sophia" className="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-500/40" />
+              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0A0F1E] bg-emerald-400" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-white text-sm">Sophia</div>
-              <div className="text-xs flex items-center gap-1" style={{ color: "oklch(0.72 0.18 145)" }}>
+              <div className="text-xs flex items-center gap-1 text-emerald-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-current inline-block" />
                 Online · Customer Success, AGL
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <button onClick={() => setMinimized((v) => !v)} className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-all" aria-label="Minimize">
+              <button onClick={() => setMinimized((v) => !v)} className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-all" aria-label="Minimize">
                 {minimized ? <ChevronDown className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
               </button>
-              <button onClick={() => setIsOpen(false)} className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-all" aria-label="Close">
+              <button onClick={() => setIsOpen(false)} className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-all" aria-label="Close">
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -313,20 +322,23 @@ export default function AIChatWidget() {
           {!minimized && (
             <>
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto px-4 py-4" style={{ background: "oklch(0.97 0.003 255)" }}>
+              <div className="flex-1 overflow-y-auto px-4 py-4" style={{ background: "#070B14" }}>
                 {messages.map((msg) => (
                   <div key={msg.id} className={`flex items-end gap-2 mb-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                     {msg.role === "sophia" && (
-                      <img src={SOPHIA_AVATAR} alt="Sophia" className="w-7 h-7 rounded-full object-cover flex-shrink-0 ring-2 ring-white shadow-sm" />
+                      <img src={SOPHIA_AVATAR} alt="Sophia" className="w-7 h-7 rounded-full object-cover flex-shrink-0 ring-2 ring-indigo-500/30" />
                     )}
                     <div className={`flex flex-col gap-1 max-w-[78%] ${msg.role === "user" ? "items-end" : "items-start"}`}>
                       <div
-                        className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.role === "user" ? "rounded-br-sm text-white" : "rounded-bl-sm text-slate-800 bg-white border border-slate-100"}`}
-                        style={msg.role === "user" ? { background: "oklch(0.52 0.22 270)" } : {}}
+                        className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.role === "user" ? "rounded-br-sm text-white" : "rounded-bl-sm text-slate-200"}`}
+                        style={msg.role === "user"
+                          ? { background: "linear-gradient(135deg, #6366F1, #4F46E5)" }
+                          : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }
+                        }
                       >
                         {fmt(msg.text)}
                       </div>
-                      <span className="text-xs text-slate-400 px-1">{msg.time}</span>
+                      <span className="text-xs text-slate-600 px-1">{msg.time}</span>
                     </div>
                   </div>
                 ))}
@@ -339,14 +351,14 @@ export default function AIChatWidget() {
                     {quickReplies.map((r) =>
                       navQuicks[r] ? (
                         <Link key={r} href={navQuicks[r]} onClick={() => setIsOpen(false)}
-                          className="text-xs px-3 py-1.5 rounded-full border font-medium transition-all hover:shadow-sm"
-                          style={{ borderColor: "oklch(0.52 0.22 270)", color: "oklch(0.52 0.22 270)", background: "oklch(0.52 0.22 270 / 0.05)" }}>
+                          className="text-xs px-3 py-1.5 rounded-full font-medium transition-all hover:scale-105"
+                          style={{ border: "1px solid rgba(99,102,241,0.4)", color: "#818CF8", background: "rgba(99,102,241,0.1)" }}>
                           {r}
                         </Link>
                       ) : (
                         <button key={r} onClick={() => send(r)}
-                          className="text-xs px-3 py-1.5 rounded-full border font-medium transition-all hover:shadow-sm active:scale-95"
-                          style={{ borderColor: "oklch(0.52 0.22 270)", color: "oklch(0.52 0.22 270)", background: "oklch(0.52 0.22 270 / 0.05)" }}>
+                          className="text-xs px-3 py-1.5 rounded-full font-medium transition-all hover:scale-105 active:scale-95"
+                          style={{ border: "1px solid rgba(99,102,241,0.4)", color: "#818CF8", background: "rgba(99,102,241,0.1)" }}>
                           {r}
                         </button>
                       )
@@ -358,7 +370,7 @@ export default function AIChatWidget() {
               </div>
 
               {/* Input */}
-              <div className="px-4 py-3 flex-shrink-0 border-t bg-white" style={{ borderColor: "oklch(0.92 0.005 255)" }}>
+              <div className="px-4 py-3 flex-shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", background: "#0A0F1E" }}>
                 <div className="flex items-center gap-2">
                   <input
                     ref={inputRef}
@@ -367,25 +379,25 @@ export default function AIChatWidget() {
                     onChange={(e) => setInputVal(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
                     placeholder="Message Sophia..."
-                    className="flex-1 text-sm px-4 py-2.5 rounded-xl border outline-none transition-all"
-                    style={{ borderColor: "oklch(0.88 0.01 255)", background: "oklch(0.97 0.003 255)", color: "oklch(0.2 0.01 255)" }}
-                    onFocus={(e) => { e.target.style.borderColor = "oklch(0.52 0.22 270)"; e.target.style.boxShadow = "0 0 0 3px oklch(0.52 0.22 270 / 0.12)"; }}
-                    onBlur={(e) => { e.target.style.borderColor = "oklch(0.88 0.01 255)"; e.target.style.boxShadow = "none"; }}
+                    className="flex-1 text-sm px-4 py-2.5 rounded-xl outline-none transition-all text-white placeholder-slate-600"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                    onFocus={(e) => { e.target.style.borderColor = "rgba(99,102,241,0.5)"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.1)"; }}
+                    onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.1)"; e.target.style.boxShadow = "none"; }}
                   />
                   <button
                     onClick={() => send()}
                     disabled={!inputVal.trim()}
                     className="p-2.5 rounded-xl transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={{ background: inputVal.trim() ? "oklch(0.52 0.22 270)" : "oklch(0.88 0.01 255)", color: inputVal.trim() ? "white" : "oklch(0.6 0.01 255)" }}
+                    style={{ background: inputVal.trim() ? "linear-gradient(135deg, #6366F1, #4F46E5)" : "rgba(255,255,255,0.08)", color: "white" }}
                     aria-label="Send"
                   >
                     <Send className="h-4 w-4" />
                   </button>
                 </div>
                 <div className="text-center mt-2">
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-600">
                     Sophia · Customer Success at{" "}
-                    <span style={{ color: "oklch(0.52 0.22 270)" }} className="font-medium">American Group LLC</span>
+                    <span className="text-indigo-400 font-medium">American Group LLC</span>
                   </span>
                 </div>
               </div>
@@ -397,31 +409,30 @@ export default function AIChatWidget() {
       {/* Launcher */}
       <button
         onClick={isOpen ? () => setIsOpen(false) : open}
-        className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 transition-all duration-200 active:scale-95"
+        className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 transition-all duration-200 active:scale-95 hover:scale-105"
         style={{
-          background: isOpen ? "oklch(0.14 0.04 255)" : "white",
+          background: isOpen ? "rgba(7,11,20,0.95)" : "rgba(7,11,20,0.9)",
           borderRadius: "50px",
           padding: isOpen ? "10px 16px 10px 10px" : "6px 16px 6px 6px",
-          border: "1px solid oklch(0.88 0.01 255)",
-          boxShadow: "0 8px 32px oklch(0.14 0.04 255 / 0.25)",
+          border: "1px solid rgba(99,102,241,0.35)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(99,102,241,0.15)",
         }}
         aria-label="Chat with Sophia"
       >
         <div className="relative">
-          <img src={SOPHIA_AVATAR} alt="Sophia" className="w-9 h-9 rounded-full object-cover ring-2 ring-white shadow" />
+          <img src={SOPHIA_AVATAR} alt="Sophia" className="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-500/40" />
           {!isOpen && (
             <span
-              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${pulse ? "animate-pulse" : ""}`}
-              style={{ background: "oklch(0.72 0.18 145)" }}
+              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#070B14] bg-emerald-400 ${pulse ? "animate-pulse" : ""}`}
             />
           )}
           {unread > 0 && !isOpen && (
-            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-white text-xs font-bold flex items-center justify-center" style={{ background: "oklch(0.65 0.22 25)" }}>
+            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-white text-xs font-bold flex items-center justify-center bg-red-500">
               {unread}
             </span>
           )}
         </div>
-        <span className="text-sm font-semibold pr-1" style={{ color: isOpen ? "white" : "oklch(0.2 0.04 255)" }}>
+        <span className="text-sm font-semibold pr-1 text-white">
           {isOpen ? "Close" : "Chat with Sophia"}
         </span>
       </button>

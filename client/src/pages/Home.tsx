@@ -1,7 +1,7 @@
 /**
- * Home Page — Enterprise-Grade Redesign
- * Design: Dark premium, cinematic hero, Fortune 500 quality
- * AGL-dominant: 90% American Group LLC, 10% SafeCodeX ops
+ * Home Page — World-Class MNC Enterprise Redesign
+ * Design: "Apex Dark" — Palantir × Stripe × SAP quality
+ * Full dark theme, cinematic hero, animated counters, premium cards
  */
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
@@ -9,13 +9,14 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Brain, Smartphone, Globe, Shield, Code2, Cpu,
   TrendingUp, Users, Zap, Star, CheckCircle, ChevronRight,
-  BarChart3, Lock, Cloud, Layers
+  BarChart3, Lock, Cloud, Layers, Play, Award, Building2,
+  MapPin, Phone, Mail, ExternalLink
 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
-// Animated counter hook
-function useCounter(target: number, duration = 2000, start = false) {
+// ── Animated counter hook ─────────────────────────────────────────────────────
+function useCounter(target: number, duration = 2200, start = false) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!start) return;
@@ -23,7 +24,7 @@ function useCounter(target: number, duration = 2000, start = false) {
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const eased = 1 - Math.pow(1 - progress, 4);
       setCount(Math.floor(eased * target));
       if (progress < 1) requestAnimationFrame(step);
     };
@@ -32,162 +33,173 @@ function useCounter(target: number, duration = 2000, start = false) {
   return count;
 }
 
-// Scroll reveal hook
-function useReveal() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }),
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
-    );
-    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-}
-
+// ── Data ──────────────────────────────────────────────────────────────────────
 const verticals = [
-  { icon: <Brain className="w-6 h-6" />, title: "Enterprise AI & DevTools", count: 12, color: "#6366F1", desc: "LLMs, RAG pipelines, cognitive agents, and developer productivity platforms.", slug: "enterprise-ai" },
-  { icon: <Smartphone className="w-6 h-6" />, title: "Consumer Mobile", count: 18, color: "#8B5CF6", desc: "Cross-platform iOS & Android apps serving millions of daily active users.", slug: "mobile" },
-  { icon: <TrendingUp className="w-6 h-6" />, title: "FinTech & E-Commerce", count: 14, color: "#10B981", desc: "Personal finance, market intelligence, payments, and commerce platforms.", slug: "fintech" },
-  { icon: <Shield className="w-6 h-6" />, title: "CyberSecurity & Infra", count: 8, color: "#EF4444", desc: "SIEM, threat hunting, zero-trust networking, and enterprise infrastructure.", slug: "cybersecurity" },
-  { icon: <Globe className="w-6 h-6" />, title: "Travel & Aviation", count: 6, color: "#3B82F6", desc: "Real-time flight tracking, trip management, and aviation intelligence.", slug: "travel" },
-  { icon: <Cpu className="w-6 h-6" />, title: "Health & Wellness", count: 10, color: "#F59E0B", desc: "Fitness OS, nutrition tracking, mental wellness, and Wear OS integration.", slug: "health" },
-  { icon: <Code2 className="w-6 h-6" />, title: "E-Commerce & Deals", count: 5, color: "#EC4899", desc: "Smart shopping, deal aggregation, price tracking, and loyalty platforms.", slug: "ecommerce" },
-  { icon: <Users className="w-6 h-6" />, title: "Social & Lifestyle", count: 4, color: "#06B6D4", desc: "P2P gaming, social experiences, and community-driven mobile applications.", slug: "social" },
+  { icon: Brain, title: "Enterprise AI & DevTools", count: 12, color: "#818CF8", bg: "rgba(99,102,241,0.12)", desc: "LLMs, RAG pipelines, cognitive agents, and developer productivity platforms.", slug: "enterprise-ai" },
+  { icon: Smartphone, title: "Consumer Mobile", count: 18, color: "#A78BFA", bg: "rgba(139,92,246,0.12)", desc: "Cross-platform iOS & Android apps serving millions of daily active users.", slug: "mobile" },
+  { icon: TrendingUp, title: "FinTech & E-Commerce", count: 14, color: "#34D399", bg: "rgba(16,185,129,0.12)", desc: "Personal finance, market intelligence, payments, and commerce platforms.", slug: "fintech" },
+  { icon: Shield, title: "CyberSecurity & Infra", count: 8, color: "#F87171", bg: "rgba(239,68,68,0.12)", desc: "SIEM, threat hunting, zero-trust networking, and enterprise infrastructure.", slug: "cybersecurity" },
+  { icon: Globe, title: "Travel & Aviation", count: 6, color: "#60A5FA", bg: "rgba(59,130,246,0.12)", desc: "Real-time flight tracking, trip management, and aviation intelligence.", slug: "travel" },
+  { icon: Cpu, title: "Health & Wellness", count: 10, color: "#FBBF24", bg: "rgba(245,158,11,0.12)", desc: "Fitness OS, nutrition tracking, mental wellness, and Wear OS integration.", slug: "health" },
+  { icon: Code2, title: "E-Commerce & Deals", count: 5, color: "#F472B6", bg: "rgba(236,72,153,0.12)", desc: "Smart shopping, deal aggregation, price tracking, and loyalty platforms.", slug: "ecommerce" },
+  { icon: Users, title: "Social & Lifestyle", count: 4, color: "#22D3EE", bg: "rgba(6,182,212,0.12)", desc: "P2P gaming, social experiences, and community-driven mobile applications.", slug: "social" },
 ];
 
 const featuredProducts = [
-  { slug: "cognicore", name: "CogniCore AI", tagline: "Enterprise cognitive AI platform", icon: "🧠", color: "#6366F1", tag: "Enterprise AI" },
-  { slug: "myhealth", name: "MyHealth", tagline: "Personal fitness OS for Android & Wear OS", icon: "❤️", color: "#EF4444", tag: "Health" },
-  { slug: "aeroswift", name: "AeroSwift", tagline: "Real-time flight tracking & aviation data", icon: "✈️", color: "#3B82F6", tag: "Travel" },
-  { slug: "apexmarketwatch", name: "ApexMarketWatch", tagline: "Real-time markets & hedge fund filings", icon: "📈", color: "#F59E0B", tag: "FinTech" },
-  { slug: "offlinebuddy", name: "OfflineBuddy", tagline: "On-device LLM — works fully offline", icon: "🤖", color: "#06B6D4", tag: "AI" },
-  { slug: "securecore", name: "SecureCore", tagline: "Enterprise security operations platform", icon: "🛡️", color: "#EF4444", tag: "Security" },
+  { slug: "cognicore", name: "CogniCore AI", tagline: "Enterprise cognitive AI platform", icon: "🧠", color: "#818CF8", tag: "Enterprise AI", status: "Live" },
+  { slug: "myhealth", name: "MyHealth", tagline: "Personal fitness OS for Android & Wear OS", icon: "❤️", color: "#F87171", tag: "Health", status: "Live" },
+  { slug: "aeroswift", name: "AeroSwift", tagline: "Real-time flight tracking & aviation data", icon: "✈️", color: "#60A5FA", tag: "Travel", status: "Live" },
+  { slug: "apexmarketwatch", name: "ApexMarketWatch", tagline: "Real-time markets & hedge fund filings", icon: "📈", color: "#FBBF24", tag: "FinTech", status: "Live" },
+  { slug: "offlinebuddy", name: "OfflineBuddy", tagline: "On-device LLM — works fully offline", icon: "🤖", color: "#22D3EE", tag: "AI", status: "Live" },
+  { slug: "securecore", name: "SecureCore", tagline: "Enterprise security operations platform", icon: "🛡️", color: "#F87171", tag: "Security", status: "Live" },
 ];
 
 const differentiators = [
-  { icon: <Zap className="w-5 h-5" />, title: "Ship in Weeks, Not Years", desc: "Our battle-tested product development framework takes ideas from concept to App Store in 6–12 weeks." },
-  { icon: <Lock className="w-5 h-5" />, title: "Security by Default", desc: "Every product is built with end-to-end encryption, SOC 2 compliance, and zero-trust architecture from day one." },
-  { icon: <Cloud className="w-5 h-5" />, title: "Cloud-Native Scale", desc: "Serverless, containerized, auto-scaling infrastructure that handles 1 user or 10 million without code changes." },
-  { icon: <BarChart3 className="w-5 h-5" />, title: "Data-Driven Everything", desc: "Built-in analytics, A/B testing, and ML pipelines in every product so you always know what's working." },
-  { icon: <Layers className="w-5 h-5" />, title: "Full-Stack Ownership", desc: "We own the entire stack — design, engineering, QA, DevOps, and post-launch support under one roof." },
-  { icon: <Star className="w-5 h-5" />, title: "Enterprise-Grade Quality", desc: "99.9% uptime SLAs, 24/7 monitoring, and dedicated support for every product we ship." },
+  { icon: Zap, title: "Ship in Weeks, Not Years", desc: "Battle-tested product development framework takes ideas from concept to App Store in 6–12 weeks." },
+  { icon: Lock, title: "Security by Default", desc: "End-to-end encryption, SOC 2 compliance, and zero-trust architecture built into every product from day one." },
+  { icon: Cloud, title: "Cloud-Native Scale", desc: "Serverless, containerized, auto-scaling infrastructure that handles 1 user or 10 million without code changes." },
+  { icon: BarChart3, title: "Data-Driven Everything", desc: "Built-in analytics, A/B testing, and ML pipelines in every product so you always know what's working." },
+  { icon: Layers, title: "Full-Stack Ownership", desc: "Design, engineering, QA, DevOps, and post-launch support — all under one roof." },
+  { icon: Star, title: "Enterprise-Grade Quality", desc: "99.9% uptime SLAs, 24/7 monitoring, and dedicated support for every product we ship." },
 ];
 
 const stats = [
-  { value: 77, suffix: "+", label: "Products Shipped", icon: "📦" },
-  { value: 8, suffix: "", label: "Industry Verticals", icon: "🏭" },
-  { value: 6, suffix: "+", label: "Years of Excellence", icon: "🏆" },
-  { value: 99, suffix: ".9%", label: "Uptime SLA", icon: "⚡" },
+  { value: 77, suffix: "+", label: "Products Shipped", sub: "Across 8 verticals" },
+  { value: 8, suffix: "", label: "Industry Verticals", sub: "AI to CyberSecurity" },
+  { value: 6, suffix: "+", label: "Years of Excellence", sub: "Est. 2018, Santa Clara" },
+  { value: 99, suffix: ".9%", label: "Uptime SLA", sub: "Enterprise guarantee" },
 ];
 
-function StatCard({ value, suffix, label, icon, start }: { value: number; suffix: string; label: string; icon: string; start: boolean }) {
+const trustBadges = [
+  { icon: CheckCircle, label: "iOS & Android" },
+  { icon: Shield, label: "SOC 2 Compliant" },
+  { icon: Award, label: "Enterprise Ready" },
+  { icon: Cloud, label: "99.9% Uptime" },
+  { icon: Lock, label: "End-to-End Encrypted" },
+];
+
+// ── Stat Card ─────────────────────────────────────────────────────────────────
+function StatCard({ value, suffix, label, sub, start }: { value: number; suffix: string; label: string; sub: string; start: boolean }) {
   const count = useCounter(value, 2200, start);
   return (
-    <div className="text-center p-8 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] transition-all">
-      <div className="text-3xl mb-3">{icon}</div>
-      <div className="text-5xl font-bold text-white mb-2" style={{ fontFamily: "Sora, sans-serif" }}>
-        {count}{suffix}
+    <div className="relative group p-8 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.05] hover:border-indigo-500/30 transition-all duration-500 overflow-hidden">
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "radial-gradient(circle at 50% 0%, rgba(99,102,241,0.08), transparent 60%)" }} />
+      <div className="relative z-10">
+        <div className="text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight" style={{ fontFamily: "Sora, sans-serif" }}>
+          {count}{suffix}
+        </div>
+        <div className="text-white/90 font-semibold text-base mb-1">{label}</div>
+        <div className="text-slate-500 text-sm">{sub}</div>
       </div>
-      <div className="text-slate-400 text-sm font-medium">{label}</div>
     </div>
   );
 }
 
+// ── Main Component ────────────────────────────────────────────────────────────
 export default function Home() {
-  useReveal();
   const statsRef = useRef<HTMLDivElement>(null);
   const [statsStarted, setStatsStarted] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setStatsStarted(true); },
-      { threshold: 0.3 }
-    );
-    if (statsRef.current) observer.observe(statsRef.current);
-    return () => observer.disconnect();
+    // Start stats counter after a short delay so numbers are visible on first view
+    const timer = setTimeout(() => setStatsStarted(true), 800);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: "#070B14", color: "white" }}>
+    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
-      {/* ── HERO ─────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════════════
+          HERO — Full-bleed cinematic, massive typography, premium depth
+      ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Background image */}
+        {/* Background layers */}
         <div className="absolute inset-0">
           <img
-            src="/manus-storage/agl-hero-enterprise_4169f7a3.jpg"
-            alt="AGL Hero"
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/agl-hero-v2-aNA585WnQyWK3EQb4TGCDS.webp"
+            alt=""
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,11,20,0.97) 0%, rgba(7,11,20,0.85) 50%, rgba(7,11,20,0.75) 100%)" }} />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.15), transparent 60%)" }} />
+          {/* Deep overlay for text contrast */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,11,20,0.96) 0%, rgba(7,11,20,0.88) 45%, rgba(7,11,20,0.70) 100%)" }} />
+          {/* Indigo radial glow left */}
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 15% 60%, rgba(99,102,241,0.18) 0%, transparent 55%)" }} />
+          {/* Gold accent right */}
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 85% 30%, rgba(245,158,11,0.08) 0%, transparent 45%)" }} />
         </div>
 
-        {/* Animated grid */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        {/* Subtle grid overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-20">
-          <div className="max-w-4xl">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-8">
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-36 pb-24">
+          <div className="max-w-5xl">
+
+            {/* Eyebrow badge */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+              <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-indigo-400/25 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-10 backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-                Santa Clara, California · Est. 2018
+                American Group LLC · Santa Clara, California · Est. 2018
               </div>
             </motion.div>
 
+            {/* Main headline — massive scale */}
             <motion.h1
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="font-bold leading-[1.05] mb-6"
-              style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.8rem, 6vw, 5rem)" }}
+              transition={{ duration: 0.9, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+              className="font-black leading-[1.0] mb-8 tracking-tight"
+              style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3.2rem, 7.5vw, 6.5rem)" }}
             >
-              Building the Future of{" "}
-              <span style={{ background: "linear-gradient(135deg, #818CF8, #6366F1, #A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                Enterprise Technology
+              Building the Future<br />
+              <span style={{ background: "linear-gradient(135deg, #818CF8 0%, #6366F1 40%, #A78BFA 70%, #C084FC 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                of Enterprise Tech
               </span>
             </motion.h1>
 
+            {/* Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-xl text-slate-300 leading-relaxed mb-10 max-w-2xl"
+              transition={{ duration: 0.8, delay: 0.25 }}
+              className="text-xl lg:text-2xl text-slate-300 leading-relaxed mb-12 max-w-3xl font-light"
             >
-              American Group LLC is a California-based technology company delivering 77+ enterprise-grade products across AI, mobile, FinTech, cybersecurity, and health — trusted by businesses and consumers worldwide.
+              A California-based technology company delivering <strong className="text-white font-semibold">77+ enterprise-grade products</strong> across AI, mobile, FinTech, cybersecurity, and health — trusted by businesses and consumers worldwide.
             </motion.p>
 
+            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-wrap gap-4"
+              transition={{ duration: 0.7, delay: 0.35 }}
+              className="flex flex-wrap gap-4 mb-16"
             >
               <Link href="/products">
-                <button className="group flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
+                <button className="group flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 40px rgba(99,102,241,0.35)" }}>
                   Explore 77 Products
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold border border-white/15 text-white hover:bg-white/10 transition-all duration-200">
+                <button className="flex items-center gap-3 px-8 py-4 rounded-xl font-bold border border-white/20 text-white hover:bg-white/10 hover:border-white/35 transition-all duration-300 text-base backdrop-blur-sm">
+                  <Play className="w-4 h-4" />
                   Request a Demo
                 </button>
               </Link>
             </motion.div>
 
-            {/* Trust badges */}
+            {/* Trust badges row */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex flex-wrap items-center gap-6 mt-12 pt-10 border-t border-white/8"
+              className="flex flex-wrap items-center gap-6 pt-8 border-t border-white/8"
             >
-              {["iOS & Android", "Enterprise Ready", "SOC 2 Compliant", "99.9% Uptime"].map((badge) => (
-                <div key={badge} className="flex items-center gap-2 text-slate-400 text-sm">
-                  <CheckCircle className="w-4 h-4 text-indigo-400" />
-                  {badge}
+              {trustBadges.map(({ icon: Icon, label }) => (
+                <div key={label} className="flex items-center gap-2 text-slate-400 text-sm">
+                  <Icon className="w-4 h-4 text-indigo-400" />
+                  <span>{label}</span>
                 </div>
               ))}
             </motion.div>
@@ -195,277 +207,451 @@ export default function Home() {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #070B14)" }} />
+        <div className="absolute bottom-0 left-0 right-0 h-48" style={{ background: "linear-gradient(to bottom, transparent, #070B14)" }} />
       </section>
 
-      {/* ── STATS ────────────────────────────────────────── */}
-      <section className="py-20 border-y border-white/5" ref={statsRef}>
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {stats.map((s, i) => (
-              <StatCard key={i} {...s} start={statsStarted} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PRODUCT VERTICALS ────────────────────────────── */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="reveal mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-4">
-              <Layers className="w-3 h-3" /> Product Portfolio
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "Sora, sans-serif" }}>
-              8 Verticals. 77+ Products.
-            </h2>
-            <p className="text-slate-400 text-lg max-w-2xl">
-              From AI infrastructure to consumer mobile apps, AGL builds and ships enterprise-grade software across every major technology vertical.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {verticals.map((v, i) => (
-              <Link key={v.slug} href={`/products#${v.slug}`}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className="group p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/15 transition-all duration-300 cursor-pointer relative overflow-hidden"
-                >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 0% 0%, ${v.color}12, transparent 60%)` }} />
-                  <div className="relative z-10">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110" style={{ background: `${v.color}20`, color: v.color }}>
-                      {v.icon}
-                    </div>
-                    <div className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Sora, sans-serif", color: v.color }}>{v.count}</div>
-                    <h3 className="font-semibold text-white text-sm mb-2 leading-tight">{v.title}</h3>
-                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">{v.desc}</p>
-                    <div className="flex items-center gap-1 mt-4 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: v.color }}>
-                      View Products <ChevronRight className="w-3 h-3" />
-                    </div>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURED PRODUCTS ────────────────────────────── */}
-      <section className="py-24 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-end justify-between mb-12 reveal">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-4">
-                <Star className="w-3 h-3" /> Featured Products
-              </div>
-              <h2 className="text-4xl font-bold text-white" style={{ fontFamily: "Sora, sans-serif" }}>
-                Flagship Applications
-              </h2>
-            </div>
-            <Link href="/products">
-              <button className="hidden md:flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors group">
-                View all 77 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {featuredProducts.map((p, i) => (
-              <Link key={p.slug} href={`/products/${p.slug}`}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className="group p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/20 transition-all duration-300 cursor-pointer relative overflow-hidden"
-                >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 20% 20%, ${p.color}12, transparent 60%)` }} />
-                  <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `linear-gradient(90deg, transparent, ${p.color}60, transparent)` }} />
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between mb-5">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ background: `${p.color}15`, border: `1px solid ${p.color}25` }}>
-                        {p.icon}
-                      </div>
-                      <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: `${p.color}20`, color: p.color }}>{p.tag}</span>
-                    </div>
-                    <h3 className="font-bold text-white text-lg mb-2 group-hover:text-indigo-200 transition-colors" style={{ fontFamily: "Sora, sans-serif" }}>{p.name}</h3>
-                    <p className="text-slate-400 text-sm mb-4">{p.tagline}</p>
-                    <div className="flex items-center gap-1 text-xs font-medium" style={{ color: p.color }}>
-                      Learn More <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <Link href="/products">
-              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 hover:border-white/20 font-semibold transition-all">
-                Browse All 77 Products <ArrowRight className="w-4 h-4" />
-              </button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WHY AGL ──────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="reveal">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6">
-                <Zap className="w-3 h-3" /> Why American Group LLC
-              </div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight" style={{ fontFamily: "Sora, sans-serif" }}>
-                Enterprise quality.<br />Startup velocity.
-              </h2>
-              <p className="text-slate-400 text-lg leading-relaxed mb-8">
-                We combine the engineering rigor of a Fortune 500 technology company with the speed and agility of a startup. Every product we ship is battle-tested, secure, and built to scale.
-              </p>
-              <div className="space-y-3">
-                {["Full-stack product development from concept to launch", "Native iOS, Android, and cross-platform Flutter expertise", "Enterprise AI/ML integration with production-grade reliability", "Dedicated QA, DevOps, and post-launch support teams"].map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                    <span className="text-slate-300 text-sm">{item}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8 flex gap-4">
-                <Link href="/about">
-                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
-                    About AGL <ArrowRight className="w-4 h-4" />
-                  </button>
-                </Link>
-                <Link href="/contact">
-                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 font-semibold transition-all">
-                    Get in Touch
-                  </button>
-                </Link>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 reveal reveal-delay-1">
-              {differentiators.map((d, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.07 }}
-                  className="p-5 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] transition-all"
-                >
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 text-indigo-400" style={{ background: "rgba(99,102,241,0.15)" }}>
-                    {d.icon}
-                  </div>
-                  <h4 className="font-semibold text-white text-sm mb-1.5">{d.title}</h4>
-                  <p className="text-slate-500 text-xs leading-relaxed">{d.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── MOBILE APPS SHOWCASE ─────────────────────────── */}
-      <section className="py-24 border-t border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img src="/manus-storage/agl-mobile-apps-bg_8be1d965.jpg" alt="" className="w-full h-full object-cover opacity-10" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to right, #070B14 0%, rgba(7,11,20,0.7) 50%, #070B14 100%)" }} />
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16 reveal">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-4">
-              <Smartphone className="w-3 h-3" /> Mobile-First
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "Sora, sans-serif" }}>
-              Available on Every Platform
-            </h2>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-              Our mobile apps are built with native iOS (Swift), native Android (Kotlin), and cross-platform Flutter — delivering pixel-perfect experiences on every device.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* ══════════════════════════════════════════════════════════════════════
+          TECH MARQUEE — Technology stack ticker strip
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-8 border-y border-white/5 overflow-hidden" style={{ background: "rgba(255,255,255,0.015)" }}>
+        <div className="overflow-hidden relative">
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 z-10" style={{ background: "linear-gradient(to right, #070B14, transparent)" }} />
+          <div className="absolute right-0 top-0 bottom-0 w-24 z-10" style={{ background: "linear-gradient(to left, #070B14, transparent)" }} />
+          <div className="marquee-track gap-12 px-8">
             {[
-              { platform: "iOS", icon: "🍎", color: "#6366F1", desc: "Native Swift development with HealthKit, Core ML, ARKit, and full Apple ecosystem integration.", count: "40+" },
-              { platform: "Android", icon: "🤖", color: "#10B981", desc: "Native Kotlin with Jetpack Compose, Wear OS, Google Health Connect, and Material You design.", count: "45+" },
-              { platform: "Cross-Platform", icon: "⚡", color: "#F59E0B", desc: "Flutter and React Native for maximum reach with a single codebase and native performance.", count: "20+" },
-            ].map((item, i) => (
+              { label: "Swift / SwiftUI", icon: "🍎" },
+              { label: "Kotlin / Jetpack", icon: "🤖" },
+              { label: "Flutter", icon: "💙" },
+              { label: "React Native", icon: "⚛️" },
+              { label: "Python / FastAPI", icon: "🐍" },
+              { label: "Node.js", icon: "🟢" },
+              { label: "TypeScript", icon: "🔷" },
+              { label: "TensorFlow / PyTorch", icon: "🧠" },
+              { label: "LangChain / LLMs", icon: "🤖" },
+              { label: "AWS / GCP / Azure", icon: "☁️" },
+              { label: "Kubernetes", icon: "⚙️" },
+              { label: "PostgreSQL", icon: "🐘" },
+              { label: "Redis", icon: "🔴" },
+              { label: "Wear OS", icon: "⌚" },
+              { label: "CoreML / Vision", icon: "👁️" },
+              { label: "Stripe / Plaid", icon: "💳" },
+              // Duplicate for seamless loop
+              { label: "Swift / SwiftUI", icon: "🍎" },
+              { label: "Kotlin / Jetpack", icon: "🤖" },
+              { label: "Flutter", icon: "💙" },
+              { label: "React Native", icon: "⚛️" },
+              { label: "Python / FastAPI", icon: "🐍" },
+              { label: "Node.js", icon: "🟢" },
+              { label: "TypeScript", icon: "🔷" },
+              { label: "TensorFlow / PyTorch", icon: "🧠" },
+              { label: "LangChain / LLMs", icon: "🤖" },
+              { label: "AWS / GCP / Azure", icon: "☁️" },
+              { label: "Kubernetes", icon: "⚙️" },
+              { label: "PostgreSQL", icon: "🐘" },
+              { label: "Redis", icon: "🔴" },
+              { label: "Wear OS", icon: "⌚" },
+              { label: "CoreML / Vision", icon: "👁️" },
+              { label: "Stripe / Plaid", icon: "💳" },
+            ].map((tech, i) => (
+              <div key={i} className="flex items-center gap-2.5 whitespace-nowrap text-slate-500 text-sm font-medium flex-shrink-0">
+                <span className="text-base">{tech.icon}</span>
+                <span>{tech.label}</span>
+                {i < 31 && <span className="ml-6 text-white/10">·</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          STATS — Animated counters with premium card design
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-24 border-y border-white/5" ref={statsRef}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            {stats.map((s, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="p-8 rounded-2xl border border-white/8 bg-white/[0.04] text-center"
+                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
               >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <div className="text-3xl font-bold mb-1" style={{ color: item.color, fontFamily: "Sora, sans-serif" }}>{item.count}</div>
-                <h3 className="font-bold text-white text-lg mb-3">{item.platform} Apps</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                <StatCard {...s} start={statsStarted} />
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── INDIA OPS (10%) ──────────────────────────────── */}
-      <section className="py-16 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="p-8 rounded-3xl border border-amber-500/15 bg-amber-500/5 reveal">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)" }}>
-                🇮🇳
+      {/* ══════════════════════════════════════════════════════════════════════
+          PRODUCT VERTICALS — 8-column grid with hover depth
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-28">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          {/* Section header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-6">
+              <Layers className="w-3.5 h-3.5" /> Product Portfolio
+            </div>
+            <h2 className="font-black text-white mb-5 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
+              8 Verticals.<br />
+              <span style={{ background: "linear-gradient(135deg, #818CF8, #A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>77+ Products.</span>
+            </h2>
+            <p className="text-slate-400 text-xl max-w-2xl leading-relaxed">
+              From AI infrastructure to consumer mobile apps, AGL builds and ships enterprise-grade software across every major technology vertical.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {verticals.map((v, i) => {
+              const Icon = v.icon;
+              return (
+                <Link key={v.slug} href={`/products`}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.07, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+                    className="group relative p-6 rounded-2xl border border-white/8 cursor-pointer overflow-hidden transition-all duration-400"
+                    style={{ background: "rgba(255,255,255,0.025)" }}
+                    whileHover={{ y: -6, borderColor: v.color + "40" }}
+                  >
+                    {/* Hover glow */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 0% 0%, ${v.color}15, transparent 65%)` }} />
+                    {/* Top accent line */}
+                    <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: `linear-gradient(90deg, transparent, ${v.color}60, transparent)` }} />
+
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110" style={{ background: v.bg, color: v.color }}>
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <div className="text-3xl font-black mb-1 transition-colors duration-300" style={{ fontFamily: "Sora, sans-serif", color: v.color }}>
+                        {v.count}
+                      </div>
+                      <h3 className="font-bold text-white text-sm mb-2.5 leading-snug">{v.title}</h3>
+                      <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">{v.desc}</p>
+                      <div className="flex items-center gap-1 mt-4 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0" style={{ color: v.color }}>
+                        View Products <ChevronRight className="w-3 h-3" />
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          FEATURED PRODUCTS — Flagship app showcase
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-28" style={{ background: "linear-gradient(180deg, #070B14 0%, #0A0F1E 50%, #070B14 100%)" }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16"
+          >
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/25 bg-amber-500/8 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-6">
+                <Star className="w-3.5 h-3.5" /> Flagship Applications
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="font-bold text-white text-lg" style={{ fontFamily: "Sora, sans-serif" }}>SafeCodeX Research Center — Hyderabad, India</h3>
-                  <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">India Operations</span>
-                </div>
-                <p className="text-slate-400 text-sm leading-relaxed max-w-3xl">
-                  Our Hyderabad-based engineering support office handles QA testing, embedded firmware research, and mobile app testing — supporting AGL's primary product development operations from Santa Clara. SafeCodeX operates as an integral part of the AGL delivery pipeline.
-                </p>
-              </div>
-              <Link href="/safecodex-research">
-                <button className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 text-sm font-medium transition-all">
-                  Learn More <ChevronRight className="w-4 h-4" />
-                </button>
+              <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)" }}>
+                Products that define<br />
+                <span style={{ background: "linear-gradient(135deg, #FBBF24, #F59E0B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                  categories
+                </span>
+              </h2>
+            </div>
+            <Link href="/products">
+              <button className="flex items-center gap-2 text-slate-400 hover:text-white text-sm font-medium transition-colors group whitespace-nowrap">
+                View all 77 products
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {featuredProducts.map((p, i) => (
+              <Link key={p.slug} href={`/products/${p.slug}`}>
+                <motion.div
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08, duration: 0.6 }}
+                  className="group relative p-6 rounded-2xl border border-white/8 cursor-pointer overflow-hidden transition-all duration-400 hover:border-white/20"
+                  style={{ background: "rgba(255,255,255,0.025)" }}
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 0% 100%, ${p.color}10, transparent 60%)` }} />
+
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between mb-5">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ background: p.color + "20" }}>
+                        {p.icon}
+                      </div>
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ background: "rgba(16,185,129,0.15)", color: "#34D399" }}>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        {p.status}
+                      </div>
+                    </div>
+
+                    <div className="mb-1">
+                      <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: p.color }}>{p.tag}</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: "Sora, sans-serif" }}>{p.name}</h3>
+                    <p className="text-slate-400 text-sm leading-relaxed mb-5">{p.tagline}</p>
+
+                    <div className="flex items-center gap-1.5 text-sm font-semibold opacity-60 group-hover:opacity-100 transition-all duration-300" style={{ color: p.color }}>
+                      Learn more <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </motion.div>
               </Link>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Link href="/products">
+              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-white/15 text-white font-semibold hover:bg-white/8 hover:border-white/25 transition-all duration-300">
+                Browse All 77 Products →
+              </button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          WHY AGL — Differentiators grid
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-28 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            {/* Left: headline + CTAs */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+                <Building2 className="w-3.5 h-3.5" /> Why American Group LLC
+              </div>
+              <h2 className="font-black text-white mb-6 tracking-tight leading-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4vw, 3.5rem)" }}>
+                Enterprise quality.<br />
+                <span style={{ background: "linear-gradient(135deg, #818CF8, #6366F1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                  Startup velocity.
+                </span>
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed mb-10">
+                We combine the engineering rigor of a Fortune 500 technology company with the speed and agility of a startup. Every product we ship is battle-tested, secure, and built to scale.
+              </p>
+              <ul className="space-y-3 mb-10">
+                {["Full-stack product teams from concept to launch", "Native iOS, Android, and cross-platform Flutter expertise", "Enterprise AI/ML integrations with production-grade stability", "Dedicated QA, DevOps, and post-launch support teams"].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-slate-300 text-sm">
+                    <CheckCircle className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/american-group-llc">
+                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 text-sm" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
+                    About AGL <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+                <Link href="/contact">
+                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border border-white/15 text-white hover:bg-white/8 transition-all duration-300 text-sm">
+                    Get in Touch
+                  </button>
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Right: differentiator cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {differentiators.map((d, i) => {
+                const Icon = d.icon;
+                return (
+                  <motion.div
+                    key={d.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08, duration: 0.6 }}
+                    className="p-5 rounded-xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-indigo-500/25 transition-all duration-300"
+                  >
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ background: "rgba(99,102,241,0.15)", color: "#818CF8" }}>
+                      <Icon className="w-4.5 h-4.5" />
+                    </div>
+                    <h4 className="font-bold text-white text-sm mb-1.5">{d.title}</h4>
+                    <p className="text-slate-500 text-xs leading-relaxed">{d.desc}</p>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────── */}
-      <section className="py-28 border-t border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(99,102,241,0.12), transparent 70%)" }} />
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center reveal">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6" style={{ fontFamily: "Sora, sans-serif" }}>
-            Ready to build something<br />
-            <span style={{ background: "linear-gradient(135deg, #818CF8, #6366F1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              extraordinary?
-            </span>
-          </h2>
-          <p className="text-slate-400 text-xl mb-10 max-w-2xl mx-auto">
-            Whether you need a custom enterprise application, a mobile app for millions of users, or AI infrastructure for your business — AGL delivers.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/contact">
-              <button className="group flex items-center gap-2 px-10 py-4 rounded-xl font-semibold text-white transition-all hover:scale-105 active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
-                Start a Project
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
-            <Link href="/products">
-              <button className="flex items-center gap-2 px-10 py-4 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 font-semibold transition-all">
-                Browse Products
-              </button>
-            </Link>
+      {/* ══════════════════════════════════════════════════════════════════════
+          PLATFORM SECTION — Mobile-first with visual showcase
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-28 border-t border-white/5 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left: image */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="rounded-3xl overflow-hidden border border-white/10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(99,102,241,0.15)" }}>
+                <img
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/agl-products-bg-Us6fz7efmAJiYnk273pQms.webp"
+                  alt="AGL Mobile Products"
+                  className="w-full h-72 lg:h-96 object-cover"
+                />
+                <div className="absolute inset-0 rounded-3xl" style={{ background: "linear-gradient(to top, rgba(7,11,20,0.6), transparent 50%)" }} />
+              </div>
+              {/* Floating stat badge */}
+              <div className="absolute -bottom-5 -right-5 px-6 py-4 rounded-2xl border border-white/15 backdrop-blur-xl" style={{ background: "rgba(7,11,20,0.9)" }}>
+                <div className="text-3xl font-black text-white" style={{ fontFamily: "Sora, sans-serif" }}>40+</div>
+                <div className="text-slate-400 text-xs">Native iOS Apps</div>
+              </div>
+            </motion.div>
+
+            {/* Right: content */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-violet-500/25 bg-violet-500/8 text-violet-300 text-xs font-semibold uppercase tracking-widest mb-8">
+                <Smartphone className="w-3.5 h-3.5" /> Mobile First
+              </div>
+              <h2 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+                Available on<br />
+                <span style={{ background: "linear-gradient(135deg, #A78BFA, #818CF8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                  Every Platform
+                </span>
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed mb-10">
+                Our mobile apps are built with native iOS (Swift), native Android (Kotlin), and cross-platform Flutter — delivering pixel-perfect experiences on every device.
+              </p>
+              <div className="grid grid-cols-3 gap-4 mb-10">
+                {[
+                  { count: "40+", label: "iOS Apps", sub: "Swift, SwiftUI" },
+                  { count: "45+", label: "Android Apps", sub: "Kotlin, Jetpack" },
+                  { count: "20+", label: "Cross-Platform", sub: "Flutter, React Native" },
+                ].map((item) => (
+                  <div key={item.label} className="text-center p-4 rounded-xl border border-white/8 bg-white/[0.025]">
+                    <div className="text-2xl font-black text-white mb-1" style={{ fontFamily: "Sora, sans-serif" }}>{item.count}</div>
+                    <div className="text-white/80 text-xs font-semibold mb-0.5">{item.label}</div>
+                    <div className="text-slate-500 text-xs">{item.sub}</div>
+                  </div>
+                ))}
+              </div>
+              <Link href="/products">
+                <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 text-sm" style={{ background: "linear-gradient(135deg, #7C3AED, #6366F1)" }}>
+                  Browse All Apps <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+            </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          INDIA OPS BANNER — SafeCodeX mention
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-12 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col lg:flex-row items-center justify-between gap-6 p-6 lg:p-8 rounded-2xl border border-white/8"
+            style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.06), rgba(7,11,20,0.8))" }}
+          >
+            <div className="flex items-center gap-5">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(99,102,241,0.15)" }}>
+                🇮🇳
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-white font-bold">SafeCodeX Research Center</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300">India Operations</span>
+                </div>
+                <p className="text-slate-400 text-sm">Our Hyderabad-based engineering support office handles QA testing, embedded firmware research, and mobile app development operations from Santa Clara. SafeCodeX operates as an integral part of the AGL delivery pipeline.</p>
+              </div>
+            </div>
+            <Link href="/safecodex-research" className="flex-shrink-0">
+              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/15 text-white text-sm font-semibold hover:bg-white/8 transition-all whitespace-nowrap">
+                Learn More <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          CTA SECTION — Full-bleed premium call to action
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-32 border-t border-white/5 relative overflow-hidden">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.12), transparent 60%)" }} />
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+              <Zap className="w-3.5 h-3.5" /> Start Building
+            </div>
+            <h2 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}>
+              Ready to build something{" "}
+              <span style={{ background: "linear-gradient(135deg, #818CF8, #FBBF24)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                extraordinary?
+              </span>
+            </h2>
+            <p className="text-slate-400 text-xl leading-relaxed mb-12 max-w-2xl mx-auto">
+              Whether you need a custom enterprise application, a mobile app for millions of users, or an AI integration for your business — AGL delivers.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link href="/contact">
+                <button className="group flex items-center gap-3 px-10 py-5 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 50px rgba(99,102,241,0.3)" }}>
+                  Start a Project
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </Link>
+              <Link href="/products">
+                <button className="flex items-center gap-3 px-10 py-5 rounded-xl font-bold border border-white/20 text-white hover:bg-white/8 hover:border-white/35 transition-all duration-300 text-base">
+                  Browse Products
+                </button>
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 

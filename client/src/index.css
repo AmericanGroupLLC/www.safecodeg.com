@@ -267,11 +267,7 @@
     opacity: 0.6;
   }
 
-  @keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+
 
   /* Product Category Badge */
   .category-badge {
@@ -365,6 +361,74 @@
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid oklch(0.22 0.03 265 / 0.5);
   }
+
+  /* ── Marquee / Ticker ─────────────────────────────────────────── */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 40s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  /* ── Shimmer loading skeleton ──────────────────────────────────── */
+  .shimmer {
+    background: linear-gradient(90deg, oklch(0.14 0.02 265) 25%, oklch(0.18 0.03 265) 50%, oklch(0.14 0.02 265) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* ── Floating badge pulse ──────────────────────────────────────── */
+  .pulse-ring {
+    animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
+
+  /* ── Hero grid lines ───────────────────────────────────────────── */
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ── Spotlight hover ───────────────────────────────────────────── */
+  .spotlight {
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle 300px at var(--mx, 50%) var(--my, 50%), rgba(99,102,241,0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ── Global keyframes (must be outside @layer) ─────────────────── */
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+  70%  { box-shadow: 0 0 0 10px rgba(99,102,241,0); }
+  100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
 }
 
 /* Framer Motion overrides */

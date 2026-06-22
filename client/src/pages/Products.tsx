@@ -163,7 +163,7 @@ export default function Products() {
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-6">
               <Zap className="w-4 h-4" />
-              {products.length}+ Products Across 7 Verticals
+              {products.length}+ Products Across 8 Verticals
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
               Our Product
@@ -183,7 +183,7 @@ export default function Products() {
             {[
               { icon: <Cpu className="w-5 h-5 text-indigo-400" />, value: `${products.length}+`, label: 'Total Products' },
               { icon: <Smartphone className="w-5 h-5 text-emerald-400" />, value: `${products.filter(p => p.platforms.includes('iOS') || p.platforms.includes('Android')).length}+`, label: 'Mobile Apps' },
-              { icon: <Shield className="w-5 h-5 text-amber-400" />, value: '7', label: 'Verticals' },
+              { icon: <Shield className="w-5 h-5 text-amber-400" />, value: '8', label: 'Verticals' },
               { icon: <TrendingUp className="w-5 h-5 text-violet-400" />, value: `${products.filter(p => p.status === 'Live').length}`, label: 'Live Products' },
             ].map((stat, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="text-center">
