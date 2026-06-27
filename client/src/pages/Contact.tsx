@@ -8,6 +8,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Mail, MapPin, Phone, Send, Linkedin, Youtube, Clock, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 const offices = [
   {
@@ -42,19 +43,31 @@ const inquiryTypes = [
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", company: "", inquiry: "", message: "" });
-  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+
+  const submitMutation = trpc.contact.submit.useMutation({
+    onSuccess: (data) => {
+      setSent(true);
+      toast.success(data.message || "Message sent! We'll respond within 1–2 business days.");
+      setForm({ name: "", email: "", company: "", inquiry: "", message: "" });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to send message. Please try again or email contact@safecodeg.com directly.");
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSending(true);
-    setTimeout(() => {
-      setSending(false);
-      setSent(true);
-      toast.success("Message sent! We'll get back to you within 24 hours.");
-      setForm({ name: "", email: "", company: "", inquiry: "", message: "" });
-    }, 1500);
+    submitMutation.mutate({
+      name: form.name,
+      email: form.email,
+      company: form.company || undefined,
+      subject: form.inquiry || "General Inquiry",
+      message: form.message,
+    });
   };
+
+  const sending = submitMutation.isPending;
 
   return (
     <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>

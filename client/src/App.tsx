@@ -16,8 +16,8 @@ import SupportPage from "./pages/Support";
 import TermsPage from "./pages/Terms";
 import AIChatWidget from "./components/AIChatWidget";
 import ProductDetailPage from "./pages/ProductDetail";
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />
