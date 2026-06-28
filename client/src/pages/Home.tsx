@@ -109,6 +109,7 @@ export default function Home() {
   return (
     <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
+      <main id="main-content">
 
       {/* ══════════════════════════════════════════════════════════════════════
           HERO — Full-bleed cinematic, massive typography, premium depth
@@ -118,7 +119,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <img
             src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/agl-hero-v2-aNA585WnQyWK3EQb4TGCDS.webp"
-            alt=""
+            alt="American Group LLC enterprise technology background"
             className="w-full h-full object-cover"
           />
           {/* Deep obsidian overlay */}
@@ -660,6 +661,7 @@ export default function Home() {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   );
