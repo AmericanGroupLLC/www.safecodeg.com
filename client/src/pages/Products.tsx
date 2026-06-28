@@ -151,23 +151,22 @@ export default function Products() {
   const highlights = products.filter(p => p.highlight);
 
   return (
-    <div className="min-h-screen bg-[#070B14] text-white">
+    <div className="min-h-screen text-white" style={{ background: "#030408" }}>
       <Navigation />
 
       {/* Hero */}
       <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/30 via-transparent to-transparent" />
-        <div className="absolute top-20 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
-        <div className="absolute top-40 right-1/4 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 40%, rgba(124,58,237,0.18) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(245,158,11,0.08) 0%, transparent 45%)" }} />
+        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: "linear-gradient(rgba(124,58,237,1) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,1) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.9)" }}>
               <Zap className="w-4 h-4" />
               {products.length}+ Products Across 8 Verticals
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
               Our Product
-              <span className="block bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">Portfolio</span>
+              <span className="block" style={{ background: "linear-gradient(135deg, #C4B5FD 0%, #7C3AED 40%, #F59E0B 80%, #FCD34D 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Portfolio</span>
             </h1>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
               Enterprise-grade mobile apps and platforms built for scale. From AI assistants to fintech solutions — every product crafted for real-world impact.
@@ -177,19 +176,19 @@ export default function Products() {
       </section>
 
       {/* Stats bar */}
-      <section className="border-y border-white/5 py-8">
+      <section className="py-8" style={{ borderTop: "1px solid rgba(124,58,237,0.12)", borderBottom: "1px solid rgba(124,58,237,0.12)", background: "rgba(124,58,237,0.04)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { icon: <Cpu className="w-5 h-5 text-indigo-400" />, value: `${products.length}+`, label: 'Total Products' },
+              { icon: <Cpu className="w-5 h-5" style={{ color: "#A78BFA" }} />, value: `${products.length}+`, label: 'Total Products' },
               { icon: <Smartphone className="w-5 h-5 text-emerald-400" />, value: `${products.filter(p => p.platforms.includes('iOS') || p.platforms.includes('Android')).length}+`, label: 'Mobile Apps' },
-              { icon: <Shield className="w-5 h-5 text-amber-400" />, value: '8', label: 'Verticals' },
-              { icon: <TrendingUp className="w-5 h-5 text-violet-400" />, value: `${products.filter(p => p.status === 'Live').length}`, label: 'Live Products' },
+              { icon: <Shield className="w-5 h-5" style={{ color: "#F59E0B" }} />, value: '8', label: 'Verticals' },
+              { icon: <TrendingUp className="w-5 h-5" style={{ color: "#A78BFA" }} />, value: `${products.filter(p => p.status === 'Live').length}`, label: 'Live Products' },
             ].map((stat, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="text-center">
                 <div className="flex justify-center mb-2">{stat.icon}</div>
-                <div className="text-3xl font-bold text-white mb-1" style={{ fontFamily: 'Sora, sans-serif' }}>{stat.value}</div>
-                <div className="text-slate-500 text-sm">{stat.label}</div>
+                <div className="text-3xl font-bold mb-1" style={{ fontFamily: 'Sora, sans-serif', background: "linear-gradient(135deg, #E9D5FF, #A78BFA, #F59E0B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{stat.value}</div>
+                <div className="text-sm" style={{ color: "rgba(167,139,250,0.55)" }}>{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -207,7 +206,7 @@ export default function Products() {
             {highlights.map((p, i) => (
               <motion.div key={p.slug} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
                 <Link href={`/products/${p.slug}`}>
-                  <div className="group relative p-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/8 transition-all duration-300 cursor-pointer overflow-hidden h-full">
+                  <div className="group relative p-5 rounded-2xl transition-all duration-300 cursor-pointer overflow-hidden h-full" style={{ background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.15)" }}>
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" style={{ background: `radial-gradient(circle at 50% 0%, ${p.color}15, transparent 70%)` }} />
                     <div className="relative z-10">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-3" style={{ background: `${p.color}20`, border: `1px solid ${p.color}30` }}>{p.icon}</div>
@@ -227,17 +226,17 @@ export default function Products() {
       </section>
 
       {/* Filters */}
-      <section className="sticky top-16 z-30 py-4 bg-[#070B14]/95 backdrop-blur-xl border-b border-white/5">
+      <section className="sticky top-16 z-30 py-4 backdrop-blur-xl" style={{ background: "rgba(3,4,8,0.95)", borderBottom: "1px solid rgba(124,58,237,0.12)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input type="text" placeholder="Search products, tags..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50 transition-all" />
+              <input type="text" placeholder="Search products, tags..." value={search} onChange={e => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none transition-all" style={{ background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.2)" }} />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <Filter className="w-4 h-4 text-slate-500" />
               {['All', 'iOS', 'Android', 'Web', 'Windows'].map(pl => (
-                <button key={pl} onClick={() => setActivePlatform(pl)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${activePlatform === pl ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'}`}>{pl}</button>
+                <button key={pl} onClick={() => setActivePlatform(pl)} className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style={activePlatform === pl ? { background: "linear-gradient(135deg, #7C3AED, #5B21B6)", color: "white" } : { background: "rgba(124,58,237,0.06)", color: "rgba(167,139,250,0.6)", border: "1px solid rgba(124,58,237,0.15)" }}>{pl}</button>
               ))}
             </div>
           </div>
@@ -246,7 +245,7 @@ export default function Products() {
               const count = cat === 'All' ? products.length : products.filter(p => p.category === cat).length;
               const color = cat === 'All' ? undefined : categoryColors[cat];
               return (
-                <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${activeCategory === cat ? 'text-white' : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'}`} style={activeCategory === cat ? { backgroundColor: color ? color : '#6366F1', color: '#fff' } : {}}>
+                <button key={cat} onClick={() => setActiveCategory(cat)} className="px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex-shrink-0" style={activeCategory === cat ? { backgroundColor: color ? color : '#7C3AED', color: '#fff', boxShadow: `0 0 12px ${color || '#7C3AED'}40` } : { background: "rgba(124,58,237,0.06)", color: "rgba(167,139,250,0.6)", border: "1px solid rgba(124,58,237,0.15)" }}>
                   {cat} ({count})
                 </button>
               );
@@ -273,7 +272,7 @@ export default function Products() {
                 {filtered.map((p, i) => (
                   <motion.div key={p.slug} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ delay: i * 0.02 }}>
                     <Link href={`/products/${p.slug}`}>
-                      <div className="group h-full p-6 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300 cursor-pointer relative overflow-hidden">
+                      <div className="group h-full p-6 rounded-2xl transition-all duration-300 cursor-pointer relative overflow-hidden" style={{ background: "rgba(124,58,237,0.04)", border: "1px solid rgba(124,58,237,0.12)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}>
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 30% 30%, ${p.color}10, transparent 60%)` }} />
                         <div className="relative z-10">
                           <div className="flex items-start justify-between mb-4">
@@ -285,10 +284,10 @@ export default function Products() {
                           <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">{p.description}</p>
                           <div className="flex flex-wrap gap-1.5 mb-4">
                             {p.tags.slice(0, 3).map(tag => (
-                              <span key={tag} className="text-xs px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/8">{tag}</span>
+                              <span key={tag} className="text-xs px-2 py-0.5 rounded-md" style={{ background: "rgba(124,58,237,0.08)", color: "rgba(167,139,250,0.7)", border: "1px solid rgba(124,58,237,0.15)" }}>{tag}</span>
                             ))}
                           </div>
-                          <div className="flex items-center justify-between pt-4 border-t border-white/8">
+                          <div className="flex items-center justify-between pt-4" style={{ borderTop: "1px solid rgba(124,58,237,0.12)" }}>
                             <div className="flex items-center gap-2 flex-wrap">
                               {p.platforms.slice(0, 3).map(pl => (
                                 <span key={pl} className="flex items-center gap-1 text-slate-500 text-xs">{platformIcons[pl]}<span>{pl}</span></span>
@@ -310,12 +309,13 @@ export default function Products() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 border-t border-white/5">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+      <section className="py-24 relative overflow-hidden" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(124,58,237,0.15) 0%, transparent 60%)" }} />
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-4xl font-bold mb-4 text-white" style={{ fontFamily: 'Sora, sans-serif' }}>Don't see what you need?</h2>
-          <p className="text-slate-400 text-lg mb-8">We build custom enterprise software and mobile apps. Tell us your idea and we'll make it a reality.</p>
+          <p className="mb-8 text-lg" style={{ color: "rgba(167,139,250,0.65)" }}>We build custom enterprise software and mobile apps. Tell us your idea and we'll make it a reality.</p>
           <Link href="/contact">
-            <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95">
+            <button className="px-8 py-4 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95" style={{ background: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)", boxShadow: "0 0 30px rgba(124,58,237,0.4)" }}>
               Start a Custom Project →
             </button>
           </Link>

@@ -128,7 +128,7 @@ const perks = [
 
 export default function CareersPage() {
   return (
-    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
+    <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
@@ -140,13 +140,13 @@ export default function CareersPage() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,11,20,0.97) 0%, rgba(7,11,20,0.88) 50%, rgba(7,11,20,0.75) 100%)" }} />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 60%, rgba(99,102,241,0.12), transparent 55%)" }} />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 60%, rgba(124,58,237,0.2), transparent 55%), radial-gradient(ellipse at 80% 30%, rgba(245,158,11,0.08), transparent 45%)" }} />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #070B14)" }} />
+        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #030408)" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-8">
               <Briefcase className="w-3.5 h-3.5" /> Careers at AGL
             </div>
             <h1 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3rem, 7vw, 6rem)" }}>
@@ -175,10 +175,10 @@ export default function CareersPage() {
       </section>
 
       {/* ── Perks ─────────────────────────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5">
+      <section className="py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/25 bg-amber-500/8 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-6">
               Why Join AGL
             </div>
             <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
@@ -199,7 +199,7 @@ export default function CareersPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08, duration: 0.6 }}
-                  className="p-6 rounded-2xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] transition-all duration-300"
+                  className="p-6 rounded-2xl transition-all duration-300"
                 >
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: "rgba(99,102,241,0.15)", color: "#818CF8" }}>
                     <Icon className="w-5 h-5" />
@@ -214,10 +214,10 @@ export default function CareersPage() {
       </section>
 
       {/* ── Open Roles ────────────────────────────────────────────────────── */}
-      <section id="openings" className="py-28 border-t border-white/5">
+      <section id="openings" className="py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-6">
               Open Positions
             </div>
             <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
@@ -242,7 +242,7 @@ export default function CareersPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.07, duration: 0.6 }}
-                    className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300 cursor-pointer"
+                    className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl transition-all duration-300 cursor-pointer"
                     onClick={() => toast.info("Applications are currently managed via email. Please send your resume to careers@safecodeg.com")}
                   >
                     <div className="flex items-start gap-4">
@@ -335,7 +335,7 @@ export default function CareersPage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mt-10 p-6 rounded-2xl border border-white/8 bg-white/[0.025] text-center"
+            className="mt-10 p-6 rounded-2xl text-center"
           >
             <p className="text-slate-400 text-sm mb-4">
               Don't see a role that fits? We're always looking for exceptional talent.

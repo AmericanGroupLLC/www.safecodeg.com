@@ -29,7 +29,7 @@ const values = [
 
 export default function AboutPage() {
   return (
-    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
+    <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
@@ -41,18 +41,18 @@ export default function AboutPage() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,11,20,0.96) 0%, rgba(7,11,20,0.85) 50%, rgba(7,11,20,0.75) 100%)" }} />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 60%, rgba(99,102,241,0.15), transparent 55%)" }} />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 60%, rgba(124,58,237,0.22), transparent 55%), radial-gradient(ellipse at 80% 30%, rgba(245,158,11,0.08), transparent 45%)" }} />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #070B14)" }} />
+        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #030408)" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-8" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.9)" }}>
               <Building2 className="w-3.5 h-3.5" /> About American Group LLC
             </div>
             <h1 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3rem, 7vw, 6rem)" }}>
               Our Story.<br />
-              <span style={{ background: "linear-gradient(135deg, #818CF8, #A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span style={{ background: "linear-gradient(135deg, #C4B5FD 0%, #7C3AED 40%, #F59E0B 80%, #FCD34D 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                 Our Mission.
               </span>
             </h1>
@@ -69,14 +69,14 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             {/* Story */}
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-8" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.9)" }}>
                 Our Story
               </div>
               <h2 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
                 Built for scale<br />
-                <span style={{ background: "linear-gradient(135deg, #818CF8, #6366F1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                  from day one
-                </span>
+              <span style={{ background: "linear-gradient(135deg, #A78BFA 0%, #7C3AED 50%, #F59E0B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                from day one
+              </span>
               </h2>
               <div className="space-y-5 text-slate-400 leading-relaxed text-base">
                 <p>
@@ -97,7 +97,7 @@ export default function AboutPage() {
                   { label: "📅 Founded", value: "2018" },
                   { label: "📦 Products", value: "77+ Active" },
                 ].map((item) => (
-                  <div key={item.label} className="p-4 rounded-xl border border-white/8 bg-white/[0.025]">
+                  <div key={item.label} className="p-4 rounded-xl" style={{ background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.15)" }}>
                     <div className="text-slate-500 text-xs mb-1">{item.label}</div>
                     <div className="text-white font-semibold text-sm">{item.value}</div>
                   </div>
@@ -107,10 +107,10 @@ export default function AboutPage() {
 
             {/* Timeline */}
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/25 bg-amber-500/8 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-8" style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "rgba(253,230,138,0.9)" }}>
                 Our Journey
               </div>
-              <div className="relative pl-6 border-l border-white/10">
+              <div className="relative pl-6" style={{ borderLeft: "1px solid rgba(124,58,237,0.2)" }}>
                 {timeline.map((item, i) => (
                   <motion.div
                     key={item.year}
@@ -121,9 +121,9 @@ export default function AboutPage() {
                     className="relative mb-8 last:mb-0"
                   >
                     {/* Dot */}
-                    <div className="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full border-2 border-indigo-500 bg-indigo-500/30" />
+                    <div className="absolute -left-[1.65rem] top-1 w-3 h-3 rounded-full" style={{ border: "2px solid #7C3AED", background: "rgba(124,58,237,0.3)" }} />
                     <div className="flex items-center gap-3 mb-1.5">
-                      <span className="px-2.5 py-1 rounded-lg text-xs font-bold font-mono" style={{ background: "rgba(99,102,241,0.2)", color: "#818CF8" }}>
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-bold font-mono" style={{ background: "rgba(124,58,237,0.15)", color: "#A78BFA" }}>
                         {item.year}
                       </span>
                       <span className="font-semibold text-white text-sm">{item.title}</span>
@@ -138,10 +138,10 @@ export default function AboutPage() {
       </section>
 
       {/* ── Values ────────────────────────────────────────────────────────── */}
-      <section className="py-28 border-t border-white/5">
+      <section className="py-28" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-6" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.9)" }}>
               Our Values
             </div>
             <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)" }}>
@@ -159,7 +159,7 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08, duration: 0.6 }}
-                  className="group p-6 rounded-2xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300"
+                  className="group p-6 rounded-2xl transition-all duration-300" style={{ background: "rgba(124,58,237,0.04)", border: "1px solid rgba(124,58,237,0.12)" }}
                 >
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110" style={{ background: v.color + "20", color: v.color }}>
                     <Icon className="w-5 h-5" />
@@ -174,15 +174,15 @@ export default function AboutPage() {
       </section>
 
       {/* ── Two Entities ──────────────────────────────────────────────────── */}
-      <section className="py-28 border-t border-white/5">
+      <section className="py-28" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-6" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.9)" }}>
               Our Entities
             </div>
             <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)" }}>
               One organization.<br />
-              <span style={{ background: "linear-gradient(135deg, #818CF8, #FBBF24)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span style={{ background: "linear-gradient(135deg, #C4B5FD 0%, #7C3AED 40%, #F59E0B 80%, #FCD34D 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                 Two global locations.
               </span>
             </h2>
@@ -215,7 +215,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15, duration: 0.7 }}
-                className="p-8 rounded-2xl border border-white/8 bg-white/[0.025] hover:border-white/15 transition-all duration-300"
+                className="p-8 rounded-2xl transition-all duration-300" style={{ background: "rgba(124,58,237,0.04)", border: "1px solid rgba(124,58,237,0.12)" }}
               >
                 <div className="flex items-center gap-4 mb-6">
                   <span className="text-4xl">{entity.flag}</span>
@@ -245,8 +245,8 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA ───────────────────────────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.10), transparent 60%)" }} />
+      <section className="py-24 relative overflow-hidden" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(124,58,237,0.15), transparent 60%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
             <h2 className="font-black text-white mb-5 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>

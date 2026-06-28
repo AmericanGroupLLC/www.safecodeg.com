@@ -70,20 +70,20 @@ export default function ContactPage() {
   const sending = submitMutation.isPending;
 
   return (
-    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
+    <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative pt-36 pb-20 overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 60%, rgba(99,102,241,0.12), transparent 55%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 60%, rgba(124,58,237,0.2), transparent 55%)" }} />
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 80% 30%, rgba(245,158,11,0.06), transparent 50%)" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-8">
               <Mail className="w-3.5 h-3.5" /> Contact Us
             </div>
-            <h1 className="font-black text-white mb-5 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>
+            <h1 className="font-black text-white mb-5 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)" }}>
               Let's build something<br />
               <span style={{ background: "linear-gradient(135deg, #818CF8, #FBBF24)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                 extraordinary together.
@@ -110,7 +110,7 @@ export default function ContactPage() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.6 }}
-                  className="p-6 rounded-2xl border border-white/8 bg-white/[0.025]"
+                  className="p-6 rounded-2xl rounded-2xl"
                 >
                   <div className="flex items-center gap-3 mb-5">
                     <span className="text-3xl">{office.flag}</span>
@@ -159,7 +159,7 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="p-5 rounded-2xl border border-white/8 bg-white/[0.025]"
+                className="p-5 rounded-2xl rounded-2xl"
               >
                 <div className="text-white/40 text-xs font-semibold uppercase tracking-widest mb-4">Follow Us</div>
                 <div className="flex items-center gap-3">
@@ -190,7 +190,7 @@ export default function ContactPage() {
               transition={{ duration: 0.7 }}
               className="lg:col-span-3"
             >
-              <div className="p-8 rounded-2xl border border-white/8 bg-white/[0.025]">
+              <div className="p-8 rounded-2xl rounded-2xl">
                 <h2 className="font-bold text-white text-xl mb-2" style={{ fontFamily: "Sora, sans-serif" }}>Send us a message</h2>
                 <p className="text-slate-500 text-sm mb-8">Fill out the form below and our team will get back to you promptly.</p>
 
@@ -279,7 +279,7 @@ export default function ContactPage() {
                       type="submit"
                       disabled={sending}
                       className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-white text-sm transition-all duration-300 hover:scale-[1.02] disabled:opacity-60 disabled:scale-100"
-                      style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 30px rgba(99,102,241,0.25)" }}
+                      style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 30px rgba(124,58,237,0.2)" }}
                     >
                       {sending ? (
                         <>

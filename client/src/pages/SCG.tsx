@@ -66,13 +66,13 @@ const whyUs = [
 
 export default function SCGPage() {
   return (
-    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
+    <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative pt-36 pb-24 overflow-hidden">
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 15% 60%, rgba(245,158,11,0.12), transparent 55%)" }} />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 85% 30%, rgba(99,102,241,0.07), transparent 50%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 85% 30%, rgba(124,58,237,0.2), transparent 50%)" }} />
         <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
@@ -84,7 +84,7 @@ export default function SCGPage() {
               <span className="text-slate-400">India Office — SafeCodeX</span>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/25 bg-amber-500/8 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-8">
               🇮🇳 India Engineering Office · Private Limited
             </div>
             <h1 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3rem, 7vw, 6rem)" }}>
@@ -131,7 +131,7 @@ export default function SCGPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.6 }}
-                className="p-6 rounded-2xl border border-white/8 bg-white/[0.025] text-center"
+                className="p-6 rounded-2xl rounded-2xl text-center"
               >
                 <div className="text-3xl font-black mb-1" style={{ fontFamily: "Sora, sans-serif", color: h.color }}>{h.value}</div>
                 <div className="text-slate-400 text-sm">{h.label}</div>
@@ -145,7 +145,7 @@ export default function SCGPage() {
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/25 bg-amber-500/8 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-6">
               Our Services
             </div>
             <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)" }}>
@@ -163,7 +163,7 @@ export default function SCGPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08, duration: 0.6 }}
-                  className="group p-6 rounded-2xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300"
+                  className="group p-6 rounded-2xl rounded-2xl hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ background: svc.color + "20" }}>
@@ -188,11 +188,11 @@ export default function SCGPage() {
       </section>
 
       {/* ── Why Us ────────────────────────────────────────────────────────── */}
-      <section className="py-28 border-t border-white/5">
+      <section className="py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/25 bg-amber-500/8 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-8">
                 Why Choose Us
               </div>
               <h2 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
@@ -219,7 +219,7 @@ export default function SCGPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.06, duration: 0.5 }}
-                    className="flex items-center gap-3 p-4 rounded-xl border border-white/8 bg-white/[0.025]"
+                    className="flex items-center gap-3 p-4 rounded-xl rounded-2xl"
                   >
                     <CheckCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
                     <span className="text-slate-300 text-sm">{item}</span>
@@ -232,7 +232,7 @@ export default function SCGPage() {
       </section>
 
       {/* ── CTA ───────────────────────────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5 relative overflow-hidden">
+      <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(245,158,11,0.08), transparent 60%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>

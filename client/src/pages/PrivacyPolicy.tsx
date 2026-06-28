@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
   }, []);
 
   return (
-    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
+    <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
       {/* Hero */}
@@ -137,11 +137,11 @@ export default function PrivacyPolicyPage() {
             ))}
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16" style={{ background: "linear-gradient(to bottom, transparent, #070B14)" }} />
+        <div className="absolute bottom-0 left-0 right-0 h-16" style={{ background: "linear-gradient(to bottom, transparent, #030408)" }} />
       </section>
 
       {/* Main content: sidebar TOC + article */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" style={{ background: "#070B14" }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" style={{ background: "#030408" }}>
         <div className="flex gap-10 items-start">
 
           {/* Sticky Table of Contents */}

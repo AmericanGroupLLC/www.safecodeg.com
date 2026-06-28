@@ -79,7 +79,7 @@ export default function Terms() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: "#070B14", color: "white", fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="min-h-screen" style={{ background: "#030408", color: "white", fontFamily: "'DM Sans', sans-serif" }}>
       <Navigation />
 
       {/* ── HERO ── */}

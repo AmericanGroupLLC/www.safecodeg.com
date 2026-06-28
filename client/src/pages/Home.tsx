@@ -82,14 +82,14 @@ const trustBadges = [
 function StatCard({ value, suffix, label, sub, start }: { value: number; suffix: string; label: string; sub: string; start: boolean }) {
   const count = useCounter(value, 2200, start);
   return (
-    <div className="relative group p-8 rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.05] hover:border-indigo-500/30 transition-all duration-500 overflow-hidden">
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "radial-gradient(circle at 50% 0%, rgba(99,102,241,0.08), transparent 60%)" }} />
+    <div className="relative group p-8 rounded-2xl transition-all duration-500 overflow-hidden" style={{ background: "rgba(124,58,237,0.06)", border: "1px solid rgba(124,58,237,0.15)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}>
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: "radial-gradient(circle at 50% 0%, rgba(124,58,237,0.15), transparent 60%)" }} />
       <div className="relative z-10">
-        <div className="text-5xl lg:text-6xl font-black text-white mb-2 tracking-tight" style={{ fontFamily: "Sora, sans-serif" }}>
+        <div className="text-5xl lg:text-6xl font-black mb-2 tracking-tight" style={{ fontFamily: "Sora, sans-serif", background: "linear-gradient(135deg, #E9D5FF 0%, #A78BFA 50%, #F59E0B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
           {count}{suffix}
         </div>
-        <div className="text-white/90 font-semibold text-base mb-1">{label}</div>
-        <div className="text-slate-500 text-sm">{sub}</div>
+        <div className="font-semibold text-base mb-1" style={{ color: "rgba(255,255,255,0.9)" }}>{label}</div>
+        <div className="text-sm" style={{ color: "rgba(167,139,250,0.55)" }}>{sub}</div>
       </div>
     </div>
   );
@@ -107,30 +107,32 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
+    <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
       {/* ══════════════════════════════════════════════════════════════════════
           HERO — Full-bleed cinematic, massive typography, premium depth
       ══════════════════════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Background layers */}
+        {/* Background layers — rich aurora mesh */}
         <div className="absolute inset-0">
           <img
             src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/agl-hero-v2-aNA585WnQyWK3EQb4TGCDS.webp"
             alt=""
             className="w-full h-full object-cover"
           />
-          {/* Deep overlay for text contrast */}
-          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,11,20,0.96) 0%, rgba(7,11,20,0.88) 45%, rgba(7,11,20,0.70) 100%)" }} />
-          {/* Indigo radial glow left */}
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 15% 60%, rgba(99,102,241,0.18) 0%, transparent 55%)" }} />
-          {/* Gold accent right */}
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 85% 30%, rgba(245,158,11,0.08) 0%, transparent 45%)" }} />
+          {/* Deep obsidian overlay */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(3,4,8,0.97) 0%, rgba(5,6,15,0.92) 45%, rgba(3,4,8,0.82) 100%)" }} />
+          {/* Violet aurora glow left */}
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 10% 55%, rgba(124,58,237,0.22) 0%, transparent 50%)" }} />
+          {/* Gold accent top-right */}
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 90% 20%, rgba(245,158,11,0.12) 0%, transparent 45%)" }} />
+          {/* Cyan accent bottom-right */}
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 80% 90%, rgba(6,182,212,0.07) 0%, transparent 40%)" }} />
         </div>
 
         {/* Subtle grid overlay */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
+        <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(rgba(124,58,237,1) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,1) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-36 pb-24">
@@ -138,8 +140,8 @@ export default function Home() {
 
             {/* Eyebrow badge */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-indigo-400/25 bg-indigo-500/10 text-indigo-300 text-sm font-medium mb-10 backdrop-blur-sm">
-                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-medium mb-10 backdrop-blur-sm" style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.95)" }}>
+                <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#A78BFA" }} />
                 American Group LLC · Santa Clara, California · Est. 2018
               </div>
             </motion.div>
@@ -153,7 +155,7 @@ export default function Home() {
               style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3.2rem, 7.5vw, 6.5rem)" }}
             >
               Building the Future<br />
-              <span style={{ background: "linear-gradient(135deg, #818CF8 0%, #6366F1 40%, #A78BFA 70%, #C084FC 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span style={{ background: "linear-gradient(135deg, #A78BFA 0%, #7C3AED 35%, #F59E0B 75%, #FCD34D 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                 of Enterprise Tech
               </span>
             </motion.h1>
@@ -176,13 +178,13 @@ export default function Home() {
               className="flex flex-wrap gap-4 mb-16"
             >
               <Link href="/products">
-                <button className="group flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 40px rgba(99,102,241,0.35)" }}>
+                <button className="group flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95" style={{ background: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)", boxShadow: "0 0 40px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.1)" }}>
                   Explore 77 Products
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
               <Link href="/contact">
-                <button className="flex items-center gap-3 px-8 py-4 rounded-xl font-bold border border-white/20 text-white hover:bg-white/10 hover:border-white/35 transition-all duration-300 text-base backdrop-blur-sm">
+                <button className="flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-base transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#1C0A00", boxShadow: "0 0 30px rgba(245,158,11,0.35), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
                   <Play className="w-4 h-4" />
                   Request a Demo
                 </button>
@@ -194,11 +196,12 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex flex-wrap items-center gap-6 pt-8 border-t border-white/8"
+              className="flex flex-wrap items-center gap-6 pt-8"
+              style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}
             >
               {trustBadges.map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-slate-400 text-sm">
-                  <Icon className="w-4 h-4 text-indigo-400" />
+                <div key={label} className="flex items-center gap-2 text-sm" style={{ color: "rgba(196,181,253,0.7)" }}>
+                  <Icon className="w-4 h-4" style={{ color: "rgba(167,139,250,0.8)" }} />
                   <span>{label}</span>
                 </div>
               ))}
@@ -207,17 +210,17 @@ export default function Home() {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-48" style={{ background: "linear-gradient(to bottom, transparent, #070B14)" }} />
+        <div className="absolute bottom-0 left-0 right-0 h-48" style={{ background: "linear-gradient(to bottom, transparent, #030408)" }} />
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════════
           TECH MARQUEE — Technology stack ticker strip
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-8 border-y border-white/5 overflow-hidden" style={{ background: "rgba(255,255,255,0.015)" }}>
+      <section className="py-8 overflow-hidden" style={{ background: "rgba(124,58,237,0.04)", borderTop: "1px solid rgba(124,58,237,0.12)", borderBottom: "1px solid rgba(124,58,237,0.12)" }}>
         <div className="overflow-hidden relative">
           {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 z-10" style={{ background: "linear-gradient(to right, #070B14, transparent)" }} />
-          <div className="absolute right-0 top-0 bottom-0 w-24 z-10" style={{ background: "linear-gradient(to left, #070B14, transparent)" }} />
+          <div className="absolute left-0 top-0 bottom-0 w-24 z-10" style={{ background: "linear-gradient(to right, #030408, transparent)" }} />
+          <div className="absolute right-0 top-0 bottom-0 w-24 z-10" style={{ background: "linear-gradient(to left, #030408, transparent)" }} />
           <div className="marquee-track gap-12 px-8">
             {[
               { label: "Swift / SwiftUI", icon: "🍎" },
@@ -254,7 +257,7 @@ export default function Home() {
               { label: "CoreML / Vision", icon: "👁️" },
               { label: "Stripe / Plaid", icon: "💳" },
             ].map((tech, i) => (
-              <div key={i} className="flex items-center gap-2.5 whitespace-nowrap text-slate-500 text-sm font-medium flex-shrink-0">
+              <div key={i} className="flex items-center gap-2.5 whitespace-nowrap text-sm font-medium flex-shrink-0" style={{ color: "rgba(167,139,250,0.55)" }}>
                 <span className="text-base">{tech.icon}</span>
                 <span>{tech.label}</span>
                 {i < 31 && <span className="ml-6 text-white/10">·</span>}
@@ -267,7 +270,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════════════════
           STATS — Animated counters with premium card design
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 border-y border-white/5" ref={statsRef}>
+      <section className="py-24" ref={statsRef} style={{ borderTop: "1px solid rgba(124,58,237,0.1)", borderBottom: "1px solid rgba(124,58,237,0.1)", background: "linear-gradient(180deg, rgba(124,58,237,0.04) 0%, transparent 100%)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {stats.map((s, i) => (
@@ -288,7 +291,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════════════════
           PRODUCT VERTICALS — 8-column grid with hover depth
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-28">
+      <section className="py-28" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(124,58,237,0.03) 50%, transparent 100%)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           {/* Section header */}
           <motion.div
@@ -298,12 +301,12 @@ export default function Home() {
             transition={{ duration: 0.7 }}
             className="mb-20"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-6" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", color: "rgba(196,181,253,0.9)" }}>
               <Layers className="w-3.5 h-3.5" /> Product Portfolio
             </div>
             <h2 className="font-black text-white mb-5 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
               8 Verticals.<br />
-              <span style={{ background: "linear-gradient(135deg, #818CF8, #A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>77+ Products.</span>
+              <span style={{ background: "linear-gradient(135deg, #A78BFA 0%, #7C3AED 40%, #F59E0B 80%, #FCD34D 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>77+ Products.</span>
             </h2>
             <p className="text-slate-400 text-xl max-w-2xl leading-relaxed">
               From AI infrastructure to consumer mobile apps, AGL builds and ships enterprise-grade software across every major technology vertical.
@@ -320,9 +323,9 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.07, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                    className="group relative p-6 rounded-2xl border border-white/8 cursor-pointer overflow-hidden transition-all duration-400"
-                    style={{ background: "rgba(255,255,255,0.025)" }}
-                    whileHover={{ y: -6, borderColor: v.color + "40" }}
+                    className="group relative p-6 rounded-2xl cursor-pointer overflow-hidden transition-all duration-400"
+                    style={{ background: "rgba(124,58,237,0.05)", border: "1px solid rgba(124,58,237,0.12)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
+                    whileHover={{ y: -6, borderColor: v.color + "50" }}
                   >
                     {/* Hover glow */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 0% 0%, ${v.color}15, transparent 65%)` }} />
@@ -353,7 +356,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════════════════
           FEATURED PRODUCTS — Flagship app showcase
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-28" style={{ background: "linear-gradient(180deg, #070B14 0%, #0A0F1E 50%, #070B14 100%)" }}>
+      <section className="py-28" style={{ background: "linear-gradient(180deg, #030408 0%, #07050F 50%, #030408 100%)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -363,12 +366,12 @@ export default function Home() {
             className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16"
           >
             <div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/25 bg-amber-500/8 text-amber-300 text-xs font-semibold uppercase tracking-widest mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-6" style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.25)", color: "rgba(253,230,138,0.9)" }}>
                 <Star className="w-3.5 h-3.5" /> Flagship Applications
               </div>
               <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)" }}>
                 Products that define<br />
-                <span style={{ background: "linear-gradient(135deg, #FBBF24, #F59E0B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                <span style={{ background: "linear-gradient(135deg, #F59E0B 0%, #FCD34D 50%, #A78BFA 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                   categories
                 </span>
               </h2>
@@ -389,8 +392,8 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08, duration: 0.6 }}
-                  className="group relative p-6 rounded-2xl border border-white/8 cursor-pointer overflow-hidden transition-all duration-400 hover:border-white/20"
-                  style={{ background: "rgba(255,255,255,0.025)" }}
+                  className="group relative p-6 rounded-2xl cursor-pointer overflow-hidden transition-all duration-400"
+                  style={{ background: "rgba(124,58,237,0.05)", border: "1px solid rgba(124,58,237,0.12)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
                   whileHover={{ y: -5 }}
                 >
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 0% 100%, ${p.color}10, transparent 60%)` }} />
@@ -427,8 +430,8 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mt-12"
           >
-            <Link href="/products">
-              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-white/15 text-white font-semibold hover:bg-white/8 hover:border-white/25 transition-all duration-300">
+              <Link href="/products">
+              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)" }}>
                 Browse All 77 Products →
               </button>
             </Link>
@@ -439,7 +442,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════════════════
           WHY AGL — Differentiators grid
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-28 border-t border-white/5">
+      <section className="py-28" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             {/* Left: headline + CTAs */}
@@ -449,12 +452,12 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-8" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", color: "rgba(196,181,253,0.9)" }}>
                 <Building2 className="w-3.5 h-3.5" /> Why American Group LLC
               </div>
               <h2 className="font-black text-white mb-6 tracking-tight leading-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4vw, 3.5rem)" }}>
                 Enterprise quality.<br />
-                <span style={{ background: "linear-gradient(135deg, #818CF8, #6366F1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                <span style={{ background: "linear-gradient(135deg, #A78BFA 0%, #7C3AED 50%, #F59E0B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                   Startup velocity.
                 </span>
               </h2>
@@ -471,7 +474,7 @@ export default function Home() {
               </ul>
               <div className="flex flex-wrap gap-4">
                 <Link href="/american-group-llc">
-                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 text-sm" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}>
+                  <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 text-sm" style={{ background: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)", boxShadow: "0 0 20px rgba(124,58,237,0.3)" }}>
                     About AGL <ArrowRight className="w-4 h-4" />
                   </button>
                 </Link>
@@ -494,9 +497,10 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08, duration: 0.6 }}
-                    className="p-5 rounded-xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-indigo-500/25 transition-all duration-300"
+                    className="p-5 rounded-xl transition-all duration-300"
+                    style={{ background: "rgba(124,58,237,0.05)", border: "1px solid rgba(124,58,237,0.12)" }}
                   >
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ background: "rgba(99,102,241,0.15)", color: "#818CF8" }}>
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ background: "rgba(124,58,237,0.15)", color: "#A78BFA" }}>
                       <Icon className="w-4.5 h-4.5" />
                     </div>
                     <h4 className="font-bold text-white text-sm mb-1.5">{d.title}</h4>
@@ -512,7 +516,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════════════════
           PLATFORM SECTION — Mobile-first with visual showcase
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-28 border-t border-white/5 overflow-hidden">
+      <section className="py-28 overflow-hidden" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left: image */}
@@ -523,7 +527,7 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               className="relative"
             >
-              <div className="rounded-3xl overflow-hidden border border-white/10" style={{ boxShadow: "0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(99,102,241,0.15)" }}>
+              <div className="rounded-3xl overflow-hidden" style={{ border: "1px solid rgba(124,58,237,0.2)", boxShadow: "0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(124,58,237,0.2)" }}>
                 <img
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iKtH34UE32MfRNT3w4zNEC/agl-products-bg-Us6fz7efmAJiYnk273pQms.webp"
                   alt="AGL Mobile Products"
@@ -532,7 +536,7 @@ export default function Home() {
                 <div className="absolute inset-0 rounded-3xl" style={{ background: "linear-gradient(to top, rgba(7,11,20,0.6), transparent 50%)" }} />
               </div>
               {/* Floating stat badge */}
-              <div className="absolute -bottom-5 -right-5 px-6 py-4 rounded-2xl border border-white/15 backdrop-blur-xl" style={{ background: "rgba(7,11,20,0.9)" }}>
+              <div className="absolute -bottom-5 -right-5 px-6 py-4 rounded-2xl backdrop-blur-xl" style={{ background: "rgba(5,6,15,0.95)", border: "1px solid rgba(124,58,237,0.25)", boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}>
                 <div className="text-3xl font-black text-white" style={{ fontFamily: "Sora, sans-serif" }}>40+</div>
                 <div className="text-slate-400 text-xs">Native iOS Apps</div>
               </div>
@@ -545,12 +549,12 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-violet-500/25 bg-violet-500/8 text-violet-300 text-xs font-semibold uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-8" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", color: "rgba(196,181,253,0.9)" }}>
                 <Smartphone className="w-3.5 h-3.5" /> Mobile First
               </div>
               <h2 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
                 Available on<br />
-                <span style={{ background: "linear-gradient(135deg, #A78BFA, #818CF8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                <span style={{ background: "linear-gradient(135deg, #C4B5FD 0%, #7C3AED 50%, #F59E0B 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                   Every Platform
                 </span>
               </h2>
@@ -563,7 +567,7 @@ export default function Home() {
                   { count: "45+", label: "Android Apps", sub: "Kotlin, Jetpack" },
                   { count: "20+", label: "Cross-Platform", sub: "Flutter, React Native" },
                 ].map((item) => (
-                  <div key={item.label} className="text-center p-4 rounded-xl border border-white/8 bg-white/[0.025]">
+                  <div key={item.label} className="text-center p-4 rounded-xl" style={{ background: "rgba(124,58,237,0.07)", border: "1px solid rgba(124,58,237,0.15)" }}>
                     <div className="text-2xl font-black text-white mb-1" style={{ fontFamily: "Sora, sans-serif" }}>{item.count}</div>
                     <div className="text-white/80 text-xs font-semibold mb-0.5">{item.label}</div>
                     <div className="text-slate-500 text-xs">{item.sub}</div>
@@ -571,7 +575,7 @@ export default function Home() {
                 ))}
               </div>
               <Link href="/products">
-                <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 text-sm" style={{ background: "linear-gradient(135deg, #7C3AED, #6366F1)" }}>
+                <button className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 text-sm" style={{ background: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)", boxShadow: "0 0 20px rgba(124,58,237,0.3)" }}>
                   Browse All Apps <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
@@ -583,24 +587,24 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════════════════
           INDIA OPS BANNER — SafeCodeX mention
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-12 border-t border-white/5">
+      <section className="py-12" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col lg:flex-row items-center justify-between gap-6 p-6 lg:p-8 rounded-2xl border border-white/8"
-            style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.06), rgba(7,11,20,0.8))" }}
+            className="flex flex-col lg:flex-row items-center justify-between gap-6 p-6 lg:p-8 rounded-2xl"
+            style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(5,6,15,0.8) 100%)", border: "1px solid rgba(124,58,237,0.2)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}
           >
             <div className="flex items-center gap-5">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(99,102,241,0.15)" }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: "rgba(124,58,237,0.18)", border: "1px solid rgba(124,58,237,0.25)" }}>
                 🇮🇳
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-white font-bold">SafeCodeX Research Center</span>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300">India Operations</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: "rgba(124,58,237,0.2)", color: "rgba(196,181,253,0.9)" }}>India Operations</span>
                 </div>
                 <p className="text-slate-400 text-sm">Our Hyderabad-based engineering support office handles QA testing, embedded firmware research, and mobile app development operations from Santa Clara. SafeCodeX operates as an integral part of the AGL delivery pipeline.</p>
               </div>
@@ -617,8 +621,9 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════════════════════
           CTA SECTION — Full-bleed premium call to action
       ══════════════════════════════════════════════════════════════════════ */}
-      <section className="py-32 border-t border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.12), transparent 60%)" }} />
+      <section className="py-32 relative overflow-hidden" style={{ borderTop: "1px solid rgba(124,58,237,0.1)" }}>
+        {/* Rich CTA aurora background */}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(124,58,237,0.18) 0%, transparent 60%), radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.06) 0%, transparent 50%)" }} />
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -626,12 +631,12 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-8" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", color: "rgba(196,181,253,0.9)" }}>
               <Zap className="w-3.5 h-3.5" /> Start Building
             </div>
             <h2 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}>
               Ready to build something{" "}
-              <span style={{ background: "linear-gradient(135deg, #818CF8, #FBBF24)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span style={{ background: "linear-gradient(135deg, #C4B5FD 0%, #7C3AED 35%, #F59E0B 70%, #FCD34D 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                 extraordinary?
               </span>
             </h2>
@@ -640,13 +645,13 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link href="/contact">
-                <button className="group flex items-center gap-3 px-10 py-5 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 50px rgba(99,102,241,0.3)" }}>
+                <button className="group flex items-center gap-3 px-10 py-5 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95" style={{ background: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)", boxShadow: "0 0 50px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.1)" }}>
                   Start a Project
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
               <Link href="/products">
-                <button className="flex items-center gap-3 px-10 py-5 rounded-xl font-bold border border-white/20 text-white hover:bg-white/8 hover:border-white/35 transition-all duration-300 text-base">
+                <button className="flex items-center gap-3 px-10 py-5 rounded-xl font-bold text-base transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)", color: "#1C0A00", boxShadow: "0 0 30px rgba(245,158,11,0.3)" }}>
                   Browse Products
                 </button>
               </Link>

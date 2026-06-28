@@ -15,7 +15,7 @@ const verticals = [
     title: "Enterprise AI & DevTools",
     count: 12,
     color: "#818CF8",
-    bg: "rgba(99,102,241,0.12)",
+    bg: "rgba(124,58,237,0.2)",
     desc: "Frontier AI research, cognitive agents, enterprise document pipelines, and platform suites powering the next generation of intelligent software.",
     products: ["CogniCore AI Platform", "Thinking Machines Lab", "Cognission AI", "DocStream Enterprise", "DataCore Enterprise", "InfraForge Enterprise"],
   },
@@ -80,18 +80,18 @@ const highlights = [
 
 export default function AGLPage() {
   return (
-    <div style={{ background: "#070B14", color: "white", minHeight: "100vh" }}>
+    <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative pt-36 pb-24 overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 15% 60%, rgba(99,102,241,0.18), transparent 55%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 15% 60%, rgba(124,58,237,0.2), transparent 55%)" }} />
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 85% 30%, rgba(245,158,11,0.07), transparent 50%)" }} />
         <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-8">
               <Building2 className="w-3.5 h-3.5" /> 🇺🇸 Headquarters · Santa Clara, California · S-Corp
             </div>
             <h1 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3rem, 7vw, 6rem)" }}>
@@ -105,7 +105,7 @@ export default function AGLPage() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/products">
-                <button className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 30px rgba(99,102,241,0.3)" }}>
+                <button className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 30px rgba(124,58,237,0.2)" }}>
                   Explore All 77 Products <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
@@ -130,7 +130,7 @@ export default function AGLPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.6 }}
-                className="p-6 rounded-2xl border border-white/8 bg-white/[0.025] text-center"
+                className="p-6 rounded-2xl rounded-2xl text-center"
               >
                 <div className="text-4xl font-black mb-1" style={{ fontFamily: "Sora, sans-serif", color: h.color }}>{h.value}</div>
                 <div className="text-slate-400 text-sm">{h.label}</div>
@@ -145,7 +145,7 @@ export default function AGLPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-8">
                 About AGL
               </div>
               <h2 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
@@ -182,7 +182,7 @@ export default function AGLPage() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08, duration: 0.5 }}
-                    className="flex gap-4 p-5 rounded-xl border border-white/8 bg-white/[0.025]"
+                    className="flex gap-4 p-5 rounded-xl rounded-2xl"
                   >
                     <CheckCircle className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
                     <div>
@@ -198,10 +198,10 @@ export default function AGLPage() {
       </section>
 
       {/* ── Verticals ─────────────────────────────────────────────────────── */}
-      <section className="py-28 border-t border-white/5">
+      <section className="py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-6">
               Product Portfolio
             </div>
             <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)" }}>
@@ -219,7 +219,7 @@ export default function AGLPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08, duration: 0.6 }}
-                  className="group p-6 rounded-2xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300"
+                  className="group p-6 rounded-2xl rounded-2xl hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ background: v.bg }}>
@@ -246,7 +246,7 @@ export default function AGLPage() {
 
           <div className="text-center mt-12">
             <Link href="/products">
-              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 30px rgba(99,102,241,0.25)" }}>
+              <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 30px rgba(124,58,237,0.2)" }}>
                 View All 77 Products <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
@@ -255,8 +255,8 @@ export default function AGLPage() {
       </section>
 
       {/* ── CTA ───────────────────────────────────────────────────────────── */}
-      <section className="py-24 border-t border-white/5 relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(99,102,241,0.10), transparent 60%)" }} />
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(124,58,237,0.2), transparent 60%)" }} />
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
             <h2 className="font-black text-white mb-5 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
@@ -267,7 +267,7 @@ export default function AGLPage() {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link href="/contact">
-                <button className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 40px rgba(99,102,241,0.3)" }}>
+                <button className="flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 40px rgba(124,58,237,0.2)" }}>
                   Get in Touch <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
