@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ArrowRight, MapPin, Clock, Briefcase, Code2, Brain, Shield, Smartphone, Globe, Zap, Star, Users, CheckCircle } from "lucide-react";
+import { ArrowRight, MapPin, Clock, Briefcase, Code2, Brain, Shield, Smartphone, Globe, Zap, Star, Users, CheckCircle, Link2, Cpu } from "lucide-react";
 import { toast } from "sonner";
 
 const openings = [
@@ -69,6 +69,51 @@ const openings = [
     color: "#A78BFA",
     desc: "Manage multi-cloud infrastructure, CI/CD pipelines, and Kubernetes clusters for 77+ production products.",
     tags: ["Kubernetes", "Terraform", "AWS", "GCP"],
+  },
+  // ── Internship Positions ──────────────────────────────────────────────
+  {
+    title: "AI / LLM Mobile App Intern",
+    dept: "AI Mobile Internship",
+    location: "Remote / India",
+    type: "Internship · 3–6 months",
+    icon: Cpu,
+    color: "#F472B6",
+    badge: "Internship",
+    desc: "Build on-device AI features and LLM-powered mobile apps for iOS and Android. Work with GPT-4o, Gemini, and on-device models (CoreML / TFLite) to ship real AI features inside AGL consumer apps.",
+    tags: ["Swift / Kotlin", "LLM APIs", "CoreML", "TFLite", "RAG", "Flutter"],
+  },
+  {
+    title: "LLM & Generative AI Research Intern",
+    dept: "AI Research Internship",
+    location: "Remote",
+    type: "Internship · 3–6 months",
+    icon: Brain,
+    color: "#34D399",
+    badge: "Internship",
+    desc: "Assist in fine-tuning, prompt engineering, and evaluation of large language models. Build RAG pipelines, vector search systems, and AI agent workflows using LangChain, LlamaIndex, and OpenAI APIs.",
+    tags: ["Python", "LangChain", "OpenAI API", "Vector DB", "Fine-tuning", "Hugging Face"],
+  },
+  {
+    title: "Blockchain & Web3 Developer Intern",
+    dept: "Blockchain Internship",
+    location: "Remote",
+    type: "Internship · 3–6 months",
+    icon: Link2,
+    color: "#FBBF24",
+    badge: "Internship",
+    desc: "Develop and audit smart contracts on Ethereum and Solana. Build DeFi components, NFT systems, and Web3 wallet integrations. Contribute to AGL's blockchain product vertical including tokenization and on-chain identity.",
+    tags: ["Solidity", "Rust", "Ethereum", "Solana", "Hardhat", "Web3.js"],
+  },
+  {
+    title: "Blockchain Security & Audit Intern",
+    dept: "Blockchain Internship",
+    location: "Remote",
+    type: "Internship · 3–6 months",
+    icon: Shield,
+    color: "#60A5FA",
+    badge: "Internship",
+    desc: "Learn smart contract security auditing, identify vulnerabilities (reentrancy, flash loans, oracle manipulation), and write security reports. Work alongside senior engineers on real DeFi protocol audits.",
+    tags: ["Solidity", "Slither", "Foundry", "DeFi", "Security Auditing", "Python"],
   },
 ];
 
@@ -180,49 +225,110 @@ export default function CareersPage() {
             </h2>
           </motion.div>
 
-          <div className="space-y-4">
-            {openings.map((job, i) => {
-              const Icon = job.icon;
-              return (
-                <motion.div
-                  key={job.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.07, duration: 0.6 }}
-                  className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300 cursor-pointer"
-                  onClick={() => toast.info("Applications are currently managed via email. Please send your resume to careers@safecodeg.com")}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: job.color + "20", color: job.color }}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-white text-base" style={{ fontFamily: "Sora, sans-serif" }}>{job.title}</h3>
-                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: job.color + "20", color: job.color }}>{job.dept}</span>
+          {/* Full-time roles */}
+          <div className="mb-4">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Full-Time Positions</span>
+              <div className="flex-1 h-px bg-white/8" />
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">{openings.filter(j => !('badge' in j)).length} open</span>
+            </div>
+            <div className="space-y-4">
+              {openings.filter(j => !('badge' in j)).map((job, i) => {
+                const Icon = job.icon;
+                return (
+                  <motion.div
+                    key={job.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.07, duration: 0.6 }}
+                    className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl border border-white/8 bg-white/[0.025] hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300 cursor-pointer"
+                    onClick={() => toast.info("Applications are currently managed via email. Please send your resume to careers@safecodeg.com")}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: job.color + "20", color: job.color }}>
+                        <Icon className="w-5 h-5" />
                       </div>
-                      <p className="text-slate-500 text-sm mb-3">{job.desc}</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {job.tags.map((tag) => (
-                          <span key={tag} className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]">{tag}</span>
-                        ))}
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-white text-base" style={{ fontFamily: "Sora, sans-serif" }}>{job.title}</h3>
+                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: job.color + "20", color: job.color }}>{job.dept}</span>
+                        </div>
+                        <p className="text-slate-500 text-sm mb-3">{job.desc}</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {job.tags.map((tag) => (
+                            <span key={tag} className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]">{tag}</span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                    <div className="flex flex-col lg:items-end gap-3 flex-shrink-0">
+                      <div className="flex flex-wrap gap-3 text-xs text-slate-500">
+                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location}</span>
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {job.type}</span>
+                      </div>
+                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }}>
+                        Apply Now <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
 
-                  <div className="flex flex-col lg:items-end gap-3 flex-shrink-0">
-                    <div className="flex flex-wrap gap-3 text-xs text-slate-500">
-                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location}</span>
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {job.type}</span>
+          {/* Internship roles */}
+          <div className="mt-12">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Internship Positions</span>
+              <div className="flex-1 h-px bg-white/8" />
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-500/15 text-pink-300 border border-pink-500/20">{openings.filter(j => 'badge' in j).length} open</span>
+            </div>
+            <p className="text-slate-500 text-sm mb-6 max-w-2xl">3–6 month internships for students and recent graduates. Work on real products, get mentored by senior engineers, and build a portfolio that stands out.</p>
+            <div className="space-y-4">
+              {openings.filter(j => 'badge' in j).map((job, i) => {
+                const Icon = job.icon;
+                return (
+                  <motion.div
+                    key={job.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.07, duration: 0.6 }}
+                    className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl border border-pink-500/10 bg-pink-500/[0.02] hover:bg-pink-500/[0.04] hover:border-pink-500/20 transition-all duration-300 cursor-pointer"
+                    onClick={() => toast.info("Send your resume and a short intro to internships@safecodeg.com — include the role name in the subject line.")}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: job.color + "20", color: job.color }}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <h3 className="font-bold text-white text-base" style={{ fontFamily: "Sora, sans-serif" }}>{job.title}</h3>
+                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: job.color + "20", color: job.color }}>{job.dept}</span>
+                          <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/25">Internship</span>
+                        </div>
+                        <p className="text-slate-500 text-sm mb-3">{job.desc}</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {job.tags.map((tag) => (
+                            <span key={tag} className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]">{tag}</span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }}>
-                      Apply Now <ArrowRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                </motion.div>
-              );
-            })}
+                    <div className="flex flex-col lg:items-end gap-3 flex-shrink-0">
+                      <div className="flex flex-wrap gap-3 text-xs text-slate-500">
+                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location}</span>
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {job.type}</span>
+                      </div>
+                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }}>
+                        Apply <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
 
           <motion.div
