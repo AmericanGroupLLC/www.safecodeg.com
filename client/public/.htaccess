@@ -5,7 +5,14 @@
 
 # ── Enable Rewrite Engine ────────────────────────────────────
 Options -MultiViews
+Options +FollowSymLinks
+
+# Allow all access (required for HostGator shared hosting)
+Order allow,deny
+Allow from all
+
 RewriteEngine On
+RewriteBase /
 
 # ── Force HTTPS (automatic SSL redirect) ────────────────────
 # Redirect all HTTP traffic to HTTPS
@@ -78,8 +85,9 @@ RewriteRule ^ index.html [QSA,L]
     AddOutputFilterByType DEFLATE font/woff
 </IfModule>
 
-# ── Block access to sensitive files ──────────────────────────
-<FilesMatch "\.(env|git|gitignore|md|yml|yaml|json|lock)$">
+# ── Block access to sensitive server files only ─────────────
+# Note: Only block .env files — blocking .json/.md can cause 403 on shared hosting
+<FilesMatch "\.(env|env\.local|env\.production)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
