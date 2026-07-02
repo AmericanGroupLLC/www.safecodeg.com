@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home2/safecode/public_html/
-    - /bin/cp -r assets $DEPLOYPATH
-    - /bin/cp index.html $DEPLOYPATH
-    - /bin/cp .htaccess $DEPLOYPATH
+    - export DEPLOYPATH=/home2/safecode/public_html
+    - /bin/chmod 644 $DEPLOYPATH/.htaccess
+    - /bin/chmod 644 $DEPLOYPATH/index.html
+    - /bin/chmod -R 755 $DEPLOYPATH/assets
