@@ -8,7 +8,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Mail, MapPin, Phone, Send, Linkedin, Youtube, Clock, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
+
+const WEB3FORMS_KEY = "97f985ce-75d3-47e8-b941-3e85db2e7395";
 
 const offices = [
   {
@@ -44,30 +45,42 @@ const inquiryTypes = [
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", company: "", inquiry: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  const submitMutation = trpc.contact.submit.useMutation({
-    onSuccess: (data) => {
-      setSent(true);
-      toast.success(data.message || "Message sent! We'll respond within 1–2 business days.");
-      setForm({ name: "", email: "", company: "", inquiry: "", message: "" });
-    },
-    onError: (err) => {
-      toast.error(err.message || "Failed to send message. Please try again or email contact@safecodeg.com directly.");
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    submitMutation.mutate({
-      name: form.name,
-      email: form.email,
-      company: form.company || undefined,
-      subject: form.inquiry || "General Inquiry",
-      message: form.message,
-    });
+    setSending(true);
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `New Contact: ${form.inquiry || "General Inquiry"} — from ${form.name}`,
+          from_name: "safecodeg.com Contact Form",
+          name: form.name,
+          email: form.email,
+          company: form.company || "Not provided",
+          inquiry_type: form.inquiry || "General Inquiry",
+          message: form.message,
+          botcheck: "",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSent(true);
+        toast.success("Message sent! We'll respond within 1–2 business days.");
+        setForm({ name: "", email: "", company: "", inquiry: "", message: "" });
+      } else {
+        throw new Error(data.message || "Submission failed");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      toast.error(msg || "Failed to send message. Please email contact@safecodeg.com directly.");
+    } finally {
+      setSending(false);
+    }
   };
-
-  const sending = submitMutation.isPending;
 
   return (
     <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>

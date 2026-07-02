@@ -2,12 +2,16 @@
  * Careers Page — MNC Enterprise Dark Theme v5.0
  * Full dark, premium job listings, world-class design
  */
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ArrowRight, MapPin, Clock, Briefcase, Code2, Brain, Shield, Smartphone, Globe, Zap, Star, Users, CheckCircle, Link2, Cpu } from "lucide-react";
+import { ArrowRight, MapPin, Clock, Briefcase, Code2, Brain, Shield, Smartphone, Globe, Zap, Star, Users, CheckCircle, Link2, Cpu, X, Send } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+const WEB3FORMS_KEY = "97f985ce-75d3-47e8-b941-3e85db2e7395";
 
 const openings = [
   {
@@ -127,6 +131,55 @@ const perks = [
 ];
 
 export default function CareersPage() {
+  const [applyJob, setApplyJob] = useState<{ title: string; dept: string; type: string } | null>(null);
+  const [appForm, setAppForm] = useState({ name: "", email: "", phone: "", linkedin: "", message: "" });
+  const [appSending, setAppSending] = useState(false);
+  const [appSent, setAppSent] = useState(false);
+
+  const handleApply = (job: { title: string; dept: string; type: string }) => {
+    setApplyJob(job);
+    setAppForm({ name: "", email: "", phone: "", linkedin: "", message: "" });
+    setAppSent(false);
+  };
+
+  const handleAppSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!applyJob) return;
+    setAppSending(true);
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `Job Application: ${applyJob.title} (${applyJob.dept}) — ${appForm.name}`,
+          from_name: "safecodeg.com Careers",
+          name: appForm.name,
+          email: appForm.email,
+          phone: appForm.phone || "Not provided",
+          linkedin: appForm.linkedin || "Not provided",
+          position: applyJob.title,
+          department: applyJob.dept,
+          employment_type: applyJob.type,
+          cover_message: appForm.message,
+          botcheck: "",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAppSent(true);
+        toast.success("Application submitted! We'll be in touch within 3–5 business days.");
+      } else {
+        throw new Error(data.message || "Submission failed");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      toast.error(msg || "Failed to submit. Please email careers@safecodeg.com directly.");
+    } finally {
+      setAppSending(false);
+    }
+  };
+
   return (
     <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
       <Navigation />
@@ -243,7 +296,7 @@ export default function CareersPage() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.07, duration: 0.6 }}
                     className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl transition-all duration-300 cursor-pointer"
-                    onClick={() => toast.info("Applications are currently managed via email. Please send your resume to careers@safecodeg.com")}
+                    onClick={() => handleApply({ title: job.title, dept: job.dept, type: job.type })}
                   >
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: job.color + "20", color: job.color }}>
@@ -267,7 +320,7 @@ export default function CareersPage() {
                         <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location}</span>
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {job.type}</span>
                       </div>
-                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }}>
+                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }} onClick={(e) => { e.stopPropagation(); handleApply({ title: job.title, dept: job.dept, type: job.type }); }}>
                         Apply Now <ArrowRight className="w-3 h-3" />
                       </button>
                     </div>
@@ -296,7 +349,7 @@ export default function CareersPage() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.07, duration: 0.6 }}
                     className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl border border-pink-500/10 bg-pink-500/[0.02] hover:bg-pink-500/[0.04] hover:border-pink-500/20 transition-all duration-300 cursor-pointer"
-                    onClick={() => toast.info("Send your resume and a short intro to internships@safecodeg.com — include the role name in the subject line.")}
+                    onClick={() => handleApply({ title: job.title, dept: job.dept, type: job.type })}
                   >
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: job.color + "20", color: job.color }}>
@@ -321,7 +374,7 @@ export default function CareersPage() {
                         <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location}</span>
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {job.type}</span>
                       </div>
-                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }}>
+                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }} onClick={(e) => { e.stopPropagation(); handleApply({ title: job.title, dept: job.dept, type: job.type }); }}>
                         Apply <ArrowRight className="w-3 h-3" />
                       </button>
                     </div>
@@ -348,6 +401,68 @@ export default function CareersPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ── Application Modal ─────────────────────────────────────────────── */}
+      <Dialog open={!!applyJob} onOpenChange={(open) => { if (!open) setApplyJob(null); }}>
+        <DialogContent className="max-w-lg" style={{ background: "#0A0F1E", border: "1px solid rgba(124,58,237,0.3)", color: "white" }}>
+          <DialogHeader>
+            <DialogTitle style={{ fontFamily: "Sora, sans-serif", color: "white" }}>
+              {appSent ? "Application Received!" : `Apply — ${applyJob?.title}`}
+            </DialogTitle>
+            {!appSent && (
+              <p className="text-slate-400 text-sm">{applyJob?.dept} · {applyJob?.type}</p>
+            )}
+          </DialogHeader>
+
+          {appSent ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(16,185,129,0.15)" }}>
+                <CheckCircle className="w-8 h-8 text-emerald-400" />
+              </div>
+              <p className="text-slate-300 text-sm mb-2">Your application has been sent to <strong className="text-white">contact@safecodeg.com</strong></p>
+              <p className="text-slate-500 text-xs">We'll review it and get back to you within 3–5 business days.</p>
+              <button onClick={() => setApplyJob(null)} className="mt-6 px-5 py-2 rounded-lg text-sm font-semibold text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/10 transition-all">
+                Close
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleAppSubmit} className="space-y-4 mt-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Full Name *</label>
+                  <input type="text" required value={appForm.name} onChange={(e) => setAppForm({ ...appForm, name: e.target.value })} placeholder="Jane Smith" className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Email *</label>
+                  <input type="email" required value={appForm.email} onChange={(e) => setAppForm({ ...appForm, email: e.target.value })} placeholder="jane@email.com" className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Phone</label>
+                  <input type="tel" value={appForm.phone} onChange={(e) => setAppForm({ ...appForm, phone: e.target.value })} placeholder="+1 555 000 0000" className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">LinkedIn URL</label>
+                  <input type="url" value={appForm.linkedin} onChange={(e) => setAppForm({ ...appForm, linkedin: e.target.value })} placeholder="linkedin.com/in/..." className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Why do you want to join AGL? *</label>
+                <textarea required rows={4} value={appForm.message} onChange={(e) => setAppForm({ ...appForm, message: e.target.value })} placeholder="Tell us about your experience, what excites you about this role, and any relevant projects..." className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none resize-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+              </div>
+              <div className="flex gap-3 pt-1">
+                <button type="button" onClick={() => setApplyJob(null)} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-slate-400 border border-white/10 hover:bg-white/5 transition-all">
+                  Cancel
+                </button>
+                <button type="submit" disabled={appSending} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold text-white transition-all disabled:opacity-60" style={{ background: "linear-gradient(135deg, #7C3AED, #4F46E5)" }}>
+                  {appSending ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</> : <><Send className="w-4 h-4" /> Submit Application</>}
+                </button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
