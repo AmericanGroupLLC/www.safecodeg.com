@@ -36,13 +36,13 @@ function useCounter(target: number, duration = 2200, start = false) {
 // ── Data ──────────────────────────────────────────────────────────────────────
 const verticals = [
   { icon: Brain, title: "Enterprise AI & DevTools", count: 12, color: "#818CF8", bg: "rgba(99,102,241,0.12)", desc: "LLMs, RAG pipelines, cognitive agents, and developer productivity platforms.", slug: "enterprise-ai" },
-  { icon: Smartphone, title: "Consumer Mobile", count: 18, color: "#A78BFA", bg: "rgba(139,92,246,0.12)", desc: "Cross-platform iOS & Android apps serving millions of daily active users.", slug: "mobile" },
-  { icon: TrendingUp, title: "FinTech & E-Commerce", count: 14, color: "#34D399", bg: "rgba(16,185,129,0.12)", desc: "Personal finance, market intelligence, payments, and commerce platforms.", slug: "fintech" },
-  { icon: Shield, title: "CyberSecurity & Infra", count: 8, color: "#F87171", bg: "rgba(239,68,68,0.12)", desc: "SIEM, threat hunting, zero-trust networking, and enterprise infrastructure.", slug: "cybersecurity" },
-  { icon: Globe, title: "Travel & Aviation", count: 6, color: "#60A5FA", bg: "rgba(59,130,246,0.12)", desc: "Real-time flight tracking, trip management, and aviation intelligence.", slug: "travel" },
-  { icon: Cpu, title: "Health & Wellness", count: 10, color: "#FBBF24", bg: "rgba(245,158,11,0.12)", desc: "Fitness OS, nutrition tracking, mental wellness, and Wear OS integration.", slug: "health" },
-  { icon: Code2, title: "E-Commerce & Deals", count: 5, color: "#F472B6", bg: "rgba(236,72,153,0.12)", desc: "Smart shopping, deal aggregation, price tracking, and loyalty platforms.", slug: "ecommerce" },
-  { icon: Users, title: "Social & Lifestyle", count: 4, color: "#22D3EE", bg: "rgba(6,182,212,0.12)", desc: "P2P gaming, social experiences, and community-driven mobile applications.", slug: "social" },
+  { icon: Smartphone, title: "Consumer Mobile", count: 18, color: "#A78BFA", bg: "rgba(139,92,246,0.12)", desc: "30+ iOS & Android apps — from Wear OS companions to offline-first utilities used by millions.", slug: "mobile" },
+  { icon: TrendingUp, title: "FinTech & E-Commerce", count: 14, color: "#34D399", bg: "rgba(16,185,129,0.12)", desc: "Digital banking, algo trading, cross-border payments, and personal finance platforms.", slug: "fintech" },
+  { icon: Shield, title: "CyberSecurity & Infra", count: 8, color: "#F87171", bg: "rgba(239,68,68,0.12)", desc: "SIEM, threat hunting, zero-trust networking, and enterprise-grade security infrastructure.", slug: "cybersecurity" },
+  { icon: Globe, title: "Travel & Aviation", count: 6, color: "#60A5FA", bg: "rgba(59,130,246,0.12)", desc: "FAA-integrated pilot tools, real-time flight tracking, offline maps, and trip management.", slug: "travel" },
+  { icon: Cpu, title: "Health & Wellness", count: 10, color: "#FBBF24", bg: "rgba(245,158,11,0.12)", desc: "Biometric tracking, BLE wearable sync, HealthKit integration, and clinical health algorithms.", slug: "health" },
+  { icon: Code2, title: "E-Commerce & Deals", count: 5, color: "#F472B6", bg: "rgba(236,72,153,0.12)", desc: "Smart shopping, deal aggregation, price tracking, and loyalty reward platforms.", slug: "ecommerce" },
+  { icon: Users, title: "Social & Lifestyle", count: 4, color: "#22D3EE", bg: "rgba(6,182,212,0.12)", desc: "P2P multiplayer games, global radio streaming, and community-driven mobile experiences.", slug: "social" },
 ];
 
 const featuredProducts = [
@@ -66,7 +66,7 @@ const differentiators = [
 const stats = [
   { value: 77, suffix: "+", label: "Products Shipped", sub: "Across 8 verticals" },
   { value: 8, suffix: "", label: "Industry Verticals", sub: "AI to CyberSecurity" },
-  { value: 6, suffix: "+", label: "Years of Excellence", sub: "Est. 2018, Santa Clara" },
+  { value: 50, suffix: "+", label: "Engineers Worldwide", sub: "US, India & Remote" },
   { value: 99, suffix: ".9%", label: "Uptime SLA", sub: "Enterprise guarantee" },
 ];
 
@@ -585,6 +585,66 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══════════════════════════════════════════════════════════════════════
+          HIRING TEASER — We're growing
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section className="py-20" style={{ borderTop: "1px solid rgba(124,58,237,0.1)", background: "linear-gradient(180deg, transparent 0%, rgba(124,58,237,0.03) 50%, transparent 100%)" }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-6" style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.25)", color: "rgba(253,230,138,0.9)" }}>
+              <Users className="w-3.5 h-3.5" /> We're Hiring
+            </div>
+            <h2 className="font-black text-white mb-4 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+              Join the team building{" "}
+              <span style={{ background: "linear-gradient(135deg, #F59E0B 0%, #FCD34D 50%, #A78BFA 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                the future
+              </span>
+            </h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+              We're growing across all 8 verticals. Open roles in AI, mobile, FinTech, cybersecurity, health tech, and more — full-time and internships.
+            </p>
+          </motion.div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+            {[
+              { label: "Enterprise AI", count: "3 roles", color: "#818CF8" },
+              { label: "Consumer Mobile", count: "3 roles", color: "#A78BFA" },
+              { label: "FinTech", count: "3 roles", color: "#34D399" },
+              { label: "CyberSecurity", count: "3 roles", color: "#F87171" },
+              { label: "Health & Wellness", count: "2 roles", color: "#F43F5E" },
+              { label: "Travel & Aviation", count: "2 roles", color: "#0EA5E9" },
+              { label: "Social & Lifestyle", count: "2 roles", color: "#8B5CF6" },
+              { label: "Internships", count: "7 roles", color: "#F472B6" },
+            ].map((v, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05, duration: 0.5 }}
+                className="p-4 rounded-xl text-center"
+                style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${v.color}25` }}
+              >
+                <div className="text-lg font-black mb-1" style={{ color: v.color }}>{v.count}</div>
+                <div className="text-xs text-slate-400 font-medium">{v.label}</div>
+              </motion.div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Link href="/careers">
+              <button className="group inline-flex items-center gap-3 px-10 py-4 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)", boxShadow: "0 0 40px rgba(124,58,237,0.35)" }}>
+                View All Open Positions
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
       {/* ══════════════════════════════════════════════════════════════════════
           INDIA OPS BANNER — SafeCodeX mention
       ══════════════════════════════════════════════════════════════════════ */}

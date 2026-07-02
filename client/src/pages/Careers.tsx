@@ -7,13 +7,15 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ArrowRight, MapPin, Clock, Briefcase, Code2, Brain, Shield, Smartphone, Globe, Zap, Star, Users, CheckCircle, Link2, Cpu, X, Send } from "lucide-react";
+import { ArrowRight, MapPin, Clock, Briefcase, Code2, Brain, Shield, Smartphone, Globe, Zap, Star, Users, CheckCircle, Link2, Cpu, X, Send, Heart, Plane, ShoppingCart, Lock, Database, Layers, FlaskConical, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const WEB3FORMS_KEY = "97f985ce-75d3-47e8-b941-3e85db2e7395";
 
+// ── Full-time openings grouped by vertical ────────────────────────────
 const openings = [
+  // Enterprise AI & DevTools
   {
     title: "Senior AI/ML Engineer",
     dept: "Enterprise AI",
@@ -21,9 +23,30 @@ const openings = [
     type: "Full-time",
     icon: Brain,
     color: "#818CF8",
-    desc: "Build frontier AI systems including LLMs, RAG pipelines, and cognitive agents for enterprise deployments.",
-    tags: ["Python", "PyTorch", "LLM", "RAG"],
+    desc: "Build frontier AI systems including LLMs, RAG pipelines, and cognitive agents for enterprise deployments across AGL's 20+ AI products.",
+    tags: ["Python", "PyTorch", "LLM", "RAG", "LangChain"],
   },
+  {
+    title: "AI Product Engineer",
+    dept: "Enterprise AI",
+    location: "Remote",
+    type: "Full-time",
+    icon: Cpu,
+    color: "#A78BFA",
+    desc: "Bridge research and product — take LLM prototypes to production-grade AI features inside AGL's enterprise DevTools and SaaS products.",
+    tags: ["Python", "FastAPI", "OpenAI", "Gemini", "TypeScript"],
+  },
+  {
+    title: "MLOps Engineer",
+    dept: "Enterprise AI",
+    location: "Remote",
+    type: "Full-time",
+    icon: Layers,
+    color: "#6366F1",
+    desc: "Design and operate ML training pipelines, model serving infrastructure, and monitoring systems for AGL's AI product suite.",
+    tags: ["MLflow", "Kubeflow", "Docker", "AWS SageMaker", "Python"],
+  },
+  // Consumer Mobile
   {
     title: "iOS Developer (Swift)",
     dept: "Consumer Mobile",
@@ -31,28 +54,8 @@ const openings = [
     type: "Full-time",
     icon: Smartphone,
     color: "#34D399",
-    desc: "Build world-class iOS apps including on-device AI, Wear OS integration, and offline-first experiences.",
-    tags: ["Swift", "SwiftUI", "CoreML", "Wear OS"],
-  },
-  {
-    title: "Full-Stack Engineer (TypeScript)",
-    dept: "FinTech",
-    location: "Remote",
-    type: "Full-time",
-    icon: Code2,
-    color: "#FBBF24",
-    desc: "Build scalable FinTech platforms including digital banking, payment processing, and trading systems.",
-    tags: ["TypeScript", "React", "Node.js", "PostgreSQL"],
-  },
-  {
-    title: "Cybersecurity Engineer",
-    dept: "CyberSecurity",
-    location: "Remote",
-    type: "Full-time",
-    icon: Shield,
-    color: "#F87171",
-    desc: "Design and implement enterprise security systems including SIEM, threat hunting, and zero-trust architecture.",
-    tags: ["Python", "SIEM", "Zero-Trust", "Kubernetes"],
+    desc: "Build world-class iOS apps with on-device AI, HealthKit, Wear OS integration, and offline-first architecture across AGL's 30+ mobile products.",
+    tags: ["Swift", "SwiftUI", "CoreML", "HealthKit", "WatchKit"],
   },
   {
     title: "Android Developer (Kotlin)",
@@ -61,63 +64,221 @@ const openings = [
     type: "Full-time",
     icon: Smartphone,
     color: "#60A5FA",
-    desc: "Build native Android apps with Jetpack Compose, integrating ML Kit, Wear OS, and offline-first architecture.",
-    tags: ["Kotlin", "Jetpack Compose", "ML Kit", "Wear OS"],
+    desc: "Build native Android apps with Jetpack Compose, ML Kit, Wear OS, and BLE integrations. Ship features used by millions of users.",
+    tags: ["Kotlin", "Jetpack Compose", "ML Kit", "Wear OS", "BLE"],
+  },
+  {
+    title: "React Native / Flutter Engineer",
+    dept: "Consumer Mobile",
+    location: "Remote",
+    type: "Full-time",
+    icon: Code2,
+    color: "#38BDF8",
+    desc: "Build cross-platform mobile apps (React Native & Flutter) for AGL's social, lifestyle, and utility product lines targeting iOS and Android.",
+    tags: ["React Native", "Flutter", "Dart", "TypeScript", "Firebase"],
+  },
+  // FinTech & E-Commerce
+  {
+    title: "FinTech Full-Stack Engineer",
+    dept: "FinTech & E-Commerce",
+    location: "Remote",
+    type: "Full-time",
+    icon: ShoppingCart,
+    color: "#FBBF24",
+    desc: "Build scalable FinTech platforms — digital banking, payment processing, trading systems, and cross-border transfer products.",
+    tags: ["TypeScript", "React", "Node.js", "PostgreSQL", "Stripe"],
+  },
+  {
+    title: "Blockchain / Web3 Engineer",
+    dept: "FinTech & E-Commerce",
+    location: "Remote",
+    type: "Full-time",
+    icon: Link2,
+    color: "#F59E0B",
+    desc: "Develop DeFi protocols, smart contracts, and Web3 wallet integrations. Contribute to AGL's tokenization, on-chain identity, and NFT products.",
+    tags: ["Solidity", "Rust", "Ethereum", "Solana", "Hardhat"],
+  },
+  {
+    title: "Quantitative / Algo Trading Engineer",
+    dept: "FinTech & E-Commerce",
+    location: "Santa Clara, CA / Remote",
+    type: "Full-time",
+    icon: Database,
+    color: "#10B981",
+    desc: "Build real-time market data pipelines, algorithmic trading strategies, and SEC filing aggregation systems for ApexMarketWatch and related products.",
+    tags: ["Python", "C++", "WebSockets", "PostgreSQL", "Redis"],
+  },
+  // CyberSecurity & Infra
+  {
+    title: "Cybersecurity Engineer",
+    dept: "CyberSecurity & Infra",
+    location: "Remote",
+    type: "Full-time",
+    icon: Shield,
+    color: "#F87171",
+    desc: "Design enterprise security systems — SIEM, threat hunting, zero-trust architecture, and network security auditing tools.",
+    tags: ["Python", "SIEM", "Zero-Trust", "Kubernetes", "Splunk"],
+  },
+  {
+    title: "Penetration Tester / Red Team Engineer",
+    dept: "CyberSecurity & Infra",
+    location: "Remote",
+    type: "Full-time",
+    icon: Lock,
+    color: "#EF4444",
+    desc: "Conduct offensive security assessments, penetration tests, and red team exercises for enterprise clients and AGL's own security products.",
+    tags: ["Kali Linux", "Metasploit", "Burp Suite", "Python", "OSCP"],
   },
   {
     title: "DevOps / Cloud Engineer",
-    dept: "Infrastructure",
+    dept: "CyberSecurity & Infra",
     location: "Remote",
     type: "Full-time",
     icon: Globe,
     color: "#A78BFA",
-    desc: "Manage multi-cloud infrastructure, CI/CD pipelines, and Kubernetes clusters for 77+ production products.",
-    tags: ["Kubernetes", "Terraform", "AWS", "GCP"],
+    desc: "Manage multi-cloud infrastructure, CI/CD pipelines, and Kubernetes clusters supporting 77+ production products across AWS, GCP, and Azure.",
+    tags: ["Kubernetes", "Terraform", "AWS", "GCP", "GitHub Actions"],
+  },
+  // Health & Wellness
+  {
+    title: "Health Tech iOS/Android Engineer",
+    dept: "Health & Wellness",
+    location: "India / Remote",
+    type: "Full-time",
+    icon: Heart,
+    color: "#F43F5E",
+    desc: "Build health and wellness mobile apps with HealthKit, Google Fit, BLE wearable integrations, and real-time biometric tracking.",
+    tags: ["Swift", "Kotlin", "HealthKit", "BLE", "React Native"],
+  },
+  {
+    title: "Health Algorithms Engineer",
+    dept: "Health & Wellness",
+    location: "Remote",
+    type: "Full-time",
+    icon: FlaskConical,
+    color: "#EC4899",
+    desc: "Design and validate health algorithms for heart rate, SpO2, sleep scoring, and stress detection used in AGL's wearable and health app products.",
+    tags: ["Python", "Signal Processing", "ML", "HealthKit", "Clinical Validation"],
+  },
+  // Travel & Aviation
+  {
+    title: "Aviation Software Engineer",
+    dept: "Travel & Aviation",
+    location: "Santa Clara, CA / Remote",
+    type: "Full-time",
+    icon: Plane,
+    color: "#0EA5E9",
+    desc: "Build aviation apps for pilots — FAA exam prep, flight tracking, logbooks, NOTAM feeds, and real-time ATC/weather integrations.",
+    tags: ["Swift", "Kotlin", "FAA APIs", "Aviation Data", "React Native"],
+  },
+  {
+    title: "Travel & Maps Platform Engineer",
+    dept: "Travel & Aviation",
+    location: "Remote",
+    type: "Full-time",
+    icon: Globe,
+    color: "#22D3EE",
+    desc: "Build offline-first maps, navigation, and travel discovery apps. Integrate OpenStreetMap, Google Maps, and real-time transit APIs.",
+    tags: ["Kotlin", "Swift", "OpenStreetMap", "Google Maps SDK", "Offline-first"],
+  },
+  // Social & Lifestyle
+  {
+    title: "Social Platform Engineer",
+    dept: "Social & Lifestyle",
+    location: "Remote",
+    type: "Full-time",
+    icon: Users,
+    color: "#8B5CF6",
+    desc: "Build social and community features — real-time messaging, P2P multiplayer, content feeds, and offline-first social experiences.",
+    tags: ["Kotlin", "WebSockets", "Firebase", "BLE", "P2P"],
+  },
+  {
+    title: "Streaming & Media Engineer",
+    dept: "Social & Lifestyle",
+    location: "Remote",
+    type: "Full-time",
+    icon: Radio,
+    color: "#C084FC",
+    desc: "Build global radio streaming, podcast, and media casting apps with GPS-based filtering, multi-language support, and Chromecast/AirPlay integration.",
+    tags: ["Flutter", "ExoPlayer", "AVFoundation", "Chromecast", "GPS"],
   },
   // ── Internship Positions ──────────────────────────────────────────────
   {
     title: "AI / LLM Mobile App Intern",
-    dept: "AI Mobile Internship",
+    dept: "Enterprise AI",
     location: "Remote / India",
     type: "Internship · 3–6 months",
     icon: Cpu,
     color: "#F472B6",
     badge: "Internship",
     desc: "Build on-device AI features and LLM-powered mobile apps for iOS and Android. Work with GPT-4o, Gemini, and on-device models (CoreML / TFLite) to ship real AI features inside AGL consumer apps.",
-    tags: ["Swift / Kotlin", "LLM APIs", "CoreML", "TFLite", "RAG", "Flutter"],
+    tags: ["Swift / Kotlin", "LLM APIs", "CoreML", "TFLite", "Flutter"],
   },
   {
     title: "LLM & Generative AI Research Intern",
-    dept: "AI Research Internship",
+    dept: "Enterprise AI",
     location: "Remote",
     type: "Internship · 3–6 months",
     icon: Brain,
     color: "#34D399",
     badge: "Internship",
-    desc: "Assist in fine-tuning, prompt engineering, and evaluation of large language models. Build RAG pipelines, vector search systems, and AI agent workflows using LangChain, LlamaIndex, and OpenAI APIs.",
-    tags: ["Python", "LangChain", "OpenAI API", "Vector DB", "Fine-tuning", "Hugging Face"],
+    desc: "Fine-tune, prompt-engineer, and evaluate large language models. Build RAG pipelines, vector search systems, and AI agent workflows using LangChain, LlamaIndex, and OpenAI APIs.",
+    tags: ["Python", "LangChain", "OpenAI API", "Vector DB", "Hugging Face"],
   },
   {
     title: "Blockchain & Web3 Developer Intern",
-    dept: "Blockchain Internship",
+    dept: "FinTech & E-Commerce",
     location: "Remote",
     type: "Internship · 3–6 months",
     icon: Link2,
     color: "#FBBF24",
     badge: "Internship",
-    desc: "Develop and audit smart contracts on Ethereum and Solana. Build DeFi components, NFT systems, and Web3 wallet integrations. Contribute to AGL's blockchain product vertical including tokenization and on-chain identity.",
-    tags: ["Solidity", "Rust", "Ethereum", "Solana", "Hardhat", "Web3.js"],
+    desc: "Develop and audit smart contracts on Ethereum and Solana. Build DeFi components, NFT systems, and Web3 wallet integrations for AGL's blockchain vertical.",
+    tags: ["Solidity", "Rust", "Ethereum", "Solana", "Hardhat"],
   },
   {
-    title: "Blockchain Security & Audit Intern",
-    dept: "Blockchain Internship",
+    title: "Cybersecurity & Blockchain Audit Intern",
+    dept: "CyberSecurity & Infra",
     location: "Remote",
     type: "Internship · 3–6 months",
     icon: Shield,
     color: "#60A5FA",
     badge: "Internship",
-    desc: "Learn smart contract security auditing, identify vulnerabilities (reentrancy, flash loans, oracle manipulation), and write security reports. Work alongside senior engineers on real DeFi protocol audits.",
-    tags: ["Solidity", "Slither", "Foundry", "DeFi", "Security Auditing", "Python"],
+    desc: "Learn smart contract security auditing and network penetration testing. Identify vulnerabilities and write security reports alongside senior engineers.",
+    tags: ["Solidity", "Slither", "Foundry", "Burp Suite", "Python"],
+  },
+  {
+    title: "Health Tech Mobile Intern",
+    dept: "Health & Wellness",
+    location: "Remote / India",
+    type: "Internship · 3–6 months",
+    icon: Heart,
+    color: "#F43F5E",
+    badge: "Internship",
+    desc: "Build health and wellness mobile features — biometric dashboards, BLE wearable sync, and health algorithm integrations for AGL's health product line.",
+    tags: ["Swift", "Kotlin", "HealthKit", "BLE", "React Native"],
+  },
+  {
+    title: "FinTech & Data Engineering Intern",
+    dept: "FinTech & E-Commerce",
+    location: "Remote",
+    type: "Internship · 3–6 months",
+    icon: Database,
+    color: "#10B981",
+    badge: "Internship",
+    desc: "Build real-time financial data pipelines, market data aggregators, and analytics dashboards for AGL's FinTech products including MyFinance and ApexMarketWatch.",
+    tags: ["Python", "PostgreSQL", "Redis", "WebSockets", "TypeScript"],
+  },
+  {
+    title: "Travel & Aviation App Intern",
+    dept: "Travel & Aviation",
+    location: "Remote",
+    type: "Internship · 3–6 months",
+    icon: Plane,
+    color: "#0EA5E9",
+    badge: "Internship",
+    desc: "Contribute to AGL's aviation and travel apps — FAA data integrations, offline maps, flight tracking, and pilot study tools.",
+    tags: ["Swift", "Kotlin", "FAA APIs", "Maps SDK", "React Native"],
   },
 ];
 
@@ -131,6 +292,7 @@ const perks = [
 ];
 
 export default function CareersPage() {
+  const [activeFilter, setActiveFilter] = useState<string>("All");
   const [applyJob, setApplyJob] = useState<{ title: string; dept: string; type: string } | null>(null);
   const [appForm, setAppForm] = useState({ name: "", email: "", phone: "", linkedin: "", message: "" });
   const [appSending, setAppSending] = useState(false);
@@ -278,15 +440,30 @@ export default function CareersPage() {
             </h2>
           </motion.div>
 
+          {/* Department filter tabs */}
+          <div className="flex flex-wrap gap-2 mb-10">
+            {["All", "Enterprise AI", "Consumer Mobile", "FinTech & E-Commerce", "CyberSecurity & Infra", "Health & Wellness", "Travel & Aviation", "Social & Lifestyle"].map((dept) => (
+              <button
+                key={dept}
+                onClick={() => setActiveFilter(dept)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200"
+                style={activeFilter === dept
+                  ? { background: "rgba(124,58,237,0.25)", border: "1px solid rgba(124,58,237,0.5)", color: "#C4B5FD" }
+                  : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#94A3B8" }}
+              >
+                {dept}
+              </button>
+            ))}
+          </div>
           {/* Full-time roles */}
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-5">
               <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Full-Time Positions</span>
               <div className="flex-1 h-px bg-white/8" />
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">{openings.filter(j => !('badge' in j)).length} open</span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">{openings.filter(j => !('badge' in j) && (activeFilter === "All" || j.dept === activeFilter)).length} open</span>
             </div>
             <div className="space-y-4">
-              {openings.filter(j => !('badge' in j)).map((job, i) => {
+              {openings.filter(j => !('badge' in j) && (activeFilter === "All" || j.dept === activeFilter)).map((job, i) => {
                 const Icon = job.icon;
                 return (
                   <motion.div

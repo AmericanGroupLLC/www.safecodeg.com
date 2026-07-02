@@ -15,7 +15,9 @@ const timeline = [
   { year: "2021", title: "AI Research Division", desc: "Dedicated AI research division established, focusing on frontier LLM research and cognitive computing." },
   { year: "2022", title: "50 Active Repositories", desc: "Portfolio expanded to 50+ active repositories across 5 business verticals with global client base." },
   { year: "2023", title: "77 Products Milestone", desc: "Reached 77 active products across 8 verticals — Mobile, AI, FinTech, CyberSecurity, Health, Travel, and more." },
-  { year: "2024+", title: "28-Product Roadmap", desc: "Ambitious roadmap of 28 new products in AI SaaS, DevTools, and Cybersecurity verticals underway." },
+  { year: "2024", title: "AI SaaS Expansion", desc: "Launched 8 new AI SaaS products including CogniCore AI and OfflineBuddy. Enterprise DevTools suite enters market." },
+  { year: "2025", title: "FinTech & Health Scale", desc: "ApexMarketWatch reaches 100K users. Health vertical expands with BLE wearable integrations and clinical algorithm validation." },
+  { year: "2026+", title: "Global Platform Roadmap", desc: "28-product roadmap underway across AI infrastructure, blockchain, and next-gen cybersecurity platforms. Team grows to 50+ engineers worldwide." },
 ];
 
 const values = [
