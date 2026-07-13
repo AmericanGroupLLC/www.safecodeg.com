@@ -280,6 +280,25 @@ const openings = [
     desc: "Contribute to AGL's aviation and travel apps — FAA data integrations, offline maps, flight tracking, and pilot study tools.",
     tags: ["Swift", "Kotlin", "FAA APIs", "Maps SDK", "React Native"],
   },
+  {
+    title: "Flutter Developer Intern (Mobile App Development)",
+    dept: "Consumer Mobile",
+    location: "Remote (India)",
+    type: "Internship · 3–6 months",
+    icon: Smartphone,
+    color: "#22D3EE",
+    badge: "Internship",
+    desc: "Build high-quality cross-platform mobile applications using Flutter. Work with REST APIs, Firebase, and AI/LLM integrations to ship real features across AGL's consumer app portfolio. Ideal for passionate learners who want hands-on mobile development experience.",
+    tags: ["Flutter", "Dart", "Firebase", "REST APIs", "Git"],
+    requirements: [
+      "Good knowledge of Flutter and Dart.",
+      "Understanding of mobile application development concepts.",
+      "Knowledge of AI and Large Language Models (LLMs) is a plus.",
+      "Familiarity with REST APIs, Git, and Firebase is preferred.",
+      "Good communication, problem-solving, and teamwork skills.",
+      "Passion for learning and building high-quality mobile applications.",
+    ],
+  },
 ];
 
 const perks = [
@@ -539,6 +558,16 @@ export default function CareersPage() {
                           <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/25">Internship</span>
                         </div>
                         <p className="text-slate-500 text-sm mb-3">{job.desc}</p>
+                        {'requirements' in job && job.requirements && (
+                          <ul className="mb-3 space-y-1">
+                            {(job.requirements as string[]).map((req) => (
+                              <li key={req} className="flex items-start gap-1.5 text-xs text-slate-400">
+                                <CheckCircle className="w-3 h-3 mt-0.5 flex-shrink-0" style={{ color: job.color }} />
+                                {req}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                         <div className="flex flex-wrap gap-1.5">
                           {job.tags.map((tag) => (
                             <span key={tag} className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]">{tag}</span>
