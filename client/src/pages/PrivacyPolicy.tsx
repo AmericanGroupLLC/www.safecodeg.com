@@ -3,9 +3,10 @@
  * "Luminous Clarity" Design System
  *
  * Comprehensive single-page Privacy Policy satisfying:
- * - Google Play Store requirements
+ * - Google Play Store requirements (developer/entity clearly identified)
  * - Apple App Store requirements
  * - GDPR / CCPA / COPPA compliance language
+ * - Universal policy covering all mobile apps across all platforms
  * - Covers all 77 products across 6 verticals
  */
 import { useEffect, useState } from "react";
@@ -18,17 +19,21 @@ import {
   RefreshCw, FileText, AlertTriangle, CheckCircle, Baby,
 } from "lucide-react";
 
-const LAST_UPDATED = "June 17, 2026";
-const EFFECTIVE_DATE = "June 17, 2026";
+const LAST_UPDATED = "July 19, 2026";
+const EFFECTIVE_DATE = "July 19, 2026";
 const CONTACT_EMAIL = "contact@safecodeg.com";
 const PRIVACY_EMAIL = "contact@safecodeg.com";
 const COMPANY_NAME = "American Group LLC";
 const INDIA_ENTITY = "SafeCodeX Research Center Pvt. Ltd.";
 const HQ_ADDRESS = "Santa Clara, California, USA";
+const DEVELOPER_NAME = "American Group LLC";
+const GOOGLE_PLAY_DEVELOPER = "American Group LLC";
+const APPLE_DEVELOPER = "American Group LLC";
 
 // Table of contents sections
 const sections = [
-  { id: "overview", label: "Overview", icon: FileText },
+  { id: "overview", label: "Overview & Developer Identity", icon: FileText },
+  { id: "scope", label: "Scope & Applicable Apps", icon: Smartphone },
   { id: "information-collected", label: "Information We Collect", icon: Database },
   { id: "how-we-use", label: "How We Use Information", icon: Eye },
   { id: "sharing", label: "Information Sharing", icon: Users },
@@ -120,6 +125,9 @@ export default function PrivacyPolicyPage() {
               <h1 className="text-4xl lg:text-5xl font-bold text-white mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Privacy Policy
               </h1>
+              <p className="text-slate-300 text-sm mb-3">
+                Published by <strong className="text-white">{DEVELOPER_NAME}</strong> — applies to all mobile and web applications.
+              </p>
               <div className="flex flex-wrap gap-4 text-xs font-mono text-white/50">
                 <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> Effective: {EFFECTIVE_DATE}</span>
                 <span className="flex items-center gap-1.5"><RefreshCw className="h-3.5 w-3.5" /> Last Updated: {LAST_UPDATED}</span>
@@ -129,7 +137,14 @@ export default function PrivacyPolicyPage() {
           </div>
           {/* App store compliance badges */}
           <div className="flex flex-wrap gap-3 mt-6">
-            {["Google Play Store Compliant", "Apple App Store Compliant", "GDPR Ready", "CCPA Ready", "COPPA Compliant"].map((badge) => (
+            {[
+              "Google Play Store Compliant",
+              "Apple App Store Compliant",
+              "GDPR Ready",
+              "CCPA Ready",
+              "COPPA Compliant",
+              "Universal Mobile Policy",
+            ].map((badge) => (
               <span key={badge} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold"
                 style={{ background: "oklch(0.52 0.22 270 / 0.15)", color: "oklch(0.75 0.15 270)", border: "1px solid oklch(0.52 0.22 270 / 0.25)" }}>
                 <CheckCircle className="h-3 w-3" /> {badge}
@@ -179,15 +194,49 @@ export default function PrivacyPolicyPage() {
           {/* Article */}
           <article className="flex-1 min-w-0 space-y-12" style={{ color: "rgba(255,255,255,0.8)" }}>
 
-            {/* ── 1. Overview ── */}
+            {/* ── 1. Overview & Developer Identity ── */}
             <section>
               <SectionAnchor id="overview" />
-              <SectionTitle icon={FileText} title="Overview" id="overview-heading" />
+              <SectionTitle icon={FileText} title="Overview & Developer Identity" id="overview-heading" />
+
+              {/* Google Play / App Store required developer identification block */}
+              <div className="p-5 rounded-2xl mb-6" style={{ background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.25)" }}>
+                <div className="text-xs font-mono font-semibold uppercase tracking-widest mb-3" style={{ color: "rgba(99,102,241,0.8)" }}>
+                  Developer / Legal Entity Information
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="text-slate-400 text-xs mb-1">Developer Name</div>
+                    <div className="font-semibold text-white">{DEVELOPER_NAME}</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400 text-xs mb-1">Legal Entity</div>
+                    <div className="font-semibold text-white">American Group LLC</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400 text-xs mb-1">Google Play Store Developer</div>
+                    <div className="font-semibold text-white">{GOOGLE_PLAY_DEVELOPER}</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400 text-xs mb-1">Apple App Store Developer</div>
+                    <div className="font-semibold text-white">{APPLE_DEVELOPER}</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400 text-xs mb-1">Headquarters</div>
+                    <div className="font-semibold text-white">{HQ_ADDRESS}</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400 text-xs mb-1">Privacy Contact</div>
+                    <a href={`mailto:${PRIVACY_EMAIL}`} className="font-semibold text-indigo-400 hover:underline">{PRIVACY_EMAIL}</a>
+                  </div>
+                </div>
+              </div>
+
               <p className="text-slate-300 leading-relaxed mb-4">
                 This Privacy Policy describes how <strong className="text-white">{COMPANY_NAME}</strong> (also operating as <strong className="text-white">{INDIA_ENTITY}</strong>, our India engineering office) collects, uses, stores, and shares information when you use any of our mobile applications, web applications, software products, or services (collectively, the <strong>"Services"</strong>).
               </p>
               <p className="text-slate-300 leading-relaxed mb-4">
-                This policy applies to all <strong className="text-white">77 products</strong> published under the American Group LLC and SafeCodeX Research Center brands across six verticals: Enterprise AI & DevTools, Consumer Mobile & Lifestyle, FinTech & E-Commerce, CyberSecurity & Infrastructure, Spatial & Industry SaaS, and IoT & Hardware.
+                This policy applies to all <strong className="text-white">77 products</strong> published under the <strong className="text-white">American Group LLC</strong> and <strong className="text-white">SafeCodeX Research Center</strong> brands across six verticals: Enterprise AI &amp; DevTools, Consumer Mobile &amp; Lifestyle, FinTech &amp; E-Commerce, CyberSecurity &amp; Infrastructure, Spatial &amp; Industry SaaS, and IoT &amp; Hardware.
               </p>
               <InfoBox type="important">
                 <strong>By downloading, installing, or using any of our applications, you agree to the collection and use of information in accordance with this policy.</strong> If you do not agree, please do not use our Services.
@@ -195,29 +244,57 @@ export default function PrivacyPolicyPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr style={{ background: "oklch(0.97 0.005 255)" }}>
+                    <tr style={{ background: "rgba(99,102,241,0.12)" }}>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10 rounded-tl-lg">Entity</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Role</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10 rounded-tr-lg">Jurisdiction</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr style={{ background: "rgba(255,255,255,0.03)" }}>
                       <td className="px-4 py-3 border border-white/10 text-slate-200 font-medium">American Group LLC</td>
-                      <td className="px-4 py-3 border border-white/10 text-slate-300">Data Controller / Parent Organization</td>
+                      <td className="px-4 py-3 border border-white/10 text-slate-300">Data Controller / Developer / Parent Organization</td>
                       <td className="px-4 py-3 border border-white/10 text-slate-300">Santa Clara, California, USA</td>
                     </tr>
-                    <tr style={{ background: "oklch(0.99 0 0)" }}>
+                    <tr style={{ background: "rgba(255,255,255,0.01)" }}>
                       <td className="px-4 py-3 border border-white/10 text-slate-200 font-medium">SafeCodeX Research Center Pvt. Ltd.</td>
                       <td className="px-4 py-3 border border-white/10 text-slate-300">Data Processor / India Engineering Office</td>
-                      <td className="px-4 py-3 border border-white/10 text-slate-300">India</td>
+                      <td className="px-4 py-3 border border-white/10 text-slate-300">Hyderabad, India</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </section>
 
-            {/* ── 2. Information We Collect ── */}
+            {/* ── 2. Scope & Applicable Apps ── */}
+            <section>
+              <SectionAnchor id="scope" />
+              <SectionTitle icon={Smartphone} title="Scope & Applicable Applications" id="scope-heading" />
+              <p className="text-slate-300 leading-relaxed mb-4">
+                This is a <strong className="text-white">universal privacy policy</strong> that applies to all mobile and web applications developed and published by <strong className="text-white">American Group LLC</strong>. Whether you are using one of our Android apps on the Google Play Store, an iOS app on the Apple App Store, or any of our web-based services, this single policy governs how we handle your data.
+              </p>
+              <InfoBox type="note">
+                <strong>Single Policy for All Apps:</strong> You do not need to look for a separate privacy policy for each individual app. This page serves as the authoritative, unified privacy policy for all applications published by American Group LLC across all platforms.
+              </InfoBox>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
+                {[
+                  { platform: "Android (Google Play)", icon: "🤖", desc: "All apps listed under the American Group LLC developer account on Google Play Store." },
+                  { platform: "iOS (Apple App Store)", icon: "🍎", desc: "All apps listed under the American Group LLC developer account on the Apple App Store." },
+                  { platform: "Web Applications", icon: "🌐", desc: "All web-based services and applications accessible via safecodeg.com and related domains." },
+                  { platform: "Enterprise & DevTools", icon: "💻", desc: "Developer tools, AI platforms, and enterprise SaaS products." },
+                  { platform: "IoT & Hardware", icon: "📡", desc: "Companion apps for IoT devices, wearables, and smart hardware." },
+                  { platform: "Health & Fitness Apps", icon: "❤️", desc: "Health tracking, fitness, and wellness applications." },
+                ].map((item, i) => (
+                  <div key={i} className="p-4 rounded-xl border border-white/10 bg-white/[0.03]">
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <div className="font-semibold text-white text-sm mb-1">{item.platform}</div>
+                    <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ── 3. Information We Collect ── */}
             <section>
               <SectionAnchor id="information-collected" />
               <SectionTitle icon={Database} title="Information We Collect" id="information-collected-heading" />
@@ -225,11 +302,11 @@ export default function PrivacyPolicyPage() {
                 The specific information we collect depends on which of our Services you use. We collect information in three ways: information you provide directly, information collected automatically, and information from third-party sources.
               </p>
 
-              <h3 className="text-lg font-bold text-white mb-3">2.1 Information You Provide Directly</h3>
+              <h3 className="text-lg font-bold text-white mb-3">3.1 Information You Provide Directly</h3>
               <div className="overflow-x-auto mb-6">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr style={{ background: "oklch(0.97 0.005 255)" }}>
+                    <tr style={{ background: "rgba(99,102,241,0.12)" }}>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Data Type</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Examples</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">When Collected</th>
@@ -245,7 +322,7 @@ export default function PrivacyPolicyPage() {
                       ["User-Generated Content", "Notes, photos, documents you upload or create", "Active use of content features"],
                       ["Device Pairing Data", "Bluetooth device IDs, firmware versions (IoT/hardware apps)", "Device pairing"],
                     ].map(([type, examples, when], i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? "white" : "oklch(0.99 0 0)" }}>
+                      <tr key={i} style={{ background: i % 2 === 0 ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.01)" }}>
                         <td className="px-4 py-3 border border-white/10 font-medium text-slate-200">{type}</td>
                         <td className="px-4 py-3 border border-white/10 text-slate-300">{examples}</td>
                         <td className="px-4 py-3 border border-white/10 text-slate-400 text-xs">{when}</td>
@@ -255,7 +332,7 @@ export default function PrivacyPolicyPage() {
                 </table>
               </div>
 
-              <h3 className="text-lg font-bold text-white mb-3">2.2 Information Collected Automatically</h3>
+              <h3 className="text-lg font-bold text-white mb-3">3.2 Information Collected Automatically</h3>
               <p className="text-slate-300 leading-relaxed mb-4">
                 When you use our apps, we automatically collect certain technical information to ensure the Services function correctly and to improve performance:
               </p>
@@ -275,7 +352,7 @@ export default function PrivacyPolicyPage() {
                 ))}
               </ul>
 
-              <h3 className="text-lg font-bold text-white mb-3">2.3 Information from Third Parties</h3>
+              <h3 className="text-lg font-bold text-white mb-3">3.3 Information from Third Parties</h3>
               <p className="text-slate-300 leading-relaxed mb-4">
                 We may receive information about you from third-party services when you choose to connect them to our apps (e.g., Google Sign-In, Apple Sign-In, social media accounts, or health platforms such as Apple HealthKit or Google Fit).
               </p>
@@ -284,7 +361,7 @@ export default function PrivacyPolicyPage() {
               </InfoBox>
             </section>
 
-            {/* ── 3. How We Use Information ── */}
+            {/* ── 4. How We Use Information ── */}
             <section>
               <SectionAnchor id="how-we-use" />
               <SectionTitle icon={Eye} title="How We Use Your Information" id="how-we-use-heading" />
@@ -316,7 +393,7 @@ export default function PrivacyPolicyPage() {
               </InfoBox>
             </section>
 
-            {/* ── 4. Information Sharing ── */}
+            {/* ── 5. Information Sharing ── */}
             <section>
               <SectionAnchor id="sharing" />
               <SectionTitle icon={Users} title="Information Sharing & Disclosure" id="sharing-heading" />
@@ -358,7 +435,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {/* ── 5. Data Storage & Security ── */}
+            {/* ── 6. Data Storage & Security ── */}
             <section>
               <SectionAnchor id="data-storage" />
               <SectionTitle icon={Lock} title="Data Storage & Security" id="data-storage-heading" />
@@ -391,7 +468,7 @@ export default function PrivacyPolicyPage() {
               </InfoBox>
             </section>
 
-            {/* ── 6. App Permissions ── */}
+            {/* ── 7. App Permissions ── */}
             <section>
               <SectionAnchor id="permissions" />
               <SectionTitle icon={Smartphone} title="App Permissions" id="permissions-heading" />
@@ -401,7 +478,7 @@ export default function PrivacyPolicyPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr style={{ background: "oklch(0.97 0.005 255)" }}>
+                    <tr style={{ background: "rgba(99,102,241,0.12)" }}>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Permission</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Purpose</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Apps That May Request</th>
@@ -422,7 +499,7 @@ export default function PrivacyPolicyPage() {
                       ["Network Access", "Connecting to the internet for app functionality", "All apps"],
                       ["Background App Refresh", "Syncing data while app is in background", "Health, IoT, FinTech apps"],
                     ].map(([perm, purpose, apps], i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? "white" : "oklch(0.99 0 0)" }}>
+                      <tr key={i} style={{ background: i % 2 === 0 ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.01)" }}>
                         <td className="px-4 py-3 border border-white/10 font-medium text-slate-200">{perm}</td>
                         <td className="px-4 py-3 border border-white/10 text-slate-300">{purpose}</td>
                         <td className="px-4 py-3 border border-white/10 text-slate-400 text-xs">{apps}</td>
@@ -436,7 +513,7 @@ export default function PrivacyPolicyPage() {
               </p>
             </section>
 
-            {/* ── 7. Third-Party Services ── */}
+            {/* ── 8. Third-Party Services ── */}
             <section>
               <SectionAnchor id="third-party" />
               <SectionTitle icon={Globe} title="Third-Party Services & SDKs" id="third-party-heading" />
@@ -446,7 +523,7 @@ export default function PrivacyPolicyPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr style={{ background: "oklch(0.97 0.005 255)" }}>
+                    <tr style={{ background: "rgba(99,102,241,0.12)" }}>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Service</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Purpose</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Privacy Policy</th>
@@ -465,12 +542,12 @@ export default function PrivacyPolicyPage() {
                       ["Sentry / Crashlytics", "Crash reporting and error monitoring", "https://sentry.io/privacy"],
                       ["Intercom / Zendesk", "Customer support chat (select apps)", "https://www.intercom.com/legal/privacy"],
                     ].map(([service, purpose, url], i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? "white" : "oklch(0.99 0 0)" }}>
+                      <tr key={i} style={{ background: i % 2 === 0 ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.01)" }}>
                         <td className="px-4 py-3 border border-white/10 font-medium text-slate-200">{service}</td>
                         <td className="px-4 py-3 border border-white/10 text-slate-300">{purpose}</td>
                         <td className="px-4 py-3 border border-white/10">
                           <a href={url} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 transition-colors">
+                            className="inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
                             View Policy <ExternalLink className="h-3 w-3" />
                           </a>
                         </td>
@@ -481,7 +558,7 @@ export default function PrivacyPolicyPage() {
               </div>
             </section>
 
-            {/* ── 8. Children's Privacy ── */}
+            {/* ── 9. Children's Privacy ── */}
             <section>
               <SectionAnchor id="children" />
               <SectionTitle icon={Baby} title="Children's Privacy" id="children-heading" />
@@ -489,7 +566,7 @@ export default function PrivacyPolicyPage() {
                 <strong>COPPA Notice:</strong> Our Services are not directed to children under the age of 13 (or under 16 in the European Economic Area). We do not knowingly collect personal information from children under these ages.
               </InfoBox>
               <p className="text-slate-300 leading-relaxed mb-4">
-                If you are a parent or guardian and you believe your child has provided us with personal information without your consent, please contact us immediately at <a href={`mailto:${PRIVACY_EMAIL}`} className="text-indigo-600 hover:underline">{PRIVACY_EMAIL}</a>. We will take steps to remove that information from our systems promptly.
+                If you are a parent or guardian and you believe your child has provided us with personal information without your consent, please contact us immediately at <a href={`mailto:${PRIVACY_EMAIL}`} className="text-indigo-400 hover:underline">{PRIVACY_EMAIL}</a>. We will take steps to remove that information from our systems promptly.
               </p>
               <p className="text-slate-300 leading-relaxed mb-4">
                 For apps that are specifically designed for children (clearly marked as such in their App Store/Play Store listings), we apply additional protections in compliance with COPPA, GDPR-K, and applicable children's privacy laws, including:
@@ -510,7 +587,7 @@ export default function PrivacyPolicyPage() {
               </ul>
             </section>
 
-            {/* ── 9. Your Rights & Choices ── */}
+            {/* ── 10. Your Rights & Choices ── */}
             <section>
               <SectionAnchor id="your-rights" />
               <SectionTitle icon={CheckCircle} title="Your Rights & Choices" id="your-rights-heading" />
@@ -538,14 +615,14 @@ export default function PrivacyPolicyPage() {
                 ))}
               </div>
               <p className="text-slate-300 leading-relaxed mb-4">
-                To exercise any of these rights, please contact us at <a href={`mailto:${PRIVACY_EMAIL}`} className="text-indigo-600 hover:underline">{PRIVACY_EMAIL}</a>. We will respond to your request within 30 days (or as required by applicable law). We may need to verify your identity before processing your request.
+                To exercise any of these rights, please contact us at <a href={`mailto:${PRIVACY_EMAIL}`} className="text-indigo-400 hover:underline">{PRIVACY_EMAIL}</a>. We will respond to your request within 30 days (or as required by applicable law). We may need to verify your identity before processing your request.
               </p>
               <InfoBox type="note">
                 You can also manage many of your data preferences directly within each app's Settings section, including notification preferences, data sync settings, and account deletion.
               </InfoBox>
             </section>
 
-            {/* ── 10. Push Notifications ── */}
+            {/* ── 11. Push Notifications ── */}
             <section>
               <SectionAnchor id="notifications" />
               <SectionTitle icon={Bell} title="Push Notifications" id="notifications-heading" />
@@ -571,7 +648,7 @@ export default function PrivacyPolicyPage() {
               </p>
             </section>
 
-            {/* ── 11. Data Retention & Deletion ── */}
+            {/* ── 12. Data Retention & Deletion ── */}
             <section>
               <SectionAnchor id="data-retention" />
               <SectionTitle icon={Trash2} title="Data Retention & Deletion" id="data-retention-heading" />
@@ -581,7 +658,7 @@ export default function PrivacyPolicyPage() {
               <div className="overflow-x-auto mb-5">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr style={{ background: "oklch(0.97 0.005 255)" }}>
+                    <tr style={{ background: "rgba(99,102,241,0.12)" }}>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Data Type</th>
                       <th className="text-left px-4 py-3 font-semibold text-slate-200 border border-white/10">Retention Period</th>
                     </tr>
@@ -596,7 +673,7 @@ export default function PrivacyPolicyPage() {
                       ["Crash / error logs", "90 days"],
                       ["Marketing communications", "Until you unsubscribe + 30 days"],
                     ].map(([type, period], i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? "white" : "oklch(0.99 0 0)" }}>
+                      <tr key={i} style={{ background: i % 2 === 0 ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.01)" }}>
                         <td className="px-4 py-3 border border-white/10 font-medium text-slate-200">{type}</td>
                         <td className="px-4 py-3 border border-white/10 text-slate-300">{period}</td>
                       </tr>
@@ -626,7 +703,7 @@ export default function PrivacyPolicyPage() {
               </p>
             </section>
 
-            {/* ── 12. Policy Updates ── */}
+            {/* ── 13. Policy Updates ── */}
             <section>
               <SectionAnchor id="updates" />
               <SectionTitle icon={RefreshCw} title="Policy Updates" id="updates-heading" />
@@ -651,7 +728,7 @@ export default function PrivacyPolicyPage() {
               </p>
             </section>
 
-            {/* ── 13. Contact ── */}
+            {/* ── 14. Contact ── */}
             <section>
               <SectionAnchor id="contact" />
               <SectionTitle icon={Mail} title="Contact Us" id="contact-heading" />
@@ -662,7 +739,7 @@ export default function PrivacyPolicyPage() {
                 {[
                   {
                     entity: "American Group LLC",
-                    role: "Data Controller (USA)",
+                    role: "Data Controller / Developer (USA)",
                     address: "Santa Clara, California, USA",
                     phone: "+1 (510) 458-9059",
                     email: PRIVACY_EMAIL,
@@ -690,9 +767,9 @@ export default function PrivacyPolicyPage() {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm text-slate-300">
                         <MapPin className="h-3.5 w-3.5 shrink-0" style={{ color: c.color }} />
-                  {c.address}
-                       </div>
-                       {c.phone && (
+                        {c.address}
+                      </div>
+                      {c.phone && (
                         <div className="flex items-center gap-2 text-sm text-slate-300">
                           <span className="h-3.5 w-3.5 shrink-0 text-xs" style={{ color: c.color }}>📞</span>
                           <a href={`tel:${c.phone.replace(/[^+\d]/g, '')}`} className="hover:underline">{c.phone}</a>
@@ -700,7 +777,7 @@ export default function PrivacyPolicyPage() {
                       )}
                       <div className="flex items-center gap-2 text-sm text-slate-300">
                         <Mail className="h-3.5 w-3.5 shrink-0" style={{ color: c.color }} />
-                        <a href={`mailto:${c.email}`} className="hover:underline">{c.email}</a>
+                        <a href={`mailto:${c.email}`} className="hover:underline text-indigo-400">{c.email}</a>
                         <span className="text-xs text-slate-400">(Privacy / Support)</span>
                       </div>
                     </div>
@@ -715,12 +792,12 @@ export default function PrivacyPolicyPage() {
             {/* Footer note */}
             <div className="border-t border-white/10 pt-8">
               <p className="text-xs text-slate-400 leading-relaxed">
-                This Privacy Policy was last updated on <strong>{LAST_UPDATED}</strong> and is effective as of <strong>{EFFECTIVE_DATE}</strong>. This policy applies to all applications and services published by {COMPANY_NAME} and {INDIA_ENTITY}. For app-specific privacy details, refer to the individual app's listing on the Apple App Store or Google Play Store.
+                This Privacy Policy was last updated on <strong>{LAST_UPDATED}</strong> and is effective as of <strong>{EFFECTIVE_DATE}</strong>. This policy applies to all applications and services published by <strong>{COMPANY_NAME}</strong> ({INDIA_ENTITY}). The developer name on Google Play Store and Apple App Store is <strong>{DEVELOPER_NAME}</strong>. For app-specific privacy details, refer to the individual app's listing on the Apple App Store or Google Play Store.
               </p>
               <div className="flex flex-wrap gap-4 mt-4">
-                <Link href="/contact" className="text-xs text-indigo-600 hover:underline">Contact Us</Link>
-                <Link href="/about" className="text-xs text-indigo-600 hover:underline">About Us</Link>
-                <a href={`mailto:${PRIVACY_EMAIL}`} className="text-xs text-indigo-600 hover:underline">{PRIVACY_EMAIL}</a>
+                <Link href="/contact" className="text-xs text-indigo-400 hover:underline">Contact Us</Link>
+                <Link href="/about" className="text-xs text-indigo-400 hover:underline">About Us</Link>
+                <a href={`mailto:${PRIVACY_EMAIL}`} className="text-xs text-indigo-400 hover:underline">{PRIVACY_EMAIL}</a>
               </div>
             </div>
 
