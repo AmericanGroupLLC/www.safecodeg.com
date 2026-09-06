@@ -20,8 +20,8 @@ of them, record the review as NOT RUN with the reason.
 **Injection** — SQL, command, template, and path traversal on every value that
 crosses a boundary. Parameterize; never concatenate.
 
-**Authorization** — not "is the caller authenticated" but "may *this* caller
-touch *this* record." Object-level checks are the most commonly missing
+**Authorization** — not "is the caller authenticated" but "may _this_ caller
+touch _this_ record." Object-level checks are the most commonly missing
 control.
 
 **Secrets** — never in source, logs, error messages returned to users,

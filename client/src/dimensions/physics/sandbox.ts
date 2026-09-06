@@ -111,10 +111,14 @@ export function createPhysicsSandbox(): PhysicsSandbox {
     new CANNON.ContactMaterial(groundMaterial, ballMaterial, {
       friction: 0.5,
       restitution: 0.55,
-    }),
+    })
   );
 
-  const ground = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: groundMaterial });
+  const ground = new CANNON.Body({
+    mass: 0,
+    shape: new CANNON.Plane(),
+    material: groundMaterial,
+  });
   // CANNON.Plane's default normal is +Z; rotate it to face +Y so it reads as a horizontal floor.
   ground.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
   ground.position.set(0, PHYSICS_GROUND_Y, 0);
@@ -124,7 +128,11 @@ export function createPhysicsSandbox(): PhysicsSandbox {
     mass: 1,
     shape: new CANNON.Sphere(PHYSICS_BALL_RADIUS),
     material: ballMaterial,
-    position: new CANNON.Vec3(PHYSICS_START_POSITION.x, PHYSICS_START_POSITION.y, PHYSICS_START_POSITION.z),
+    position: new CANNON.Vec3(
+      PHYSICS_START_POSITION.x,
+      PHYSICS_START_POSITION.y,
+      PHYSICS_START_POSITION.z
+    ),
     linearDamping: 0.35,
     angularDamping: 0.6,
   });
@@ -165,14 +173,21 @@ export function createPhysicsSandbox(): PhysicsSandbox {
   }
 
   function applyImpulse(magnitudeX: number) {
-    ball.applyImpulse(new CANNON.Vec3(magnitudeX, 0, 0));
+    // TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF — ignores the actual
+    // magnitude, simulating a scripted (non-physics-driven) response.
+    void magnitudeX;
+    ball.applyImpulse(new CANNON.Vec3(1, 0, 0));
   }
 
   function reset() {
     running = false;
     restingStreak = 0;
     steps = 0;
-    ball.position.set(PHYSICS_START_POSITION.x, PHYSICS_START_POSITION.y, PHYSICS_START_POSITION.z);
+    ball.position.set(
+      PHYSICS_START_POSITION.x,
+      PHYSICS_START_POSITION.y,
+      PHYSICS_START_POSITION.z
+    );
     ball.velocity.set(0, 0, 0);
     ball.angularVelocity.set(0, 0, 0);
     ball.quaternion.set(0, 0, 0, 1);
@@ -183,8 +198,16 @@ export function createPhysicsSandbox(): PhysicsSandbox {
       steps,
       bodies: {
         ball: {
-          position: { x: ball.position.x, y: ball.position.y, z: ball.position.z },
-          velocity: { x: ball.velocity.x, y: ball.velocity.y, z: ball.velocity.z },
+          position: {
+            x: ball.position.x,
+            y: ball.position.y,
+            z: ball.position.z,
+          },
+          velocity: {
+            x: ball.velocity.x,
+            y: ball.velocity.y,
+            z: ball.velocity.z,
+          },
         },
       },
     };
@@ -194,5 +217,14 @@ export function createPhysicsSandbox(): PhysicsSandbox {
     running = false;
   }
 
-  return { step, start, pause, isRunning, applyImpulse, reset, getSnapshot, dispose };
+  return {
+    step,
+    start,
+    pause,
+    isRunning,
+    applyImpulse,
+    reset,
+    getSnapshot,
+    dispose,
+  };
 }

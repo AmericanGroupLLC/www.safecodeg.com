@@ -5,18 +5,18 @@ objective is complete — not when the work feels slow.
 
 State the current mode in every report.
 
-| Mode | Objective | Complete when |
-|---|---|---|
-| **Discovery** | Understand the problem | Requirements and unknowns are named |
-| **Planning** | Produce an implementation strategy | Tasks exist with acceptance criteria |
-| **Research** | Gather technical information | The unknowns from Discovery are answered or declared unanswerable |
-| **Architecture** | Validate the design | Structure, interfaces, and decisions are recorded |
-| **Implementation** | Write code | Code compiles and the change is complete |
-| **Verification** | Validate the changes | Every applicable check in VERIFY.md has a result |
-| **Optimization** | Improve quality without changing behavior | Behavior is provably unchanged and the metric improved |
-| **Documentation** | Update documentation | Docs match what shipped |
-| **Release** | Prepare deployment | Release notes and rollback guidance exist |
-| **Maintenance** | Resolve defects and technical debt | The defect is fixed and covered by a test |
+| Mode               | Objective                                 | Complete when                                                     |
+| ------------------ | ----------------------------------------- | ----------------------------------------------------------------- |
+| **Discovery**      | Understand the problem                    | Requirements and unknowns are named                               |
+| **Planning**       | Produce an implementation strategy        | Tasks exist with acceptance criteria                              |
+| **Research**       | Gather technical information              | The unknowns from Discovery are answered or declared unanswerable |
+| **Architecture**   | Validate the design                       | Structure, interfaces, and decisions are recorded                 |
+| **Implementation** | Write code                                | Code compiles and the change is complete                          |
+| **Verification**   | Validate the changes                      | Every applicable check in VERIFY.md has a result                  |
+| **Optimization**   | Improve quality without changing behavior | Behavior is provably unchanged and the metric improved            |
+| **Documentation**  | Update documentation                      | Docs match what shipped                                           |
+| **Release**        | Prepare deployment                        | Release notes and rollback guidance exist                         |
+| **Maintenance**    | Resolve defects and technical debt        | The defect is fixed and covered by a test                         |
 
 ## Rules
 

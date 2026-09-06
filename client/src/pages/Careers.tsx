@@ -7,9 +7,40 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { ArrowRight, MapPin, Clock, Briefcase, Code2, Brain, Shield, Smartphone, Globe, Zap, Star, Users, CheckCircle, Link2, Cpu, X, Send, Heart, Plane, ShoppingCart, Lock, Database, Layers, FlaskConical, Radio } from "lucide-react";
+import {
+  ArrowRight,
+  MapPin,
+  Clock,
+  Briefcase,
+  Code2,
+  Brain,
+  Shield,
+  Smartphone,
+  Globe,
+  Zap,
+  Star,
+  Users,
+  CheckCircle,
+  Link2,
+  Cpu,
+  X,
+  Send,
+  Heart,
+  Plane,
+  ShoppingCart,
+  Lock,
+  Database,
+  Layers,
+  FlaskConical,
+  Radio,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const WEB3FORMS_KEY = "97f985ce-75d3-47e8-b941-3e85db2e7395";
 
@@ -158,7 +189,13 @@ const openings = [
     icon: FlaskConical,
     color: "#EC4899",
     desc: "Design and validate health algorithms for heart rate, SpO2, sleep scoring, and stress detection used in AGL's wearable and health app products.",
-    tags: ["Python", "Signal Processing", "ML", "HealthKit", "Clinical Validation"],
+    tags: [
+      "Python",
+      "Signal Processing",
+      "ML",
+      "HealthKit",
+      "Clinical Validation",
+    ],
   },
   // Travel & Aviation
   {
@@ -179,7 +216,13 @@ const openings = [
     icon: Globe,
     color: "#22D3EE",
     desc: "Build offline-first maps, navigation, and travel discovery apps. Integrate OpenStreetMap, Google Maps, and real-time transit APIs.",
-    tags: ["Kotlin", "Swift", "OpenStreetMap", "Google Maps SDK", "Offline-first"],
+    tags: [
+      "Kotlin",
+      "Swift",
+      "OpenStreetMap",
+      "Google Maps SDK",
+      "Offline-first",
+    ],
   },
   // Social & Lifestyle
   {
@@ -302,18 +345,52 @@ const openings = [
 ];
 
 const perks = [
-  { icon: Globe, title: "Remote-First", desc: "Work from anywhere. We have team members across the US, India, and beyond." },
-  { icon: Zap, title: "Ship Real Products", desc: "Your work goes to production and reaches real users — not internal demos." },
-  { icon: Star, title: "Competitive Compensation", desc: "Market-rate salaries, equity participation, and performance bonuses." },
-  { icon: Users, title: "Elite Team", desc: "Work alongside engineers who've shipped products used by millions of people." },
-  { icon: Brain, title: "AI-First Culture", desc: "Every engineer has access to frontier AI tools, models, and infrastructure." },
-  { icon: Briefcase, title: "Growth Opportunities", desc: "Fast-growing company with clear paths to senior, staff, and principal roles." },
+  {
+    icon: Globe,
+    title: "Remote-First",
+    desc: "Work from anywhere. We have team members across the US, India, and beyond.",
+  },
+  {
+    icon: Zap,
+    title: "Ship Real Products",
+    desc: "Your work goes to production and reaches real users — not internal demos.",
+  },
+  {
+    icon: Star,
+    title: "Competitive Compensation",
+    desc: "Market-rate salaries, equity participation, and performance bonuses.",
+  },
+  {
+    icon: Users,
+    title: "Elite Team",
+    desc: "Work alongside engineers who've shipped products used by millions of people.",
+  },
+  {
+    icon: Brain,
+    title: "AI-First Culture",
+    desc: "Every engineer has access to frontier AI tools, models, and infrastructure.",
+  },
+  {
+    icon: Briefcase,
+    title: "Growth Opportunities",
+    desc: "Fast-growing company with clear paths to senior, staff, and principal roles.",
+  },
 ];
 
 export default function CareersPage() {
   const [activeFilter, setActiveFilter] = useState<string>("All");
-  const [applyJob, setApplyJob] = useState<{ title: string; dept: string; type: string } | null>(null);
-  const [appForm, setAppForm] = useState({ name: "", email: "", phone: "", linkedin: "", message: "" });
+  const [applyJob, setApplyJob] = useState<{
+    title: string;
+    dept: string;
+    type: string;
+  } | null>(null);
+  const [appForm, setAppForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    linkedin: "",
+    message: "",
+  });
   const [appSending, setAppSending] = useState(false);
   const [appSent, setAppSent] = useState(false);
 
@@ -330,7 +407,10 @@ export default function CareersPage() {
     try {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
           access_key: WEB3FORMS_KEY,
           subject: `Job Application: ${applyJob.title} (${applyJob.dept}) — ${appForm.name}`,
@@ -349,13 +429,17 @@ export default function CareersPage() {
       const data = await res.json();
       if (data.success) {
         setAppSent(true);
-        toast.success("Application submitted! We'll be in touch within 3–5 business days.");
+        toast.success(
+          "Application submitted! We'll be in touch within 3–5 business days."
+        );
       } else {
         throw new Error(data.message || "Submission failed");
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Unknown error";
-      toast.error(msg || "Failed to submit. Please email careers@safecodeg.com directly.");
+      toast.error(
+        msg || "Failed to submit. Please email careers@safecodeg.com directly."
+      );
     } finally {
       setAppSending(false);
     }
@@ -373,28 +457,71 @@ export default function CareersPage() {
             alt=""
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,11,20,0.97) 0%, rgba(7,11,20,0.88) 50%, rgba(7,11,20,0.75) 100%)" }} />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 60%, rgba(124,58,237,0.2), transparent 55%), radial-gradient(ellipse at 80% 30%, rgba(245,158,11,0.08), transparent 45%)" }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(7,11,20,0.97) 0%, rgba(7,11,20,0.88) 50%, rgba(7,11,20,0.75) 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at 20% 60%, rgba(124,58,237,0.2), transparent 55%), radial-gradient(ellipse at 80% 30%, rgba(245,158,11,0.08), transparent 45%)",
+            }}
+          />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, transparent, #030408)" }} />
+        <div
+          className="absolute bottom-0 left-0 right-0 h-32"
+          style={{
+            background: "linear-gradient(to bottom, transparent, #030408)",
+          }}
+        />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-8">
               <Briefcase className="w-3.5 h-3.5" /> Careers at AGL
             </div>
-            <h1 className="font-black text-white mb-6 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(3rem, 7vw, 6rem)" }}>
-              Build the Future.<br />
-              <span style={{ background: "linear-gradient(135deg, #818CF8, #A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            <h1
+              className="font-black text-white mb-6 tracking-tight"
+              style={{
+                fontFamily: "Sora, sans-serif",
+                fontSize: "clamp(3rem, 7vw, 6rem)",
+              }}
+            >
+              Build the Future.
+              <br />
+              <span
+                style={{
+                  background: "linear-gradient(135deg, #818CF8, #A78BFA)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
                 With Us.
               </span>
             </h1>
             <p className="text-xl text-slate-300 max-w-2xl leading-relaxed mb-10">
-              Join a team of world-class engineers building 77+ products across AI, mobile, FinTech, and cybersecurity. Remote-first, globally distributed, always shipping.
+              Join a team of world-class engineers building 77+ products across
+              AI, mobile, FinTech, and cybersecurity. Remote-first, globally
+              distributed, always shipping.
             </p>
             <div className="flex flex-wrap gap-4">
               <a href="#openings">
-                <button className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 0 30px rgba(99,102,241,0.3)" }}>
+                <button
+                  className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: "linear-gradient(135deg, #6366F1, #4F46E5)",
+                    boxShadow: "0 0 30px rgba(99,102,241,0.3)",
+                  }}
+                >
                   View Open Roles <ArrowRight className="w-4 h-4" />
                 </button>
               </a>
@@ -411,13 +538,33 @@ export default function CareersPage() {
       {/* ── Perks ─────────────────────────────────────────────────────────── */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="text-center mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-14"
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-6">
               Why Join AGL
             </div>
-            <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
-              Work that matters.<br />
-              <span style={{ background: "linear-gradient(135deg, #FBBF24, #F59E0B)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+            <h2
+              className="font-black text-white tracking-tight"
+              style={{
+                fontFamily: "Sora, sans-serif",
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+              }}
+            >
+              Work that matters.
+              <br />
+              <span
+                style={{
+                  background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
                 Perks that reflect it.
               </span>
             </h2>
@@ -435,11 +582,21 @@ export default function CareersPage() {
                   transition={{ delay: i * 0.08, duration: 0.6 }}
                   className="p-6 rounded-2xl transition-all duration-300"
                 >
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: "rgba(99,102,241,0.15)", color: "#818CF8" }}>
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                    style={{
+                      background: "rgba(99,102,241,0.15)",
+                      color: "#818CF8",
+                    }}
+                  >
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="font-bold text-white text-sm mb-2">{perk.title}</h3>
-                  <p className="text-slate-500 text-xs leading-relaxed">{perk.desc}</p>
+                  <h3 className="font-bold text-white text-sm mb-2">
+                    {perk.title}
+                  </h3>
+                  <p className="text-slate-500 text-xs leading-relaxed">
+                    {perk.desc}
+                  </p>
                 </motion.div>
               );
             })}
@@ -450,25 +607,56 @@ export default function CareersPage() {
       {/* ── Open Roles ────────────────────────────────────────────────────── */}
       <section id="openings" className="py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="mb-14"
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-xs font-semibold uppercase tracking-widest mb-6">
               Open Positions
             </div>
-            <h2 className="font-black text-white tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2rem, 4vw, 3rem)" }}>
+            <h2
+              className="font-black text-white tracking-tight"
+              style={{
+                fontFamily: "Sora, sans-serif",
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+              }}
+            >
               Current openings
             </h2>
           </motion.div>
 
           {/* Department filter tabs */}
           <div className="flex flex-wrap gap-2 mb-10">
-            {["All", "Enterprise AI", "Consumer Mobile", "FinTech & E-Commerce", "CyberSecurity & Infra", "Health & Wellness", "Travel & Aviation", "Social & Lifestyle"].map((dept) => (
+            {[
+              "All",
+              "Enterprise AI",
+              "Consumer Mobile",
+              "FinTech & E-Commerce",
+              "CyberSecurity & Infra",
+              "Health & Wellness",
+              "Travel & Aviation",
+              "Social & Lifestyle",
+            ].map(dept => (
               <button
                 key={dept}
                 onClick={() => setActiveFilter(dept)}
                 className="px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200"
-                style={activeFilter === dept
-                  ? { background: "rgba(124,58,237,0.25)", border: "1px solid rgba(124,58,237,0.5)", color: "#C4B5FD" }
-                  : { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#94A3B8" }}
+                style={
+                  activeFilter === dept
+                    ? {
+                        background: "rgba(124,58,237,0.25)",
+                        border: "1px solid rgba(124,58,237,0.5)",
+                        color: "#C4B5FD",
+                      }
+                    : {
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        color: "#94A3B8",
+                      }
+                }
               >
                 {dept}
               </button>
@@ -477,116 +665,251 @@ export default function CareersPage() {
           {/* Full-time roles */}
           <div className="mb-4">
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Full-Time Positions</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                Full-Time Positions
+              </span>
               <div className="flex-1 h-px bg-white/8" />
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">{openings.filter(j => !('badge' in j) && (activeFilter === "All" || j.dept === activeFilter)).length} open</span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">
+                {
+                  openings.filter(
+                    j =>
+                      !("badge" in j) &&
+                      (activeFilter === "All" || j.dept === activeFilter)
+                  ).length
+                }{" "}
+                open
+              </span>
             </div>
             <div className="space-y-4">
-              {openings.filter(j => !('badge' in j) && (activeFilter === "All" || j.dept === activeFilter)).map((job, i) => {
-                const Icon = job.icon;
-                return (
-                  <motion.div
-                    key={job.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.07, duration: 0.6 }}
-                    className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl transition-all duration-300 cursor-pointer"
-                    onClick={() => handleApply({ title: job.title, dept: job.dept, type: job.type })}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: job.color + "20", color: job.color }}>
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-white text-base" style={{ fontFamily: "Sora, sans-serif" }}>{job.title}</h3>
-                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: job.color + "20", color: job.color }}>{job.dept}</span>
+              {openings
+                .filter(
+                  j =>
+                    !("badge" in j) &&
+                    (activeFilter === "All" || j.dept === activeFilter)
+                )
+                .map((job, i) => {
+                  const Icon = job.icon;
+                  return (
+                    <motion.div
+                      key={job.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.07, duration: 0.6 }}
+                      className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl transition-all duration-300 cursor-pointer"
+                      onClick={() =>
+                        handleApply({
+                          title: job.title,
+                          dept: job.dept,
+                          type: job.type,
+                        })
+                      }
+                    >
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{
+                            background: job.color + "20",
+                            color: job.color,
+                          }}
+                        >
+                          <Icon className="w-5 h-5" />
                         </div>
-                        <p className="text-slate-500 text-sm mb-3">{job.desc}</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {job.tags.map((tag) => (
-                            <span key={tag} className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]">{tag}</span>
-                          ))}
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3
+                              className="font-bold text-white text-base"
+                              style={{ fontFamily: "Sora, sans-serif" }}
+                            >
+                              {job.title}
+                            </h3>
+                            <span
+                              className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                              style={{
+                                background: job.color + "20",
+                                color: job.color,
+                              }}
+                            >
+                              {job.dept}
+                            </span>
+                          </div>
+                          <p className="text-slate-500 text-sm mb-3">
+                            {job.desc}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {job.tags.map(tag => (
+                              <span
+                                key={tag}
+                                className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col lg:items-end gap-3 flex-shrink-0">
-                      <div className="flex flex-wrap gap-3 text-xs text-slate-500">
-                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location}</span>
-                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {job.type}</span>
+                      <div className="flex flex-col lg:items-end gap-3 flex-shrink-0">
+                        <div className="flex flex-wrap gap-3 text-xs text-slate-500">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" /> {job.location}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> {job.type}
+                          </span>
+                        </div>
+                        <button
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0"
+                          style={{
+                            background: job.color + "20",
+                            color: job.color,
+                          }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleApply({
+                              title: job.title,
+                              dept: job.dept,
+                              type: job.type,
+                            });
+                          }}
+                        >
+                          Apply Now <ArrowRight className="w-3 h-3" />
+                        </button>
                       </div>
-                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }} onClick={(e) => { e.stopPropagation(); handleApply({ title: job.title, dept: job.dept, type: job.type }); }}>
-                        Apply Now <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    </motion.div>
+                  );
+                })}
             </div>
           </div>
 
           {/* Internship roles */}
           <div className="mt-12">
             <div className="flex items-center gap-3 mb-5">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Internship Positions</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                Internship Positions
+              </span>
               <div className="flex-1 h-px bg-white/8" />
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-500/15 text-pink-300 border border-pink-500/20">{openings.filter(j => 'badge' in j).length} open</span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-pink-500/15 text-pink-300 border border-pink-500/20">
+                {openings.filter(j => "badge" in j).length} open
+              </span>
             </div>
-            <p className="text-slate-500 text-sm mb-6 max-w-2xl">3–6 month internships for students and recent graduates. Work on real products, get mentored by senior engineers, and build a portfolio that stands out.</p>
+            <p className="text-slate-500 text-sm mb-6 max-w-2xl">
+              3–6 month internships for students and recent graduates. Work on
+              real products, get mentored by senior engineers, and build a
+              portfolio that stands out.
+            </p>
             <div className="space-y-4">
-              {openings.filter(j => 'badge' in j).map((job, i) => {
-                const Icon = job.icon;
-                return (
-                  <motion.div
-                    key={job.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.07, duration: 0.6 }}
-                    className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl border border-pink-500/10 bg-pink-500/[0.02] hover:bg-pink-500/[0.04] hover:border-pink-500/20 transition-all duration-300 cursor-pointer"
-                    onClick={() => handleApply({ title: job.title, dept: job.dept, type: job.type })}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: job.color + "20", color: job.color }}>
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <h3 className="font-bold text-white text-base" style={{ fontFamily: "Sora, sans-serif" }}>{job.title}</h3>
-                          <span className="px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: job.color + "20", color: job.color }}>{job.dept}</span>
-                          <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/25">Internship</span>
+              {openings
+                .filter(j => "badge" in j)
+                .map((job, i) => {
+                  const Icon = job.icon;
+                  return (
+                    <motion.div
+                      key={job.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.07, duration: 0.6 }}
+                      className="group flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-6 rounded-2xl border border-pink-500/10 bg-pink-500/[0.02] hover:bg-pink-500/[0.04] hover:border-pink-500/20 transition-all duration-300 cursor-pointer"
+                      onClick={() =>
+                        handleApply({
+                          title: job.title,
+                          dept: job.dept,
+                          type: job.type,
+                        })
+                      }
+                    >
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                          style={{
+                            background: job.color + "20",
+                            color: job.color,
+                          }}
+                        >
+                          <Icon className="w-5 h-5" />
                         </div>
-                        <p className="text-slate-500 text-sm mb-3">{job.desc}</p>
-                        {'requirements' in job && job.requirements && (
-                          <ul className="mb-3 space-y-1">
-                            {(job.requirements as string[]).map((req) => (
-                              <li key={req} className="flex items-start gap-1.5 text-xs text-slate-400">
-                                <CheckCircle className="w-3 h-3 mt-0.5 flex-shrink-0" style={{ color: job.color }} />
-                                {req}
-                              </li>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <h3
+                              className="font-bold text-white text-base"
+                              style={{ fontFamily: "Sora, sans-serif" }}
+                            >
+                              {job.title}
+                            </h3>
+                            <span
+                              className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                              style={{
+                                background: job.color + "20",
+                                color: job.color,
+                              }}
+                            >
+                              {job.dept}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/25">
+                              Internship
+                            </span>
+                          </div>
+                          <p className="text-slate-500 text-sm mb-3">
+                            {job.desc}
+                          </p>
+                          {"requirements" in job && job.requirements && (
+                            <ul className="mb-3 space-y-1">
+                              {(job.requirements as string[]).map(req => (
+                                <li
+                                  key={req}
+                                  className="flex items-start gap-1.5 text-xs text-slate-400"
+                                >
+                                  <CheckCircle
+                                    className="w-3 h-3 mt-0.5 flex-shrink-0"
+                                    style={{ color: job.color }}
+                                  />
+                                  {req}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          <div className="flex flex-wrap gap-1.5">
+                            {job.tags.map(tag => (
+                              <span
+                                key={tag}
+                                className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]"
+                              >
+                                {tag}
+                              </span>
                             ))}
-                          </ul>
-                        )}
-                        <div className="flex flex-wrap gap-1.5">
-                          {job.tags.map((tag) => (
-                            <span key={tag} className="px-2 py-0.5 rounded text-xs font-mono text-slate-400 border border-white/8 bg-white/[0.03]">{tag}</span>
-                          ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col lg:items-end gap-3 flex-shrink-0">
-                      <div className="flex flex-wrap gap-3 text-xs text-slate-500">
-                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {job.location}</span>
-                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {job.type}</span>
+                      <div className="flex flex-col lg:items-end gap-3 flex-shrink-0">
+                        <div className="flex flex-wrap gap-3 text-xs text-slate-500">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" /> {job.location}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> {job.type}
+                          </span>
+                        </div>
+                        <button
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0"
+                          style={{
+                            background: job.color + "20",
+                            color: job.color,
+                          }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleApply({
+                              title: job.title,
+                              dept: job.dept,
+                              type: job.type,
+                            });
+                          }}
+                        >
+                          Apply <ArrowRight className="w-3 h-3" />
+                        </button>
                       </div>
-                      <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0" style={{ background: job.color + "20", color: job.color }} onClick={(e) => { e.stopPropagation(); handleApply({ title: job.title, dept: job.dept, type: job.type }); }}>
-                        Apply <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    </motion.div>
+                  );
+                })}
             </div>
           </div>
 
@@ -597,7 +920,8 @@ export default function CareersPage() {
             className="mt-10 p-6 rounded-2xl text-center"
           >
             <p className="text-slate-400 text-sm mb-4">
-              Don't see a role that fits? We're always looking for exceptional talent.
+              Don't see a role that fits? We're always looking for exceptional
+              talent.
             </p>
             <a href="mailto:careers@safecodeg.com">
               <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 transition-all duration-300">
@@ -609,25 +933,52 @@ export default function CareersPage() {
       </section>
 
       {/* ── Application Modal ─────────────────────────────────────────────── */}
-      <Dialog open={!!applyJob} onOpenChange={(open) => { if (!open) setApplyJob(null); }}>
-        <DialogContent className="max-w-lg" style={{ background: "#0A0F1E", border: "1px solid rgba(124,58,237,0.3)", color: "white" }}>
+      <Dialog
+        open={!!applyJob}
+        onOpenChange={open => {
+          if (!open) setApplyJob(null);
+        }}
+      >
+        <DialogContent
+          className="max-w-lg"
+          style={{
+            background: "#0A0F1E",
+            border: "1px solid rgba(124,58,237,0.3)",
+            color: "white",
+          }}
+        >
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: "Sora, sans-serif", color: "white" }}>
+            <DialogTitle
+              style={{ fontFamily: "Sora, sans-serif", color: "white" }}
+            >
               {appSent ? "Application Received!" : `Apply — ${applyJob?.title}`}
             </DialogTitle>
             {!appSent && (
-              <p className="text-slate-400 text-sm">{applyJob?.dept} · {applyJob?.type}</p>
+              <p className="text-slate-400 text-sm">
+                {applyJob?.dept} · {applyJob?.type}
+              </p>
             )}
           </DialogHeader>
 
           {appSent ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(16,185,129,0.15)" }}>
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ background: "rgba(16,185,129,0.15)" }}
+              >
                 <CheckCircle className="w-8 h-8 text-emerald-400" />
               </div>
-              <p className="text-slate-300 text-sm mb-2">Your application has been sent to <strong className="text-white">contact@safecodeg.com</strong></p>
-              <p className="text-slate-500 text-xs">We'll review it and get back to you within 3–5 business days.</p>
-              <button onClick={() => setApplyJob(null)} className="mt-6 px-5 py-2 rounded-lg text-sm font-semibold text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/10 transition-all">
+              <p className="text-slate-300 text-sm mb-2">
+                Your application has been sent to{" "}
+                <strong className="text-white">contact@safecodeg.com</strong>
+              </p>
+              <p className="text-slate-500 text-xs">
+                We'll review it and get back to you within 3–5 business days.
+              </p>
+              <button
+                onClick={() => setApplyJob(null)}
+                className="mt-6 px-5 py-2 rounded-lg text-sm font-semibold text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/10 transition-all"
+              >
                 Close
               </button>
             </div>
@@ -635,34 +986,127 @@ export default function CareersPage() {
             <form onSubmit={handleAppSubmit} className="space-y-4 mt-2">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Full Name *</label>
-                  <input type="text" required value={appForm.name} onChange={(e) => setAppForm({ ...appForm, name: e.target.value })} placeholder="Jane Smith" className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={appForm.name}
+                    onChange={e =>
+                      setAppForm({ ...appForm, name: e.target.value })
+                    }
+                    placeholder="Jane Smith"
+                    className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Email *</label>
-                  <input type="email" required value={appForm.email} onChange={(e) => setAppForm({ ...appForm, email: e.target.value })} placeholder="jane@email.com" className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={appForm.email}
+                    onChange={e =>
+                      setAppForm({ ...appForm, email: e.target.value })
+                    }
+                    placeholder="jane@email.com"
+                    className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Phone</label>
-                  <input type="tel" value={appForm.phone} onChange={(e) => setAppForm({ ...appForm, phone: e.target.value })} placeholder="+1 555 000 0000" className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    value={appForm.phone}
+                    onChange={e =>
+                      setAppForm({ ...appForm, phone: e.target.value })
+                    }
+                    placeholder="+1 555 000 0000"
+                    className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">LinkedIn URL</label>
-                  <input type="url" value={appForm.linkedin} onChange={(e) => setAppForm({ ...appForm, linkedin: e.target.value })} placeholder="linkedin.com/in/..." className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                    LinkedIn URL
+                  </label>
+                  <input
+                    type="url"
+                    value={appForm.linkedin}
+                    onChange={e =>
+                      setAppForm({ ...appForm, linkedin: e.target.value })
+                    }
+                    placeholder="linkedin.com/in/..."
+                    className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Why do you want to join AGL? *</label>
-                <textarea required rows={4} value={appForm.message} onChange={(e) => setAppForm({ ...appForm, message: e.target.value })} placeholder="Tell us about your experience, what excites you about this role, and any relevant projects..." className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none resize-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  Why do you want to join AGL? *
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  value={appForm.message}
+                  onChange={e =>
+                    setAppForm({ ...appForm, message: e.target.value })
+                  }
+                  placeholder="Tell us about your experience, what excites you about this role, and any relevant projects..."
+                  className="w-full px-3 py-2.5 rounded-lg text-white text-sm placeholder-slate-600 outline-none resize-none"
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                />
               </div>
               <div className="flex gap-3 pt-1">
-                <button type="button" onClick={() => setApplyJob(null)} className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-slate-400 border border-white/10 hover:bg-white/5 transition-all">
+                <button
+                  type="button"
+                  onClick={() => setApplyJob(null)}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-slate-400 border border-white/10 hover:bg-white/5 transition-all"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={appSending} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold text-white transition-all disabled:opacity-60" style={{ background: "linear-gradient(135deg, #7C3AED, #4F46E5)" }}>
-                  {appSending ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</> : <><Send className="w-4 h-4" /> Submit Application</>}
+                <button
+                  type="submit"
+                  disabled={appSending}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold text-white transition-all disabled:opacity-60"
+                  style={{
+                    background: "linear-gradient(135deg, #7C3AED, #4F46E5)",
+                  }}
+                >
+                  {appSending ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{" "}
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" /> Submit Application
+                    </>
+                  )}
                 </button>
               </div>
             </form>

@@ -58,7 +58,7 @@ export function startRenderLoop(
   /** Runs every animation frame, whether or not this frame ends up rendering — e.g. store.tick + controls.update + projector.sync. */
   onBeforeFrame: (timestampMs: number) => void,
   /** Runs immediately after a frame that actually rendered — e.g. flipping the test hook's `ready` flag. */
-  onAfterRender?: () => void,
+  onAfterRender?: () => void
 ): RenderLoopHandle {
   let needsRenderUntilMs = 0;
   let xrFrameCount = 0;

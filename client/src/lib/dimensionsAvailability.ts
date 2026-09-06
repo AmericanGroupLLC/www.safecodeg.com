@@ -38,7 +38,9 @@ import {
 export type { DimensionAvailability, DimensionAvailabilityStatus };
 
 /** The single per-level availability record every surface renders from. */
-export function getDimensionAvailability(level: DimensionLevel): DimensionAvailability {
+export function getDimensionAvailability(
+  level: DimensionLevel
+): DimensionAvailability {
   return DIMENSION_AVAILABILITY[level];
 }
 
@@ -48,9 +50,10 @@ export function getDimensionAvailability(level: DimensionLevel): DimensionAvaila
  * say more should read `getDimensionAvailability(level)` instead so a
  * partial level's caveat has somewhere to render.
  */
-export const LIVE_DIMENSION_LEVELS: readonly DimensionLevel[] = DIMENSION_LEVELS.filter(
-  (level) => DIMENSION_AVAILABILITY[level].status === "live",
-);
+export const LIVE_DIMENSION_LEVELS: readonly DimensionLevel[] =
+  DIMENSION_LEVELS.filter(
+    level => DIMENSION_AVAILABILITY[level].status === "live"
+  );
 
 export function isDimensionLevelLive(level: DimensionLevel): boolean {
   return DIMENSION_AVAILABILITY[level].status === "live";
@@ -77,7 +80,9 @@ export interface DimensionStatusPresentation {
   readonly borderColor: string;
 }
 
-const STATUS_PRESENTATION: Readonly<Record<DimensionAvailabilityStatus, DimensionStatusPresentation>> = {
+const STATUS_PRESENTATION: Readonly<
+  Record<DimensionAvailabilityStatus, DimensionStatusPresentation>
+> = {
   live: {
     badgeLabel: "Live",
     badgeBg: "rgba(52,211,153,0.15)",
@@ -99,6 +104,8 @@ const STATUS_PRESENTATION: Readonly<Record<DimensionAvailabilityStatus, Dimensio
 };
 
 /** The one place badge copy/color for a status is defined — every consumer reads it from here instead of re-deriving it. */
-export function dimensionStatusPresentation(status: DimensionAvailabilityStatus): DimensionStatusPresentation {
+export function dimensionStatusPresentation(
+  status: DimensionAvailabilityStatus
+): DimensionStatusPresentation {
   return STATUS_PRESENTATION[status];
 }

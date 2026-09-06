@@ -13,7 +13,7 @@ pipeline alone:
 
 1. **The live site is not reproducible from this repo.** The live page's
    entry script, the tracked root `index.html`'s reference, and a fresh
-   local build each name a *different* JS bundle hash. Concretely, checked
+   local build each name a _different_ JS bundle hash. Concretely, checked
    this session: live currently serves `assets/index-C6yZOK4E.js`; the
    tracked root `index.html` (a large, separately-committed static file)
    references `assets/index-rcb6U05a.js`. Since the deploy step below is
@@ -100,13 +100,13 @@ GitHub Secrets store your credentials securely — they are never visible in log
 3. Left sidebar → **Secrets and variables** → **Actions**
 4. Click **New repository secret** and add these **5 secrets** one by one:
 
-| Secret Name             | Value                              | Example                    |
-|--------------------------|------------------------------------|----------------------------|
-| `SSH_HOST`               | Your HostGator SSH hostname or IP  | `server.hostgator.com`     |
-| `SSH_USERNAME`           | Your cPanel/SSH username           | `safecode`                 |
-| `SSH_PRIVATE_KEY`        | The full private key file contents from Step 1 | `-----BEGIN OPENSSH PRIVATE KEY-----…` |
-| `VITE_SUPABASE_URL`      | The dimensional stack's Supabase project URL (6D "shared stage") | `https://<project-ref>.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | That project's **anon** key — never the service-role key | `eyJ...` |
+| Secret Name              | Value                                                            | Example                                |
+| ------------------------ | ---------------------------------------------------------------- | -------------------------------------- |
+| `SSH_HOST`               | Your HostGator SSH hostname or IP                                | `server.hostgator.com`                 |
+| `SSH_USERNAME`           | Your cPanel/SSH username                                         | `safecode`                             |
+| `SSH_PRIVATE_KEY`        | The full private key file contents from Step 1                   | `-----BEGIN OPENSSH PRIVATE KEY-----…` |
+| `VITE_SUPABASE_URL`      | The dimensional stack's Supabase project URL (6D "shared stage") | `https://<project-ref>.supabase.co`    |
+| `VITE_SUPABASE_ANON_KEY` | That project's **anon** key — never the service-role key         | `eyJ...`                               |
 
 **The two `VITE_SUPABASE_*` secrets are new, added for the 6D "shared stage"
 collaboration feature** (`DIMENSIONS.md`). They are consumed by the **existing**
@@ -125,6 +125,7 @@ on keeping the key secret.
 Once secrets are added, the workflow runs automatically on every push to `main`.
 
 To trigger it manually right now:
+
 1. Go to your repo → **Actions** tab
 2. Click **Build & Deploy to HostGator** workflow
 3. Click **Run workflow** → **Run workflow** (green button)
@@ -136,6 +137,7 @@ Watch the live logs — the full build + deploy takes about **2–3 minutes**.
 ## Step 4 — Verify on HostGator
 
 After the workflow completes:
+
 1. Log in to HostGator cPanel → **File Manager**
 2. Open `/public_html/`
 3. You should see `index.html`, `assets/` folder, etc.
@@ -163,10 +165,10 @@ project, both files under `supabase/migrations/` must be run, in order,
 against that project (via the Supabase SQL editor, or the Supabase CLI
 pointed at the project):
 
-| File | What it does |
-|---|---|
-| `0001_dimensions_room_state.sql` | Creates `public.dimensions_room_state` (the digital-twin table), enables Row Level Security, and grants `anon` SELECT/INSERT/UPDATE — deliberately **not** DELETE — each backed by an explicit policy. |
-| `0002_dimensions_room_state_single_room.sql` | Adds a `CHECK` constraint pinning `room_id = 'dimensions-demo'`, so an anon caller cannot create unlimited rooms and exhaust storage shared with the `contact_submissions` table on the same project. |
+| File                                         | What it does                                                                                                                                                                                           |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `0001_dimensions_room_state.sql`             | Creates `public.dimensions_room_state` (the digital-twin table), enables Row Level Security, and grants `anon` SELECT/INSERT/UPDATE — deliberately **not** DELETE — each backed by an explicit policy. |
+| `0002_dimensions_room_state_single_room.sql` | Adds a `CHECK` constraint pinning `room_id = 'dimensions-demo'`, so an anon caller cannot create unlimited rooms and exhaust storage shared with the `contact_submissions` table on the same project.  |
 
 Both files carry their own rollback SQL in a trailing comment block. Until
 they are applied, an unset or misconfigured `VITE_SUPABASE_*` pair simply
@@ -201,10 +203,12 @@ understood in advance, not discovered when that capability eventually ships.
 ## Troubleshooting
 
 ### "Connection refused" / `ssh-keyscan` fails
+
 - Double-check `SSH_HOST` — try your server IP instead of a hostname
 - Confirm SSH access is actually enabled for this account in cPanel → **SSH Access**
 
 ### "Permission denied (publickey)" error
+
 - Confirm the **public** key (`deploy_key.pub`) was imported and authorized in
   cPanel → **SSH Access** → **Manage SSH Keys**
 - Confirm the GitHub secret `SSH_PRIVATE_KEY` holds the matching **private**
@@ -213,10 +217,12 @@ understood in advance, not discovered when that capability eventually ships.
 - Confirm `SSH_USERNAME` is the cPanel account username, not an email address
 
 ### Build fails
+
 - Check the Actions log for the exact error
 - Most common: missing environment variable — all `VITE_*` vars in the workflow have safe defaults
 
 ### Site shows old content after deploy
+
 - HostGator may cache files — hard refresh with `Ctrl+Shift+R`
 - Or clear cache in cPanel → **Caching** (if available)
 

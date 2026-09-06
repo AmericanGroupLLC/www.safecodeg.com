@@ -1,51 +1,61 @@
 # Agent Responsibilities
 
 Planner
+
 - Understand the request.
 - Break work into tasks.
 - Assign work.
 
 Architect
+
 - Design structure.
 - Choose patterns.
 
 Backend
+
 - APIs
 - Database
 - Business logic
 
 Frontend
+
 - UI
 - Components
 - Accessibility
 
 Testing
+
 - Unit, integration, functional, end-to-end
 - Acceptance, smoke, regression
 - (Security, performance, and UI/UX testing belong to those roles — see
   `TESTING.md`)
 
 Security
+
 - Authentication
 - Validation
 - Secrets
 
 Performance
+
 - Profiling
 - Optimization
 - Scalability
 
 Reviewer
+
 - Final review
 - Verify requirements
 - Merge findings
 
 Documentation
+
 - README
 - API docs
 - Changelog
 
 Release
+
 - Release notes
 - Deployment preparation
 - Rollback guidance
@@ -56,18 +66,18 @@ Release
 
 Each role's instructions live in `.ai/<role>.md`. Read yours before acting.
 
-| Role | File |
-|---|---|
-| Planner | `.ai/planner.md` |
-| Architect | `.ai/architect.md` |
-| Backend | `.ai/backend.md` |
-| Frontend | `.ai/frontend.md` |
-| Testing | `.ai/testing.md` |
-| Security | `.ai/security.md` |
-| Performance | `.ai/performance.md` |
-| Documentation | `.ai/docs.md` |
-| Reviewer | `.ai/reviewer.md` |
-| Release | `.ai/release.md` |
+| Role          | File                 |
+| ------------- | -------------------- |
+| Planner       | `.ai/planner.md`     |
+| Architect     | `.ai/architect.md`   |
+| Backend       | `.ai/backend.md`     |
+| Frontend      | `.ai/frontend.md`    |
+| Testing       | `.ai/testing.md`     |
+| Security      | `.ai/security.md`    |
+| Performance   | `.ai/performance.md` |
+| Documentation | `.ai/docs.md`        |
+| Reviewer      | `.ai/reviewer.md`    |
+| Release       | `.ai/release.md`     |
 
 **Developer** is the implementation function, split here into **Backend** and
 **Frontend** because the skills and review criteria differ. Where a source

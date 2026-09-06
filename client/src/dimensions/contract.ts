@@ -23,24 +23,29 @@ export interface DimensionLevelMeta {
   summary: string;
 }
 
-export const DIMENSION_LEVEL_META: Readonly<Record<DimensionLevel, DimensionLevelMeta>> = {
+export const DIMENSION_LEVEL_META: Readonly<
+  Record<DimensionLevel, DimensionLevelMeta>
+> = {
   "3D": {
     level: "3D",
     short: "Spatial model",
     label: "3D — Spatial model and navigation",
-    summary: "A real WebGL scene with a sourced 3D model, orbitable by pointer or keyboard.",
+    summary:
+      "A real WebGL scene with a sourced 3D model, orbitable by pointer or keyboard.",
   },
   "4D": {
     level: "4D",
     short: "Time and process",
     label: "4D — Time, animation, lifecycle and process simulation",
-    summary: "A named process simulation, scrubbed deterministically over time.",
+    summary:
+      "A named process simulation, scrubbed deterministically over time.",
   },
   "5D": {
     level: "5D",
     short: "Interaction and physics",
     label: "5D — Interaction, physics and live data",
-    summary: "Object selection, a real physics sandbox and a live external data feed.",
+    summary:
+      "Object selection, a real physics sandbox and a live external data feed.",
   },
   "6D": {
     level: "6D",
@@ -52,7 +57,8 @@ export const DIMENSION_LEVEL_META: Readonly<Record<DimensionLevel, DimensionLeve
     level: "7D",
     short: "Immersive AR/VR",
     label: "7D — Immersive AR and VR",
-    summary: "The same scene entered as an immersive WebXR session, where a device supports one.",
+    summary:
+      "The same scene entered as an immersive WebXR session, where a device supports one.",
   },
 } as const;
 
@@ -98,7 +104,9 @@ export type DimensionAvailability =
  * once, when its own acceptance criteria genuinely change — never in
  * advance of that, and never by editing a second copy elsewhere.
  */
-export const DIMENSION_AVAILABILITY: Readonly<Record<DimensionLevel, DimensionAvailability>> = {
+export const DIMENSION_AVAILABILITY: Readonly<
+  Record<DimensionLevel, DimensionAvailability>
+> = {
   "3D": { status: "live" },
   "4D": { status: "live" },
   "5D": {

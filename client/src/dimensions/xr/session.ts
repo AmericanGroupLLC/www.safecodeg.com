@@ -51,7 +51,7 @@ export interface RequestSessionCallbacks {
 export async function requestXRSession(
   renderer: THREE.WebGLRenderer,
   mode: XrSessionMode,
-  callbacks: RequestSessionCallbacks = {},
+  callbacks: RequestSessionCallbacks = {}
 ): Promise<XRSessionHandle> {
   const xr = typeof navigator !== "undefined" ? navigator.xr : undefined;
   if (!xr) {

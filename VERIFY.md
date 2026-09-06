@@ -6,13 +6,13 @@ Do not report success without evidence. Confidence is not evidence.
 
 Every important statement is one of these, and is labelled when it matters:
 
-| Class | Meaning |
-|---|---|
+| Class        | Meaning                                              |
+| ------------ | ---------------------------------------------------- |
 | **Verified** | Evidence exists — a command was run, output was read |
-| **Observed** | Directly visible in the code or repository |
-| **Inferred** | A reasonable conclusion, not verified |
-| **Assumed** | Information is missing and a value was chosen |
-| **Unknown** | Cannot be determined from available information |
+| **Observed** | Directly visible in the code or repository           |
+| **Inferred** | A reasonable conclusion, not verified                |
+| **Assumed**  | Information is missing and a value was chosen        |
+| **Unknown**  | Cannot be determined from available information      |
 
 Never present Inferred, Assumed, or Unknown as fact.
 
@@ -55,35 +55,35 @@ Every row appears in the report every time. A row that does not apply is
 
 ### Build gate
 
-| # | Check | Applies when |
-|---|---|---|
-| 1 | Build | Always |
-| 2 | Type check | The language has one |
-| 3 | Lint | The project has one configured |
+| #   | Check      | Applies when                   |
+| --- | ---------- | ------------------------------ |
+| 1   | Build      | Always                         |
+| 2   | Type check | The language has one           |
+| 3   | Lint       | The project has one configured |
 
 ### Test matrix
 
 Categories, owners, and triggers are defined in `TESTING.md`. This table is
 the report format, not a second definition of them.
 
-| # | Check | Applies when |
-|---|---|---|
-| 4 | Unit tests | Always |
-| 5 | Integration tests | The change crosses a boundary |
-| 6 | Functional tests | The change adds or alters a feature |
-| 7 | End-to-end tests | An E2E harness exists, or the change spans components |
-| 8 | Acceptance tests | Always — one per acceptance criterion |
-| 9 | Security testing | Per SECURITY.md triggers |
-| 10 | Performance testing | The change touches a hot path, or a budget is declared |
-| 11 | Smoke tests | Always, once the project is runnable |
-| 12 | Regression tests | Always — the suite is re-run; a fixed defect adds a case |
-| 13 | UI / UX verification | The change touches UI |
+| #   | Check                | Applies when                                             |
+| --- | -------------------- | -------------------------------------------------------- |
+| 4   | Unit tests           | Always                                                   |
+| 5   | Integration tests    | The change crosses a boundary                            |
+| 6   | Functional tests     | The change adds or alters a feature                      |
+| 7   | End-to-end tests     | An E2E harness exists, or the change spans components    |
+| 8   | Acceptance tests     | Always — one per acceptance criterion                    |
+| 9   | Security testing     | Per SECURITY.md triggers                                 |
+| 10  | Performance testing  | The change touches a hot path, or a budget is declared   |
+| 11  | Smoke tests          | Always, once the project is runnable                     |
+| 12  | Regression tests     | Always — the suite is re-run; a fixed defect adds a case |
+| 13  | UI / UX verification | The change touches UI                                    |
 
 ### Review
 
-| # | Check | Applies when |
-|---|---|---|
-| 14 | Documentation review | Public behavior changed |
+| #   | Check                | Applies when            |
+| --- | -------------------- | ----------------------- |
+| 14  | Documentation review | Public behavior changed |
 
 ## Rules
 

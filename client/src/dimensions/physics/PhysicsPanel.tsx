@@ -51,18 +51,33 @@ export default function PhysicsPanel({
         : "Not yet started. Click Run to drop the ball under real gravity.";
 
   return (
-    <div className="rounded-2xl p-5 sm:p-6 mb-6" style={{ background: "rgba(17,19,39,0.5)", border: "1px solid rgba(124,58,237,0.2)" }}>
+    <div
+      className="rounded-2xl p-5 sm:p-6 mb-6"
+      style={{
+        background: "rgba(17,19,39,0.5)",
+        border: "1px solid rgba(124,58,237,0.2)",
+      }}
+    >
       <div className="mb-3">
-        <div className="text-[10px] uppercase tracking-widest font-mono mb-1" style={{ color: "rgba(167,139,250,0.6)" }}>
+        <div
+          className="text-[10px] uppercase tracking-widest font-mono mb-1"
+          style={{ color: "rgba(167,139,250,0.6)" }}
+        >
           Physics sandbox
         </div>
-        <h3 className="font-bold text-white text-lg" style={{ fontFamily: "Sora, sans-serif" }}>
+        <h3
+          className="font-bold text-white text-lg"
+          style={{ fontFamily: "Sora, sans-serif" }}
+        >
           cannon-es 0.20.0 — a real, forward-only simulation
         </h3>
-        <p className="text-xs mt-1 max-w-2xl" style={{ color: "rgba(255,255,255,0.45)" }}>
-          This runs on its own clock, separate from the timeline above (a physics
-          integrator can&apos;t be scrubbed backwards). Use Reset, not the scrubber,
-          to return it to its starting state.
+        <p
+          className="text-xs mt-1 max-w-2xl"
+          style={{ color: "rgba(255,255,255,0.45)" }}
+        >
+          This runs on its own clock, separate from the timeline above (a
+          physics integrator can&apos;t be scrubbed backwards). Use Reset, not
+          the scrubber, to return it to its starting state.
         </p>
       </div>
 
@@ -82,13 +97,20 @@ export default function PhysicsPanel({
           onClick={onReset}
           data-testid="physics-reset"
           className="px-4 py-2 rounded-xl text-sm font-medium transition-all"
-          style={{ color: "rgba(255,255,255,0.8)", border: "1px solid rgba(124,58,237,0.25)" }}
+          style={{
+            color: "rgba(255,255,255,0.8)",
+            border: "1px solid rgba(124,58,237,0.25)",
+          }}
         >
           Reset
         </button>
       </div>
 
-      <label htmlFor="physics-impulse-slider" className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.6)" }}>
+      <label
+        htmlFor="physics-impulse-slider"
+        className="block text-xs mb-1"
+        style={{ color: "rgba(255,255,255,0.6)" }}
+      >
         Impulse strength — a user-controlled sideways nudge, not a scripted move
       </label>
       <div className="flex items-center gap-3">
@@ -100,11 +122,14 @@ export default function PhysicsPanel({
           max={PHYSICS_IMPULSE_MAX}
           step={PHYSICS_IMPULSE_STEP}
           value={impulse}
-          onChange={(event) => onImpulseChange(Number(event.target.value))}
+          onChange={event => onImpulseChange(Number(event.target.value))}
           className="flex-1"
           aria-valuetext={`${impulse} newton-seconds`}
         />
-        <span className="font-mono text-xs w-16 text-right" style={{ color: "rgba(255,255,255,0.6)" }}>
+        <span
+          className="font-mono text-xs w-16 text-right"
+          style={{ color: "rgba(255,255,255,0.6)" }}
+        >
           {impulse.toFixed(1)}
         </span>
         <button
@@ -119,13 +144,21 @@ export default function PhysicsPanel({
           // button go dead the moment the ball stopped, which is backwards.
           disabled={!engaged}
           className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all disabled:opacity-40"
-          style={{ color: "rgba(255,255,255,0.8)", border: "1px solid rgba(124,58,237,0.25)" }}
+          style={{
+            color: "rgba(255,255,255,0.8)",
+            border: "1px solid rgba(124,58,237,0.25)",
+          }}
         >
           Apply impulse
         </button>
       </div>
 
-      <p role="status" data-testid="physics-status" className="text-xs mt-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+      <p
+        role="status"
+        data-testid="physics-status"
+        className="text-xs mt-4"
+        style={{ color: "rgba(255,255,255,0.5)" }}
+      >
         {status}
       </p>
     </div>

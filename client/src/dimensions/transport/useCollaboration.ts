@@ -86,12 +86,23 @@ const SAVE_THROTTLE_MS = 2000;
 const COMMAND_TIMEOUT_MS = 4000;
 
 /** T-016 finding S-11: fixed, never `error.message`/`error.hint`. The raw error is `console.error`-logged for developers, never shown. */
-const JOIN_ERROR_MESSAGE = "Could not join the shared stage. Please try again in a moment.";
-const PUBLISH_ERROR_MESSAGE = "Your last change could not be sent to the shared stage.";
-const SNAPSHOT_LOAD_ERROR_MESSAGE = "The shared stage's saved state could not be loaded.";
-const SNAPSHOT_SAVE_ERROR_MESSAGE = "The shared stage's current state could not be saved.";
+const JOIN_ERROR_MESSAGE =
+  "Could not join the shared stage. Please try again in a moment.";
+const PUBLISH_ERROR_MESSAGE =
+  "Your last change could not be sent to the shared stage.";
+const SNAPSHOT_LOAD_ERROR_MESSAGE =
+  "The shared stage's saved state could not be loaded.";
+const SNAPSHOT_SAVE_ERROR_MESSAGE =
+  "The shared stage's current state could not be saved.";
 
-const COLOR_PALETTE = ["#F59E0B", "#34D399", "#60A5FA", "#F472B6", "#A78BFA", "#FB923C"];
+const COLOR_PALETTE = [
+  "#F59E0B",
+  "#34D399",
+  "#60A5FA",
+  "#F472B6",
+  "#A78BFA",
+  "#FB923C",
+];
 
 function hashString(value: string): number {
   let hash = 0;
@@ -134,7 +145,11 @@ export interface UseCollaborationResult {
   /** T-010 — any joined peer may nudge the shared object (§3.3: "a public sandbox anyone may edit or reset"). */
   moveTarget(delta: { x?: number; z?: number }): Promise<void>;
   /** T-016 S-9 — any joined peer may reset the shared object to its authored baseline. `baselinePosition` is the caller's own computed "no 6D override" position (see `resetTarget`'s implementation comment). */
-  resetTarget(baselinePosition: { x: number; y: number; z: number }): Promise<void>;
+  resetTarget(baselinePosition: {
+    x: number;
+    y: number;
+    z: number;
+  }): Promise<void>;
   opsApplied: number;
   opsRejected: number;
   /** Digital twin (§6.6) — when this session last successfully wrote the shared-stage row, or `null` if it never has this session. */
@@ -145,10 +160,16 @@ export interface UseCollaborationResult {
   lastCommand: RemoteControlCommandResult | null;
   sendRemoteCommand(delta: { x?: number; z?: number }): Promise<void>;
   /** Only meaningful when `remoteControlRole === "controlled"`. The last inbound command this session applied and echoed back, or `null`. */
-  lastReceivedCommand: { fromActorId: ActorId; patch: SceneOp["patch"]; at: number } | null;
+  lastReceivedCommand: {
+    fromActorId: ActorId;
+    patch: SceneOp["patch"];
+    at: number;
+  } | null;
 }
 
-export function useCollaboration(store: DimensionsStore): UseCollaborationResult {
+export function useCollaboration(
+  store: DimensionsStore
+): UseCollaborationResult {
   const transportRef = useRef<CollaborationTransport | null>(null);
   if (!transportRef.current) {
     transportRef.current =
@@ -163,9 +184,12 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
   const [actors, setActorsState] = useState<readonly ActorPresence[]>([]);
   const [lastErrorMessage, setLastErrorMessage] = useState<string | null>(null);
   const [opCounters, setOpCounters] = useState(() => store.getOpCounters());
-  const [remoteControlRole, setRemoteControlRoleState] = useState<RemoteControlRole>("none");
-  const [lastCommand, setLastCommand] = useState<RemoteControlCommandResult | null>(null);
-  const [lastReceivedCommand, setLastReceivedCommand] = useState<UseCollaborationResult["lastReceivedCommand"]>(null);
+  const [remoteControlRole, setRemoteControlRoleState] =
+    useState<RemoteControlRole>("none");
+  const [lastCommand, setLastCommand] =
+    useState<RemoteControlCommandResult | null>(null);
+  const [lastReceivedCommand, setLastReceivedCommand] =
+    useState<UseCollaborationResult["lastReceivedCommand"]>(null);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
 
   const remoteControlRoleRef = useRef<RemoteControlRole>("none");
@@ -181,11 +205,14 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
     remoteControlRoleRef.current = remoteControlRole;
   }, [remoteControlRole]);
 
-  const describeAndLog = useCallback((context: string, fixedMessage: string, error: unknown) => {
-    // eslint-disable-next-line no-console
-    console.error(`[6D] ${context}:`, error);
-    setLastErrorMessage(fixedMessage);
-  }, []);
+  const describeAndLog = useCallback(
+    (context: string, fixedMessage: string, error: unknown) => {
+      // eslint-disable-next-line no-console
+      console.error(`[6D] ${context}:`, error);
+      setLastErrorMessage(fixedMessage);
+    },
+    []
+  );
 
   const flushSnapshotSave = useCallback(() => {
     if (!joinedRoomRef.current) return;
@@ -202,8 +229,12 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
     void transport
       .saveSnapshot(ROOM_ID, snapshot)
       .then(() => setLastSavedAt(savedAt))
-      .catch((error) => {
-        describeAndLog("saveSnapshot failed", SNAPSHOT_SAVE_ERROR_MESSAGE, error);
+      .catch(error => {
+        describeAndLog(
+          "saveSnapshot failed",
+          SNAPSHOT_SAVE_ERROR_MESSAGE,
+          error
+        );
       });
   }, [store, transport, describeAndLog]);
 
@@ -225,7 +256,7 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
   useEffect(() => {
     setStatus(transport.status);
 
-    const unsubscribeStatus = transport.onStatus((next) => {
+    const unsubscribeStatus = transport.onStatus(next => {
       setStatus(next);
       // §6.4/T-010 "disconnection is honest": a transport that is no longer
       // connected must stop presenting its last-known peer list as current.
@@ -234,11 +265,11 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
       }
     });
 
-    const unsubscribePresence = transport.onPresence((next) => {
+    const unsubscribePresence = transport.onPresence(next => {
       setActorsState(next);
     });
 
-    const unsubscribeOp = transport.onOp((op) => {
+    const unsubscribeOp = transport.onOp(op => {
       const applied = store.applyOp(op);
       setOpCounters(store.getOpCounters());
       if (!applied) return;
@@ -254,7 +285,11 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
         op.actorId !== selfActorIdRef.current &&
         !op.opId.startsWith("ack:")
       ) {
-        setLastReceivedCommand({ fromActorId: op.actorId, patch: op.patch, at: Date.now() });
+        setLastReceivedCommand({
+          fromActorId: op.actorId,
+          patch: op.patch,
+          at: Date.now(),
+        });
         echoCounterRef.current += 1;
         const echoOp: SceneOp = {
           opId: `ack:${selfActorIdRef.current}:${op.objectId}:${echoCounterRef.current}`,
@@ -266,8 +301,12 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
         };
         if (store.applyOp(echoOp)) {
           setOpCounters(store.getOpCounters());
-          void transport.publish(echoOp).catch((error) => {
-            describeAndLog("publish (confirmation echo) failed", PUBLISH_ERROR_MESSAGE, error);
+          void transport.publish(echoOp).catch(error => {
+            describeAndLog(
+              "publish (confirmation echo) failed",
+              PUBLISH_ERROR_MESSAGE,
+              error
+            );
           });
         }
       }
@@ -332,16 +371,25 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
             // `buildSceneSnapshotSchema` comment; this hook is the caller
             // with the model reference it structurally lacks).
             const validIds = store.getValidObjectIds();
-            const filtered: Record<string, (typeof snapshot.objects)[string]> = {};
+            const filtered: Record<string, (typeof snapshot.objects)[string]> =
+              {};
             for (const [id, object] of Object.entries(snapshot.objects)) {
               if (validIds.has(id)) filtered[id] = object;
-              else console.warn("[6D] dropped a stored snapshot object not in the authored model:", id);
+              else
+                console.warn(
+                  "[6D] dropped a stored snapshot object not in the authored model:",
+                  id
+                );
             }
             store.hydrateFromSnapshot(filtered);
             savedRevisionRef.current = store.getSnapshot().revision;
           }
         } catch (error) {
-          describeAndLog("loadSnapshot failed", SNAPSHOT_LOAD_ERROR_MESSAGE, error);
+          describeAndLog(
+            "loadSnapshot failed",
+            SNAPSHOT_LOAD_ERROR_MESSAGE,
+            error
+          );
         }
       } catch (error) {
         joinedRoomRef.current = false;
@@ -349,7 +397,7 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
         throw error;
       }
     },
-    [transport, selfActorId, store, describeAndLog],
+    [transport, selfActorId, store, describeAndLog]
   );
 
   const leave = useCallback(async () => {
@@ -360,7 +408,10 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
   }, [transport, flushSnapshotSave]);
 
   const publishPosition = useCallback(
-    async (objectId: ObjectId, position: { x: number; y: number; z: number }) => {
+    async (
+      objectId: ObjectId,
+      position: { x: number; y: number; z: number }
+    ) => {
       const op = store.publishLocalOp(objectId, selfActorId, { position });
       if (!op) return null;
       try {
@@ -370,7 +421,7 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
       }
       return op;
     },
-    [store, selfActorId, transport, describeAndLog],
+    [store, selfActorId, transport, describeAndLog]
   );
 
   const publishDelta = useCallback(
@@ -384,14 +435,14 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
       };
       return publishPosition(objectId, nextPosition);
     },
-    [store, publishPosition],
+    [store, publishPosition]
   );
 
   const moveTarget = useCallback(
     async (delta: { x?: number; z?: number }) => {
       await publishDelta(CONTROL_TARGET_ID, delta);
     },
-    [publishDelta],
+    [publishDelta]
   );
 
   /**
@@ -410,7 +461,7 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
     async (baselinePosition: { x: number; y: number; z: number }) => {
       await publishPosition(CONTROL_TARGET_ID, baselinePosition);
     },
-    [publishPosition],
+    [publishPosition]
   );
 
   const setRemoteControlRole = useCallback((role: RemoteControlRole) => {
@@ -451,15 +502,23 @@ export function useCollaboration(store: DimensionsStore): UseCollaborationResult
       try {
         await transport.publish(op);
       } catch (error) {
-        describeAndLog("publish (remote command) failed", PUBLISH_ERROR_MESSAGE, error);
+        describeAndLog(
+          "publish (remote command) failed",
+          PUBLISH_ERROR_MESSAGE,
+          error
+        );
         setLastCommand({ status: "timed-out", confirmedByActorId: null });
         return;
       }
       commandTimeoutRef.current = setTimeout(() => {
-        setLastCommand((prev) => (prev?.status === "sending" ? { status: "timed-out", confirmedByActorId: null } : prev));
+        setLastCommand(prev =>
+          prev?.status === "sending"
+            ? { status: "timed-out", confirmedByActorId: null }
+            : prev
+        );
       }, COMMAND_TIMEOUT_MS);
     },
-    [store, selfActorId, transport, describeAndLog],
+    [store, selfActorId, transport, describeAndLog]
   );
 
   return {

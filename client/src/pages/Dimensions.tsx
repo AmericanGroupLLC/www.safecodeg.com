@@ -31,7 +31,11 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { DIMENSION_LEVELS, DIMENSION_LEVEL_META } from "@/dimensions/contract";
-import { getDimensionAvailability, dimensionStatusPresentation, getDimensionCaveat } from "@/lib/dimensionsAvailability";
+import {
+  getDimensionAvailability,
+  dimensionStatusPresentation,
+  getDimensionCaveat,
+} from "@/lib/dimensionsAvailability";
 
 const DimensionsStage = lazy(() => import("@/dimensions/DimensionsStage"));
 
@@ -71,7 +75,8 @@ export default function DimensionsPage() {
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(query.matches);
-    const handleChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
+    const handleChange = (event: MediaQueryListEvent) =>
+      setReducedMotion(event.matches);
     query.addEventListener("change", handleChange);
     return () => query.removeEventListener("change", handleChange);
   }, []);
@@ -84,19 +89,27 @@ export default function DimensionsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-8"
-            style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.9)" }}
+            style={{
+              background: "rgba(124,58,237,0.1)",
+              border: "1px solid rgba(124,58,237,0.3)",
+              color: "rgba(196,181,253,0.9)",
+            }}
           >
             Dimensional Capability Stack
           </div>
 
           <h1
             className="font-black text-white mb-6 tracking-tight"
-            style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+            style={{
+              fontFamily: "Sora, sans-serif",
+              fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
+            }}
           >
             3D–7D.{" "}
             <span
               style={{
-                background: "linear-gradient(135deg, #C4B5FD 0%, #7C3AED 40%, #F59E0B 80%, #FCD34D 100%)",
+                background:
+                  "linear-gradient(135deg, #C4B5FD 0%, #7C3AED 40%, #F59E0B 80%, #FCD34D 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -107,19 +120,27 @@ export default function DimensionsPage() {
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-300 max-w-2xl leading-relaxed mb-8">
-            A real WebGL scene with a sourced 3D model, and a deterministic time-based process
-            simulation you can scrub, play and pause. Every level below either runs for real, on
-            this page, right now — or says plainly that it does not yet.
+            A real WebGL scene with a sourced 3D model, and a deterministic
+            time-based process simulation you can scrub, play and pause. Every
+            level below either runs for real, on this page, right now — or says
+            plainly that it does not yet.
           </p>
 
           <div className="flex items-center gap-3 mb-10">
-            <span className="text-xs uppercase tracking-widest font-mono" style={{ color: "rgba(167,139,250,0.7)" }}>
+            <span
+              className="text-xs uppercase tracking-widest font-mono"
+              style={{ color: "rgba(167,139,250,0.7)" }}
+            >
               Motion
             </span>
             <span
               data-testid="motion-mode"
               className="font-mono text-xs px-2.5 py-1 rounded-full"
-              style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.25)", color: "rgba(255,255,255,0.8)" }}
+              style={{
+                background: "rgba(124,58,237,0.12)",
+                border: "1px solid rgba(124,58,237,0.25)",
+                color: "rgba(255,255,255,0.8)",
+              }}
             >
               {reducedMotion ? "reduced" : "full"}
             </span>
@@ -127,10 +148,12 @@ export default function DimensionsPage() {
 
           {/* ── Capability matrix — honest, not aspirational ────────────── */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-14">
-            {DIMENSION_LEVELS.map((level) => {
+            {DIMENSION_LEVELS.map(level => {
               const meta = DIMENSION_LEVEL_META[level];
               const availability = getDimensionAvailability(level);
-              const presentation = dimensionStatusPresentation(availability.status);
+              const presentation = dimensionStatusPresentation(
+                availability.status
+              );
               return (
                 <div
                   key={level}
@@ -142,12 +165,18 @@ export default function DimensionsPage() {
                   }}
                 >
                   <div className="flex items-center justify-between mb-2 gap-2">
-                    <span className="font-bold" style={{ fontFamily: "Sora, sans-serif" }}>
+                    <span
+                      className="font-bold"
+                      style={{ fontFamily: "Sora, sans-serif" }}
+                    >
                       {level}
                     </span>
                     <span
                       className="text-[9px] uppercase tracking-widest font-mono px-2 py-0.5 rounded-full whitespace-nowrap"
-                      style={{ background: presentation.badgeBg, color: presentation.badgeText }}
+                      style={{
+                        background: presentation.badgeBg,
+                        color: presentation.badgeText,
+                      }}
                     >
                       {presentation.badgeLabel}
                     </span>
@@ -168,23 +197,37 @@ export default function DimensionsPage() {
           </div>
 
           {/* ── The 3D + 4D stage ────────────────────────────────────────── */}
-          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(124,58,237,0.2)" }}>
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{ border: "1px solid rgba(124,58,237,0.2)" }}
+          >
             {webgl === "unavailable" ? (
-              <div data-testid="dimensions-fallback" role="status" className="p-10 sm:p-16 text-center">
+              <div
+                data-testid="dimensions-fallback"
+                role="status"
+                className="p-10 sm:p-16 text-center"
+              >
                 <p className="text-lg font-semibold mb-2">3D is unavailable</p>
                 <p className="text-slate-400 max-w-md mx-auto">
-                  This browser or device did not provide a WebGL context. This page normally shows
-                  an interactive 3D scene with a time-based process simulation here.
+                  This browser or device did not provide a WebGL context. This
+                  page normally shows an interactive 3D scene with a time-based
+                  process simulation here.
                 </p>
               </div>
             ) : webgl === "checking" ? (
-              <div role="status" className="p-10 sm:p-16 text-center text-slate-500">
+              <div
+                role="status"
+                className="p-10 sm:p-16 text-center text-slate-500"
+              >
                 Checking this browser&apos;s 3D support…
               </div>
             ) : (
               <Suspense
                 fallback={
-                  <div role="status" className="p-10 sm:p-16 text-center text-slate-500">
+                  <div
+                    role="status"
+                    className="p-10 sm:p-16 text-center text-slate-500"
+                  >
                     Loading the 3D stage…
                   </div>
                 }

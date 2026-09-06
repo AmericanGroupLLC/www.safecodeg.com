@@ -75,7 +75,10 @@ type SessionSupportResult = "supported" | "unsupported" | "blocked";
  * this function keeps them different — it never coerces a rejection to
  * `false`.
  */
-async function probeSessionSupport(xr: XRSystem, mode: XRSessionMode): Promise<SessionSupportResult> {
+async function probeSessionSupport(
+  xr: XRSystem,
+  mode: XRSessionMode
+): Promise<SessionSupportResult> {
   try {
     const ok = await xr.isSessionSupported(mode);
     return ok ? "supported" : "unsupported";
@@ -119,7 +122,8 @@ export async function probeXR(): Promise<XrCapability> {
     return {
       state: "blocked-by-policy",
       supported: { vr: vr === "supported", ar: ar === "supported" },
-      reason: "Immersive sessions are blocked by this page's permissions policy.",
+      reason:
+        "Immersive sessions are blocked by this page's permissions policy.",
     };
   }
 
@@ -130,7 +134,8 @@ export async function probeXR(): Promise<XrCapability> {
     return {
       state: "no-device",
       supported: { vr: false, ar: false },
-      reason: "WebXR is present in this browser, but no immersive VR or AR device was detected.",
+      reason:
+        "WebXR is present in this browser, but no immersive VR or AR device was detected.",
     };
   }
 
@@ -149,7 +154,10 @@ export async function probeXR(): Promise<XrCapability> {
  * announcement and the machine-readable hook can never disagree about which
  * state is current.
  */
-export function resolveXrUiState(capabilityState: XrCapability["state"], sessionPhase: XrSessionPhase): XrUiState {
+export function resolveXrUiState(
+  capabilityState: XrCapability["state"],
+  sessionPhase: XrSessionPhase
+): XrUiState {
   if (sessionPhase === "running") return "session-running";
   if (sessionPhase === "rejected") return "session-rejected";
   return capabilityState;
@@ -169,7 +177,10 @@ export function resolveXrUiState(capabilityState: XrCapability["state"], session
  */
 export function xrStatusText(
   state: XrUiState,
-  extra: { reason?: string | null; mode?: "immersive-ar" | "immersive-vr" | null } = {},
+  extra: {
+    reason?: string | null;
+    mode?: "immersive-ar" | "immersive-vr" | null;
+  } = {}
 ): string {
   switch (state) {
     case "no-webgl":

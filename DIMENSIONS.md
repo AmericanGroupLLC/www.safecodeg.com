@@ -12,11 +12,11 @@ the page says so, in the UI itself, not just in this file.
 
 ## Where it lives
 
-| Surface | What it shows |
-|---|---|
-| `/dimensions` | The full stack — all five levels, one scene |
-| `/` (Home) | A teaser section naming all five levels, linking to `/dimensions` |
-| `/agl` | The "Spatial & Industry SaaS" vertical, expanded with a level ladder and a link to `/dimensions` |
+| Surface       | What it shows                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| `/dimensions` | The full stack — all five levels, one scene                                                      |
+| `/` (Home)    | A teaser section naming all five levels, linking to `/dimensions`                                |
+| `/agl`        | The "Spatial & Industry SaaS" vertical, expanded with a level ladder and a link to `/dimensions` |
 
 The 3D runtime is **not** loaded on `/`, `/products`, `/products/:slug` or
 `/agl` — those routes never request the `three.js` bundle. It is loaded only
@@ -28,16 +28,16 @@ Every surface above renders its level badges from one file:
 **`client/src/dimensions/contract.ts`** (`DIMENSION_AVAILABILITY`), read
 through `client/src/lib/dimensionsAvailability.ts`. There is exactly one
 place this ever gets updated, and the wording below is copied from it
-verbatim — not paraphrased — because the caveat text *is* the honesty
+verbatim — not paraphrased — because the caveat text _is_ the honesty
 mechanism: a `"partial"` status cannot be rendered without one.
 
-| Level | Status | What it actually is |
-|---|---|---|
-| **3D** | **Live** | A real WebGL scene with a sourced 3D model, orbitable by pointer or keyboard. |
-| **4D** | **Live** | A named process simulation, scrubbed deterministically over time. |
-| **5D** | **Partial** | "Object selection, the physics sandbox and the live weather feed are real and working. The AI capability this level also describes has not been built yet." |
+| Level  | Status      | What it actually is                                                                                                                                                                                                                                                                                                                              |
+| ------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **3D** | **Live**    | A real WebGL scene with a sourced 3D model, orbitable by pointer or keyboard.                                                                                                                                                                                                                                                                    |
+| **4D** | **Live**    | A named process simulation, scrubbed deterministically over time.                                                                                                                                                                                                                                                                                |
+| **5D** | **Partial** | "Object selection, the physics sandbox and the live weather feed are real and working. The AI capability this level also describes has not been built yet."                                                                                                                                                                                      |
 | **6D** | **Partial** | "Multi-user sync, presence, the digital twin and remote session control are real and verified across two pages in one browser (no Supabase project key exists in this build). Genuine sync across two separate browsers has not been verified — this build has no shared-session configuration, so it runs stand-alone for every visitor today." |
-| **7D** | **Partial** | "The capability probe, every degradation state and the AR Quick Look path are real and verified. Actually starting an immersive VR or AR session has not yet been observed on real XR hardware." |
+| **7D** | **Partial** | "The capability probe, every degradation state and the AR Quick Look path are real and verified. Actually starting an immersive VR or AR session has not yet been observed on real XR hardware."                                                                                                                                                 |
 
 `"Partial"` is a deliberate third state, distinct from a live/dead boolean —
 see the header comment of `dimensionsAvailability.ts` for why a boolean
@@ -200,13 +200,13 @@ build). It carries no key, token, or credential. Shape:
 
 ```ts
 interface DimensionsTestHook {
-  readonly ready: boolean;           // false until the first frame has rendered
+  readonly ready: boolean; // false until the first frame has rendered
   getState(): SceneState;
   getRenderStats(): RenderStats | null;
   getCamera(): CameraSnapshot;
-  getPhysics(): PhysicsSnapshot | null;      // null until the physics chunk has loaded and run once
+  getPhysics(): PhysicsSnapshot | null; // null until the physics chunk has loaded and run once
   getLiveData(): DimensionsLiveDataSnapshot; // source, status, fetchedAt, value, error
-  getXR(): DimensionsXrSnapshot | null;       // null until the async capability probe resolves once
+  getXR(): DimensionsXrSnapshot | null; // null until the async capability probe resolves once
   getTransport(): DimensionsTransportSnapshot;
 }
 ```
@@ -216,9 +216,9 @@ console on `/dimensions`, after the page has settled:
 
 ```js
 const hook = window.__AGL_DIMENSIONS__;
-hook.ready;                 // true once the first frame has rendered
-hook.getState().selection;  // the selected object id, or null
-hook.getCamera();           // { position: {x,y,z}, target: {x,y,z}, distance }
+hook.ready; // true once the first frame has rendered
+hook.getState().selection; // the selected object id, or null
+hook.getCamera(); // { position: {x,y,z}, target: {x,y,z}, distance }
 ```
 
 ## Environment variables this feature adds
@@ -226,9 +226,9 @@ hook.getCamera();           // { position: {x,y,z}, target: {x,y,z}, distance }
 Only two, both already wired into `.github/workflows/deploy.yml`'s existing
 build-time `env:` block (no new deploy target — see `DEPLOYMENT.md`):
 
-| Variable | Purpose | If unset |
-|---|---|---|
-| `VITE_SUPABASE_URL` | 6D Realtime + PostgREST base URL | `createTransport()` returns the null transport |
+| Variable                 | Purpose                                                                                                                             | If unset                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `VITE_SUPABASE_URL`      | 6D Realtime + PostgREST base URL                                                                                                    | `createTransport()` returns the null transport                  |
 | `VITE_SUPABASE_ANON_KEY` | Anon key for the same project. Public by design once bundled — safety rests entirely on the RLS policies in `supabase/migrations/`. | Same — the 6D stage reports "unconfigured" and runs stand-alone |
 
 Both are already declared, with empty defaults, in `.env.example`. Neither
@@ -240,12 +240,12 @@ engine is built. When one is, it will be documented here, not before.
 
 ## What is deliberately NOT claimed, and why
 
-| Capability | Status | Reason |
-|---|---|---|
-| 5D AI (solver / hosted LLM / on-device model) | **Not built** | No implementation exists in this repo (`ScenarioSolver`/`SolverDisclosure` seam is designed, unimplemented). Needs, at minimum, an Anthropic API key nobody has supplied for the hosted-LLM option. |
-| 6D sync across two real browsers via Supabase | **Unproven** | No `VITE_SUPABASE_*` credential has ever been configured in an environment this was tested from. Proven only across two pages in one browser via a loopback transport. |
-| 7D immersive session actually starting | **Unproven** | No XR-capable hardware has been available to test on. Every other 7D state is proven. |
-| A dimensional capability badge on any specific product | **Not assigned** | No product's existing copy defensibly claims this site's specific 3D/WebXR/physics/Supabase stack; assigning one anyway would be a fabricated technical claim. |
+| Capability                                             | Status           | Reason                                                                                                                                                                                              |
+| ------------------------------------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5D AI (solver / hosted LLM / on-device model)          | **Not built**    | No implementation exists in this repo (`ScenarioSolver`/`SolverDisclosure` seam is designed, unimplemented). Needs, at minimum, an Anthropic API key nobody has supplied for the hosted-LLM option. |
+| 6D sync across two real browsers via Supabase          | **Unproven**     | No `VITE_SUPABASE_*` credential has ever been configured in an environment this was tested from. Proven only across two pages in one browser via a loopback transport.                              |
+| 7D immersive session actually starting                 | **Unproven**     | No XR-capable hardware has been available to test on. Every other 7D state is proven.                                                                                                               |
+| A dimensional capability badge on any specific product | **Not assigned** | No product's existing copy defensibly claims this site's specific 3D/WebXR/physics/Supabase stack; assigning one anyway would be a fabricated technical claim.                                      |
 
 None of the four rows above are missing code paths — the UI for each
 already renders its honest, named "not available yet" state rather than

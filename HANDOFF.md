@@ -28,24 +28,31 @@ incomplete and the receiving role should reject it.
 **Current mode:** <mode from MODES.md>
 
 **Completed work:**
+
 - What was actually done, not what was attempted
 
 **Files modified:**
+
 - path/to/file — what changed and why
 
 **Architecture decisions:**
+
 - Decision, alternatives rejected, and the reason
 
 **Open issues:**
+
 - Known problems, each with its current state
 
 **Remaining work:**
+
 - What is left, in the order it should be done
 
 **Known risks:**
+
 - What could break, and what would reveal it
 
 **Verification status:**
+
 - Each item: PASS / FAIL / NOT RUN / UNKNOWN
 
 **Next recommended agent:** <role> — and why

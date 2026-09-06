@@ -25,8 +25,8 @@ Check, concretely:
 
 - **Injection** — SQL, command, template, and path traversal on every value
   that crosses a boundary.
-- **Authorization** — not just "is the caller logged in" but "may *this*
-  caller touch *this* record."
+- **Authorization** — not just "is the caller logged in" but "may _this_
+  caller touch _this_ record."
 - **Secrets** — never in source, never in logs, never in error messages
   returned to users, never in prompts or committed config.
 - **Output escaping** — anything rendered that originated outside the system.

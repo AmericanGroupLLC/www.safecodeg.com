@@ -5,17 +5,17 @@
 Every task runs these steps in this order. Roles are defined in `AGENTS.md`;
 each role's scope is in `.ai/<role>.md`.
 
-| # | Step | Role | Runs |
-|---|---|---|---|
-| 1 | Tasks with acceptance criteria | Planner | Always |
-| 2 | Structure and decisions | Architect | Always |
-| 3 | Implementation — own scope only | Backend / Frontend | Always |
-| 4 | Prove the acceptance criteria | Testing | Always |
-| 5 | Exploitable defects | Security | Conditional — `SECURITY.md` triggers |
-| 6 | Measured regressions | Performance | Conditional — change touches a hot path |
-| 7 | Record what shipped | Documentation | Conditional — public behavior changed |
-| 8 | Verify every criterion, issue the verdict | Reviewer | Always |
-| 9 | Notes and rollback | Release | Conditional — preparing a deployment |
+| #   | Step                                      | Role               | Runs                                    |
+| --- | ----------------------------------------- | ------------------ | --------------------------------------- |
+| 1   | Tasks with acceptance criteria            | Planner            | Always                                  |
+| 2   | Structure and decisions                   | Architect          | Always                                  |
+| 3   | Implementation — own scope only           | Backend / Frontend | Always                                  |
+| 4   | Prove the acceptance criteria             | Testing            | Always                                  |
+| 5   | Exploitable defects                       | Security           | Conditional — `SECURITY.md` triggers    |
+| 6   | Measured regressions                      | Performance        | Conditional — change touches a hot path |
+| 7   | Record what shipped                       | Documentation      | Conditional — public behavior changed   |
+| 8   | Verify every criterion, issue the verdict | Reviewer           | Always                                  |
+| 9   | Notes and rollback                        | Release            | Conditional — preparing a deployment    |
 
 ```text
 Planner → Architect → Backend / Frontend → Testing

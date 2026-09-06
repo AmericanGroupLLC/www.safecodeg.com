@@ -57,7 +57,11 @@ async function saveToSupabase(data: {
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => "Unknown error");
-    console.error("[Contact] Supabase insert failed:", response.status, errorText);
+    console.error(
+      "[Contact] Supabase insert failed:",
+      response.status,
+      errorText
+    );
     throw new Error(`Failed to save contact submission: ${response.status}`);
   }
 
@@ -66,22 +70,20 @@ async function saveToSupabase(data: {
 }
 
 export const contactRouter = router({
-  submit: publicProcedure
-    .input(contactSchema)
-    .mutation(async ({ input }) => {
-      // 1. Save to Supabase
-      let submissionId: string | undefined;
-      try {
-        const saved = await saveToSupabase(input);
-        submissionId = saved?.id;
-        console.log("[Contact] Saved to Supabase, id:", submissionId);
-      } catch (err) {
-        console.error("[Contact] Failed to save to Supabase:", err);
-        // Don't fail the whole request if DB save fails — still send notification
-      }
+  submit: publicProcedure.input(contactSchema).mutation(async ({ input }) => {
+    // 1. Save to Supabase
+    let submissionId: string | undefined;
+    try {
+      const saved = await saveToSupabase(input);
+      submissionId = saved?.id;
+      console.log("[Contact] Saved to Supabase, id:", submissionId);
+    } catch (err) {
+      console.error("[Contact] Failed to save to Supabase:", err);
+      // Don't fail the whole request if DB save fails — still send notification
+    }
 
-      // 2. Send owner notification via Manus notification service
-      const notificationContent = `
+    // 2. Send owner notification via Manus notification service
+    const notificationContent = `
 **New Contact Form Submission**
 
 **From:** ${input.name} (${input.email})
@@ -97,22 +99,22 @@ Reply to: ${input.email}
 To: contact@safecodeg.com
       `.trim();
 
-      try {
-        await notifyOwner({
-          title: `New Contact: ${input.subject} — from ${input.name}`,
-          content: notificationContent,
-        });
-        console.log("[Contact] Owner notification sent");
-      } catch (err) {
-        console.warn("[Contact] Failed to send owner notification:", err);
-        // Don't fail the request — submission was already saved
-      }
+    try {
+      await notifyOwner({
+        title: `New Contact: ${input.subject} — from ${input.name}`,
+        content: notificationContent,
+      });
+      console.log("[Contact] Owner notification sent");
+    } catch (err) {
+      console.warn("[Contact] Failed to send owner notification:", err);
+      // Don't fail the request — submission was already saved
+    }
 
-      return {
-        success: true,
-        message:
-          "Thank you for reaching out. Our team at contact@safecodeg.com will respond within 1–2 business days.",
-        submissionId,
-      };
-    }),
+    return {
+      success: true,
+      message:
+        "Thank you for reaching out. Our team at contact@safecodeg.com will respond within 1–2 business days.",
+      submissionId,
+    };
+  }),
 });

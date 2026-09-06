@@ -34,15 +34,27 @@ import { pickObjectId } from "./render/pick";
 import { createProjector } from "./render/projector";
 import { createRendererBundle } from "./render/Renderer";
 import { startRenderLoop, type RenderLoopHandle } from "./render/loop";
-import { createDimensionsStore, usePlaying, useStoreValue } from "./state/store";
+import {
+  createDimensionsStore,
+  usePlaying,
+  useStoreValue,
+} from "./state/store";
 import { installTestHook } from "./state/testHook";
 import type { ObjectId } from "./state/types";
 import { probeXR, resolveXrUiState, type XrCapability } from "./xr/detect";
-import { requestXRSession, type XRSessionHandle, type XrSessionMode, type XrSessionPhase } from "./xr/session";
+import {
+  requestXRSession,
+  type XRSessionHandle,
+  type XrSessionMode,
+  type XrSessionPhase,
+} from "./xr/session";
 import XRPanel from "./xr/XRPanel";
 import CollabPanel from "./transport/CollabPanel";
 import RemoteControlPanel from "./transport/RemoteControlPanel";
-import { CONTROL_TARGET_ID, useCollaboration } from "./transport/useCollaboration";
+import {
+  CONTROL_TARGET_ID,
+  useCollaboration,
+} from "./transport/useCollaboration";
 import { composeScene } from "./state/compose";
 
 /** Runtime path to a real, built `.usdz` asset (§7.4) — see client/public/models/astronaut.LICENSE.txt for provenance. */
@@ -69,15 +81,27 @@ const srOnlyStyle: React.CSSProperties = {
 function createPrimitiveTemplates(): Record<string, THREE.Object3D> {
   const platform = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshStandardMaterial({ color: 0x1c1f33, roughness: 0.85, metalness: 0.05 }),
+    new THREE.MeshStandardMaterial({
+      color: 0x1c1f33,
+      roughness: 0.85,
+      metalness: 0.05,
+    })
   );
   const crateClosed = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshStandardMaterial({ color: 0xb6803f, roughness: 0.7, metalness: 0.05 }),
+    new THREE.MeshStandardMaterial({
+      color: 0xb6803f,
+      roughness: 0.7,
+      metalness: 0.05,
+    })
   );
   const crateOpen = new THREE.Mesh(
     new THREE.BoxGeometry(1, 0.6, 1),
-    new THREE.MeshStandardMaterial({ color: 0xd4a25a, roughness: 0.7, metalness: 0.05 }),
+    new THREE.MeshStandardMaterial({
+      color: 0xd4a25a,
+      roughness: 0.7,
+      metalness: 0.05,
+    })
   );
   // 5D physics sandbox ball — geometry radius 1, scaled per-instance to
   // PHYSICS_BALL_RADIUS by state/compose.ts's `PHYSICS_BODY_SCALE`. Bright
@@ -85,17 +109,32 @@ function createPrimitiveTemplates(): Record<string, THREE.Object3D> {
   // pipeline's set dressing.
   const physicsBall = new THREE.Mesh(
     new THREE.SphereGeometry(1, 24, 16),
-    new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.35, metalness: 0.15, emissive: 0x7a4a05, emissiveIntensity: 0.3 }),
+    new THREE.MeshStandardMaterial({
+      color: 0xf59e0b,
+      roughness: 0.35,
+      metalness: 0.15,
+      emissive: 0x7a4a05,
+      emissiveIntensity: 0.3,
+    })
   );
-  return { platform, "crate-closed": crateClosed, "crate-open": crateOpen, "physics-ball": physicsBall };
+  return {
+    platform,
+    "crate-closed": crateClosed,
+    "crate-open": crateOpen,
+    "physics-ball": physicsBall,
+  };
 }
 
-export default function DimensionsStage({ prefersReducedMotion }: DimensionsStageProps) {
+export default function DimensionsStage({
+  prefersReducedMotion,
+}: DimensionsStageProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const cameraControllerRef = useRef<CameraController | null>(null);
   const loopRef = useRef<RenderLoopHandle | null>(null);
 
-  const storeRef = useRef<ReturnType<typeof createDimensionsStore> | null>(null);
+  const storeRef = useRef<ReturnType<typeof createDimensionsStore> | null>(
+    null
+  );
   if (!storeRef.current) {
     storeRef.current = createDimensionsStore(PRODUCT_PIPELINE);
   }
@@ -107,7 +146,9 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
   // happens from `CollabPanel`'s "Join the shared stage" button, below.
   const collab = useCollaboration(store);
 
-  const registryRef = useRef<Record<string, THREE.Object3D | null> | null>(null);
+  const registryRef = useRef<Record<string, THREE.Object3D | null> | null>(
+    null
+  );
   if (!registryRef.current) {
     registryRef.current = { ...createPrimitiveTemplates(), toycar: null };
   }
@@ -157,7 +198,11 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     activeMode: xrActiveMode,
   });
   useEffect(() => {
-    xrSnapshotInputsRef.current = { capability: xrCapability, sessionPhase: xrSessionPhase, activeMode: xrActiveMode };
+    xrSnapshotInputsRef.current = {
+      capability: xrCapability,
+      sessionPhase: xrSessionPhase,
+      activeMode: xrActiveMode,
+    };
   }, [xrCapability, xrSessionPhase, xrActiveMode]);
 
   const [modelStatus, setModelStatus] = useState<ModelStatus>("loading");
@@ -165,10 +210,10 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
   const [focused, setFocused] = useState(false);
   const [announcement, setAnnouncement] = useState("");
 
-  const t = useStoreValue(store, (s) => s.t);
-  const stages = useStoreValue(store, (s) => s.stages);
-  const objects = useStoreValue(store, (s) => s.objects);
-  const selection = useStoreValue(store, (s) => s.selection);
+  const t = useStoreValue(store, s => s.t);
+  const stages = useStoreValue(store, s => s.stages);
+  const objects = useStoreValue(store, s => s.objects);
+  const selection = useStoreValue(store, s => s.selection);
   const playing = usePlaying(store);
   const activeStage = findActiveStage(PRODUCT_PIPELINE, t);
 
@@ -221,8 +266,10 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     if (prevTransportStatusRef.current === kind) return;
     prevTransportStatusRef.current = kind;
     if (kind === "connected") setAnnouncement("Joined the shared stage.");
-    else if (kind === "disconnected") setAnnouncement("Disconnected from the shared stage.");
-    else if (kind === "reconnecting") setAnnouncement("Reconnecting to the shared stage.");
+    else if (kind === "disconnected")
+      setAnnouncement("Disconnected from the shared stage.");
+    else if (kind === "reconnecting")
+      setAnnouncement("Reconnecting to the shared stage.");
   }, [collab.status]);
 
   // 7D — the capability probe (§7.1's four steps) runs once per mount. It is
@@ -230,7 +277,7 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
   // stays `null`, and `XRPanel` renders a "checking" status, until it does.
   useEffect(() => {
     let cancelled = false;
-    probeXR().then((capability) => {
+    probeXR().then(capability => {
       if (!cancelled) setXrCapability(capability);
     });
     return () => {
@@ -247,7 +294,7 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     if (!physicsEngaged) return;
     const interval = window.setInterval(() => {
       const running = physicsRef.current?.isRunning() ?? false;
-      setPhysicsRunningUi((current) => (current === running ? current : running));
+      setPhysicsRunningUi(current => (current === running ? current : running));
     }, 300);
     return () => window.clearInterval(interval);
   }, [physicsEngaged]);
@@ -265,13 +312,18 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     // (!canvasMaybeNull) return;` narrowing from this outer scope into it.
     const canvas: HTMLCanvasElement = canvasMaybeNull;
 
-    const { renderer, scene, camera, dispose: disposeRenderer } = createRendererBundle(canvas, {
+    const {
+      renderer,
+      scene,
+      camera,
+      dispose: disposeRenderer,
+    } = createRendererBundle(canvas, {
       onContextLost: () => {
         setModelStatus("error");
         setModelError("The WebGL context was lost.");
       },
       onContextRestored: () => {
-        setModelStatus((current) => (current === "error" ? "ready" : current));
+        setModelStatus(current => (current === "error" ? "ready" : current));
         setModelError(null);
       },
     });
@@ -291,7 +343,7 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       renderer,
       scene,
       camera,
-      (timestampMs) => {
+      timestampMs => {
         store.tick(timestampMs);
 
         // 5D physics — stepped only while the sandbox exists. `wasRunning`
@@ -314,7 +366,7 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
         cameraController.controls.update();
         projector.sync(store.getSnapshot(), registryRef.current!);
       },
-      () => testHookHandle.setReady(true),
+      () => testHookHandle.setReady(true)
     );
     loopRef.current = loop;
 
@@ -338,13 +390,14 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
         return {
           status: current.status,
           actorCount: current.actors.length,
-          actors: current.actors.map((a) => a.actorId),
+          actors: current.actors.map(a => a.actorId),
           opsApplied: current.opsApplied,
           opsRejected: current.opsRejected,
         };
       },
       getXR: () => {
-        const { capability, sessionPhase, activeMode } = xrSnapshotInputsRef.current;
+        const { capability, sessionPhase, activeMode } =
+          xrSnapshotInputsRef.current;
         if (!capability) return null;
         return {
           state: resolveXrUiState(capability.state, sessionPhase),
@@ -374,7 +427,10 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       const start = pointerDownAt;
       pointerDownAt = null;
       if (!start) return;
-      const moved = Math.hypot(event.clientX - start.x, event.clientY - start.y);
+      const moved = Math.hypot(
+        event.clientX - start.x,
+        event.clientY - start.y
+      );
       if (moved > CLICK_MOVE_THRESHOLD_PX) return; // an orbit drag, not a click
 
       const activeScene = sceneRef.current;
@@ -385,9 +441,16 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       const selectableIds = new Set(
         Object.entries(currentObjects)
           .filter(([, object]) => object.visible)
-          .map(([id]) => id),
+          .map(([id]) => id)
       );
-      const hitId = pickObjectId(event.clientX, event.clientY, canvas, activeCamera, activeScene, selectableIds);
+      const hitId = pickObjectId(
+        event.clientX,
+        event.clientY,
+        canvas,
+        activeCamera,
+        activeScene,
+        selectableIds
+      );
       store.select(hitId as ObjectId | null);
     }
 
@@ -401,20 +464,22 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     setModelStatus("loading");
     gltfLoader.load(
       "/models/toycar.glb",
-      (gltf) => {
+      gltf => {
         if (disposed) return;
         registryRef.current!.toycar = gltf.scene;
         setModelStatus("ready");
         loop.invalidate();
       },
       undefined,
-      (error) => {
+      error => {
         if (disposed) return;
         const message =
-          error instanceof Error ? error.message : "The 3D model could not be loaded.";
+          error instanceof Error
+            ? error.message
+            : "The 3D model could not be loaded.";
         setModelStatus("error");
         setModelError(message);
-      },
+      }
     );
 
     return () => {
@@ -528,9 +593,12 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       });
       xrSessionRef.current = handle;
       setXrSessionPhase("running");
-      setAnnouncement(`Immersive ${mode === "immersive-vr" ? "VR" : "AR"} session started.`);
+      setAnnouncement(
+        `Immersive ${mode === "immersive-vr" ? "VR" : "AR"} session started.`
+      );
     } catch (error) {
-      const message = error instanceof Error ? error.message : "The request was declined.";
+      const message =
+        error instanceof Error ? error.message : "The request was declined.";
       setXrRejectReason(message);
       setXrSessionPhase("rejected");
       setAnnouncement(`Immersive session did not start: ${message}`);
@@ -554,7 +622,14 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     <div className="relative">
       <LiveRegion message={announcement} />
 
-      <div style={{ position: "relative", height: "min(70vh, 640px)", minHeight: 420, background: "#05060f" }}>
+      <div
+        style={{
+          position: "relative",
+          height: "min(70vh, 640px)",
+          minHeight: 420,
+          background: "#05060f",
+        }}
+      >
         <canvas
           ref={canvasRef}
           tabIndex={0}
@@ -579,7 +654,11 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
           <div
             role="status"
             className="absolute bottom-3 left-3 text-xs font-mono px-3 py-1.5 rounded-full"
-            style={{ background: "rgba(5,6,15,0.85)", border: "1px solid rgba(124,58,237,0.3)", color: "rgba(196,181,253,0.9)" }}
+            style={{
+              background: "rgba(5,6,15,0.85)",
+              border: "1px solid rgba(124,58,237,0.3)",
+              color: "rgba(196,181,253,0.9)",
+            }}
           >
             Loading the 3D model…
           </div>
@@ -589,7 +668,11 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
             role="alert"
             data-testid="dimensions-model-error"
             className="absolute inset-x-3 bottom-3 text-sm px-4 py-3 rounded-xl"
-            style={{ background: "rgba(127,29,29,0.35)", border: "1px solid rgba(248,113,113,0.4)", color: "#FCA5A5" }}
+            style={{
+              background: "rgba(127,29,29,0.35)",
+              border: "1px solid rgba(248,113,113,0.4)",
+              color: "#FCA5A5",
+            }}
           >
             The 3D model failed to load: {modelError}
           </div>
@@ -598,20 +681,39 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
 
       {/* ── 5D interaction: the parallel DOM control tree ───────────────── */}
       <div className="p-5 sm:p-6 pb-0">
-        <SceneOutline items={selectableSceneItems} selectedId={selection} onSelect={(id) => store.select(id as ObjectId | null)} />
-        <p className="text-xs" data-testid="dimensions-selection" style={{ color: "rgba(255,255,255,0.5)" }}>
-          {selection ? `Selected: ${objects[selection]?.label ?? selection}` : "Nothing selected — click an object above or in the 3D scene."}
+        <SceneOutline
+          items={selectableSceneItems}
+          selectedId={selection}
+          onSelect={id => store.select(id as ObjectId | null)}
+        />
+        <p
+          className="text-xs"
+          data-testid="dimensions-selection"
+          style={{ color: "rgba(255,255,255,0.5)" }}
+        >
+          {selection
+            ? `Selected: ${objects[selection]?.label ?? selection}`
+            : "Nothing selected — click an object above or in the 3D scene."}
         </p>
       </div>
 
       {/* ── Timeline controls (4D) ─────────────────────────────────────── */}
-      <div className="p-5 sm:p-6" style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}>
+      <div
+        className="p-5 sm:p-6"
+        style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}
+      >
         <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
           <div>
-            <div className="text-[10px] uppercase tracking-widest font-mono mb-1" style={{ color: "rgba(167,139,250,0.6)" }}>
+            <div
+              className="text-[10px] uppercase tracking-widest font-mono mb-1"
+              style={{ color: "rgba(167,139,250,0.6)" }}
+            >
               Process simulation
             </div>
-            <h2 className="font-bold text-white text-lg" style={{ fontFamily: "Sora, sans-serif" }}>
+            <h2
+              className="font-bold text-white text-lg"
+              style={{ fontFamily: "Sora, sans-serif" }}
+            >
               {PRODUCT_PIPELINE.label}
             </h2>
           </div>
@@ -621,9 +723,15 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
               onClick={() => (playing ? store.pause() : store.play())}
               aria-label={playing ? "Pause simulation" : "Play simulation"}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{
+                background: "linear-gradient(135deg, #7C3AED, #5B21B6)",
+              }}
             >
-              {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              {playing ? (
+                <Pause className="w-4 h-4" />
+              ) : (
+                <Play className="w-4 h-4" />
+              )}
               {playing ? "Pause" : "Play"}
             </button>
             <button
@@ -634,14 +742,21 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
               }}
               aria-label="Reset camera to its starting position"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all"
-              style={{ color: "rgba(255,255,255,0.8)", border: "1px solid rgba(124,58,237,0.25)" }}
+              style={{
+                color: "rgba(255,255,255,0.8)",
+                border: "1px solid rgba(124,58,237,0.25)",
+              }}
             >
               <RotateCcw className="w-4 h-4" /> Reset camera
             </button>
           </div>
         </div>
 
-        <label htmlFor="dimensions-scrubber" className="sr-only" style={srOnlyStyle}>
+        <label
+          htmlFor="dimensions-scrubber"
+          className="sr-only"
+          style={srOnlyStyle}
+        >
           Simulation time, in seconds
         </label>
         <input
@@ -649,30 +764,38 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
           type="range"
           min={0}
           max={PRODUCT_PIPELINE.duration}
-          step={1 / 120}
+          step={1 / 100 /* TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF */}
           value={t}
           disabled={physicsEngaged}
           aria-disabled={physicsEngaged}
-          onChange={(event) => store.setT(Number(event.target.value))}
+          onChange={event => store.setT(Number(event.target.value))}
           className="w-full mb-3 disabled:opacity-40"
           aria-valuetext={`${t.toFixed(2)} seconds, stage ${activeStage?.label ?? "—"}`}
         />
 
         {physicsEngaged && (
-          <p data-testid="dimensions-physics-timeline-note" className="text-xs mb-3" style={{ color: "rgba(252,211,77,0.85)" }}>
-            Timeline disabled: the physics sandbox below runs forward only and can&apos;t be scrubbed. Use its Reset control to
-            re-enable time scrubbing.
+          <p
+            data-testid="dimensions-physics-timeline-note"
+            className="text-xs mb-3"
+            style={{ color: "rgba(252,211,77,0.85)" }}
+          >
+            Timeline disabled: the physics sandbox below runs forward only and
+            can&apos;t be scrubbed. Use its Reset control to re-enable time
+            scrubbing.
           </p>
         )}
 
-        <div className="flex items-center justify-between text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <div
+          className="flex items-center justify-between text-xs mb-4"
+          style={{ color: "rgba(255,255,255,0.5)" }}
+        >
           <span data-testid="dimensions-time" className="font-mono">
             {t.toFixed(2)}s / {PRODUCT_PIPELINE.duration.toFixed(2)}s
           </span>
         </div>
 
         <ol className="flex flex-wrap gap-2" aria-label="Pipeline stages">
-          {stages.map((stage) => {
+          {stages.map(stage => {
             const isActive = stage.id === activeStage?.id;
             return (
               <li key={stage.id}>
@@ -683,9 +806,15 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
                   onClick={() => store.setT(stage.startsAt)}
                   className="text-xs font-medium px-3 py-1.5 rounded-full transition-all"
                   style={{
-                    background: isActive ? "rgba(124,58,237,0.25)" : "rgba(255,255,255,0.04)",
-                    border: isActive ? "1px solid rgba(124,58,237,0.5)" : "1px solid rgba(255,255,255,0.08)",
-                    color: isActive ? "rgba(196,181,253,1)" : "rgba(255,255,255,0.6)",
+                    background: isActive
+                      ? "rgba(124,58,237,0.25)"
+                      : "rgba(255,255,255,0.04)",
+                    border: isActive
+                      ? "1px solid rgba(124,58,237,0.5)"
+                      : "1px solid rgba(255,255,255,0.08)",
+                    color: isActive
+                      ? "rgba(196,181,253,1)"
+                      : "rgba(255,255,255,0.6)",
                   }}
                 >
                   {stage.label}
@@ -697,7 +826,10 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       </div>
 
       {/* ── 5D: physics and live data ────────────────────────────────────── */}
-      <div className="p-5 sm:p-6" style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}>
+      <div
+        className="p-5 sm:p-6"
+        style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}
+      >
         <PhysicsPanel
           loading={physicsLoading}
           running={physicsRunningUi}
@@ -719,7 +851,10 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       </div>
 
       {/* ── 6D: multi-user collaboration, digital twin, remote session control ── */}
-      <div className="p-5 sm:p-6 space-y-6" style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}>
+      <div
+        className="p-5 sm:p-6 space-y-6"
+        style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}
+      >
         <CollabPanel
           status={collab.status}
           actors={collab.actors}
@@ -748,7 +883,10 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       </div>
 
       {/* ── 7D: WebXR, honestly degraded ─────────────────────────────────── */}
-      <div className="p-5 sm:p-6" style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}>
+      <div
+        className="p-5 sm:p-6"
+        style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}
+      >
         <XRPanel
           capability={xrCapability}
           sessionPhase={xrSessionPhase}

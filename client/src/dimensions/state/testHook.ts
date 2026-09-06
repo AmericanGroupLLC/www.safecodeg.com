@@ -92,7 +92,9 @@ export interface InstalledTestHook {
 }
 
 /** Assigned synchronously, before the first frame, per §10.2. */
-export function installTestHook(source: DimensionsTestHookSource): InstalledTestHook {
+export function installTestHook(
+  source: DimensionsTestHookSource
+): InstalledTestHook {
   let ready = false;
 
   const hook: DimensionsTestHook = {

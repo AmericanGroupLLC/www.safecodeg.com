@@ -28,72 +28,92 @@
  * `npx vitest run tests/integration/dimensions-rls.test.ts` performs the
  * actual negative tests end-to-end and prints the real response bodies.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 
 const url = process.env.VITE_SUPABASE_URL;
 const anonKey = process.env.VITE_SUPABASE_ANON_KEY;
 const canRun = Boolean(url && anonKey);
 
-describe.skipIf(!canRun)('dimensions_room_state RLS — live negative test', () => {
-  it('DELETE with only the anon key is rejected (no GRANT, no policy)', async () => {
-    const response = await fetch(
-      `${url}/rest/v1/dimensions_room_state?room_id=eq.dimensions-negative-rls-test`,
-      {
-        method: 'DELETE',
+describe.skipIf(!canRun)(
+  "dimensions_room_state RLS — live negative test",
+  () => {
+    it("DELETE with only the anon key is rejected (no GRANT, no policy)", async () => {
+      const response = await fetch(
+        `${url}/rest/v1/dimensions_room_state?room_id=eq.dimensions-negative-rls-test`,
+        {
+          method: "DELETE",
+          headers: {
+            apikey: anonKey as string,
+            Authorization: `Bearer ${anonKey}`,
+          },
+        }
+      );
+      const body = await response.json().catch(() => null);
+
+      // Recorded here so a run of this suite leaves the actual evidence in
+      // the test output, per this task's brief ("with the actual response
+      // body recorded").
+      console.log(
+        "[T-009 negative RLS test] DELETE response:",
+        response.status,
+        JSON.stringify(body)
+      );
+
+      expect(response.ok).toBe(false);
+      expect(body?.code).toBe("42501");
+    });
+
+    it("SELECT with only the anon key succeeds — the public-sandbox read policy", async () => {
+      const response = await fetch(
+        `${url}/rest/v1/dimensions_room_state?limit=1`,
+        {
+          headers: {
+            apikey: anonKey as string,
+            Authorization: `Bearer ${anonKey}`,
+          },
+        }
+      );
+      expect(response.ok).toBe(true);
+    });
+
+    /**
+     * T-016 finding S-9, fixed by `supabase/migrations/
+     * 0002_dimensions_room_state_single_room.sql`: a CHECK constraint pins
+     * `room_id` to `'dimensions-demo'`, so an anon caller cannot create
+     * unlimited rooms and exhaust storage shared with `contact_submissions`.
+     * This is genuinely run end-to-end once `0002` is applied to the live
+     * project — see this task's report for the local-Postgres verification
+     * performed in place of that (no anon key is available in this session).
+     */
+    it("INSERT of a second, differently-named room is rejected by the single-room CHECK (T-016 S-9)", async () => {
+      const response = await fetch(`${url}/rest/v1/dimensions_room_state`, {
+        method: "POST",
         headers: {
           apikey: anonKey as string,
           Authorization: `Bearer ${anonKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
         },
-      },
-    );
-    const body = await response.json().catch(() => null);
+        body: JSON.stringify({ room_id: "dimensions-s9-negative-test" }),
+      });
+      const body = await response.json().catch(() => null);
+      console.log(
+        "[T-016 S-9 negative test] INSERT response:",
+        response.status,
+        JSON.stringify(body)
+      );
 
-    // Recorded here so a run of this suite leaves the actual evidence in
-    // the test output, per this task's brief ("with the actual response
-    // body recorded").
-    console.log('[T-009 negative RLS test] DELETE response:', response.status, JSON.stringify(body));
-
-    expect(response.ok).toBe(false);
-    expect(body?.code).toBe('42501');
-  });
-
-  it('SELECT with only the anon key succeeds — the public-sandbox read policy', async () => {
-    const response = await fetch(`${url}/rest/v1/dimensions_room_state?limit=1`, {
-      headers: { apikey: anonKey as string, Authorization: `Bearer ${anonKey}` },
+      expect(response.ok).toBe(false);
+      expect(body?.code).toBe("23514"); // check_violation
     });
-    expect(response.ok).toBe(true);
-  });
+  }
+);
 
-  /**
-   * T-016 finding S-9, fixed by `supabase/migrations/
-   * 0002_dimensions_room_state_single_room.sql`: a CHECK constraint pins
-   * `room_id` to `'dimensions-demo'`, so an anon caller cannot create
-   * unlimited rooms and exhaust storage shared with `contact_submissions`.
-   * This is genuinely run end-to-end once `0002` is applied to the live
-   * project — see this task's report for the local-Postgres verification
-   * performed in place of that (no anon key is available in this session).
-   */
-  it('INSERT of a second, differently-named room is rejected by the single-room CHECK (T-016 S-9)', async () => {
-    const response = await fetch(`${url}/rest/v1/dimensions_room_state`, {
-      method: 'POST',
-      headers: {
-        apikey: anonKey as string,
-        Authorization: `Bearer ${anonKey}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({ room_id: 'dimensions-s9-negative-test' }),
+describe.skipIf(canRun)(
+  "dimensions_room_state RLS — live negative test (NOT RUN)",
+  () => {
+    it("is skipped: no VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY in this environment", () => {
+      expect(canRun).toBe(false);
     });
-    const body = await response.json().catch(() => null);
-    console.log('[T-016 S-9 negative test] INSERT response:', response.status, JSON.stringify(body));
-
-    expect(response.ok).toBe(false);
-    expect(body?.code).toBe('23514'); // check_violation
-  });
-});
-
-describe.skipIf(canRun)('dimensions_room_state RLS — live negative test (NOT RUN)', () => {
-  it('is skipped: no VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY in this environment', () => {
-    expect(canRun).toBe(false);
-  });
-});
+  }
+);

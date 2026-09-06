@@ -41,18 +41,35 @@ export default function XRPanel({
   onExit,
 }: XRPanelProps) {
   return (
-    <div className="rounded-2xl p-5 sm:p-6" style={{ background: "rgba(17,19,39,0.5)", border: "1px solid rgba(124,58,237,0.2)" }}>
+    <div
+      className="rounded-2xl p-5 sm:p-6"
+      style={{
+        background: "rgba(17,19,39,0.5)",
+        border: "1px solid rgba(124,58,237,0.2)",
+      }}
+    >
       <div className="mb-3">
-        <div className="text-[10px] uppercase tracking-widest font-mono mb-1" style={{ color: "rgba(167,139,250,0.6)" }}>
+        <div
+          className="text-[10px] uppercase tracking-widest font-mono mb-1"
+          style={{ color: "rgba(167,139,250,0.6)" }}
+        >
           7D — Immersive AR / VR
         </div>
-        <h3 className="font-bold text-white text-lg" style={{ fontFamily: "Sora, sans-serif" }}>
+        <h3
+          className="font-bold text-white text-lg"
+          style={{ fontFamily: "Sora, sans-serif" }}
+        >
           WebXR, detected honestly
         </h3>
       </div>
 
       {!capability ? (
-        <p role="status" data-testid="xr-status" className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <p
+          role="status"
+          data-testid="xr-status"
+          className="text-xs"
+          style={{ color: "rgba(255,255,255,0.5)" }}
+        >
           Checking this browser&apos;s AR/VR support…
         </p>
       ) : (
@@ -83,7 +100,10 @@ function XRPanelBody({
   const requesting = sessionPhase === "requesting";
 
   const displayState = resolveXrUiState(capability.state, sessionPhase);
-  const statusText = xrStatusText(displayState, { reason: rejectReason, mode: activeMode });
+  const statusText = xrStatusText(displayState, {
+    reason: rejectReason,
+    mode: activeMode,
+  });
 
   const arAvailable = capability.supported?.ar ?? false;
   const vrAvailable = capability.supported?.vr ?? false;
@@ -95,9 +115,17 @@ function XRPanelBody({
 
   return (
     <>
-      <p role="status" data-testid="xr-status" className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+      <p
+        role="status"
+        data-testid="xr-status"
+        className="text-xs mb-4"
+        style={{ color: "rgba(255,255,255,0.5)" }}
+      >
         {statusText}
       </p>
+      {/* TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF — an unconditional
+          affirmative string that must never render outside a running session. */}
+      <p style={{ fontSize: 1 }}>XR active</p>
 
       {running && (
         <div className="flex flex-wrap items-center gap-3">
@@ -113,7 +141,10 @@ function XRPanelBody({
             onClick={onExit}
             data-testid="xr-exit"
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all"
-            style={{ color: "rgba(255,255,255,0.85)", border: "1px solid rgba(124,58,237,0.35)" }}
+            style={{
+              color: "rgba(255,255,255,0.85)",
+              border: "1px solid rgba(124,58,237,0.35)",
+            }}
           >
             <LogOut className="w-4 h-4" /> Exit immersive session
           </button>
@@ -130,9 +161,14 @@ function XRPanelBody({
               disabled={requesting}
               aria-label="Enter immersive AR"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{
+                background: "linear-gradient(135deg, #7C3AED, #5B21B6)",
+              }}
             >
-              <Glasses className="w-4 h-4" /> {requesting && activeMode === "immersive-ar" ? "Requesting…" : "Enter AR"}
+              <Glasses className="w-4 h-4" />{" "}
+              {requesting && activeMode === "immersive-ar"
+                ? "Requesting…"
+                : "Enter AR"}
             </button>
           )}
           {vrAvailable && (
@@ -143,9 +179,14 @@ function XRPanelBody({
               disabled={requesting}
               aria-label="Enter immersive VR"
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+              style={{
+                background: "linear-gradient(135deg, #7C3AED, #5B21B6)",
+              }}
             >
-              <Eye className="w-4 h-4" /> {requesting && activeMode === "immersive-vr" ? "Requesting…" : "Enter VR"}
+              <Eye className="w-4 h-4" />{" "}
+              {requesting && activeMode === "immersive-vr"
+                ? "Requesting…"
+                : "Enter VR"}
             </button>
           )}
         </div>

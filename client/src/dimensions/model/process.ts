@@ -14,7 +14,13 @@
  * primitive set dressing, not the sourced model T-005 requires.
  */
 
-import type { ObjectId, Quat, SceneObject, StageDescriptor, Vec3 } from "../state/types";
+import type {
+  ObjectId,
+  Quat,
+  SceneObject,
+  StageDescriptor,
+  Vec3,
+} from "../state/types";
 
 function objectId(id: string): ObjectId {
   return id as ObjectId;
@@ -48,7 +54,12 @@ function turned(degrees: number): Quat {
   return { x: 0, y: Math.sin(half), z: 0, w: Math.cos(half) };
 }
 
-function baseObject(id: string, kind: string, label: string, stage: string | null): SceneObject {
+function baseObject(
+  id: string,
+  kind: string,
+  label: string,
+  stage: string | null
+): SceneObject {
   return {
     id: objectId(id),
     kind,
@@ -101,19 +112,61 @@ export const PRODUCT_PIPELINE: ProcessModel = {
   stages: [STAGE_WAREHOUSE, STAGE_LOADING, STAGE_TRANSIT, STAGE_DELIVERED],
   objects: {
     platform: baseObject("platform", "platform", "Loading platform", null),
-    crate: baseObject("crate", "crate-closed", "Closed crate", STAGE_WAREHOUSE.id),
-    "crate-open": baseObject("crate-open", "crate-open", "Opened crate", STAGE_LOADING.id),
-    "toycar-loading": baseObject("toycar-loading", "toycar", "Toy car — at the loading dock", STAGE_LOADING.id),
-    "toycar-transit": baseObject("toycar-transit", "toycar", "Toy car — in transit", STAGE_TRANSIT.id),
-    "toycar-delivered": baseObject("toycar-delivered", "toycar", "Toy car — delivered", STAGE_DELIVERED.id),
+    crate: baseObject(
+      "crate",
+      "crate-closed",
+      "Closed crate",
+      STAGE_WAREHOUSE.id
+    ),
+    "crate-open": baseObject(
+      "crate-open",
+      "crate-open",
+      "Opened crate",
+      STAGE_LOADING.id
+    ),
+    "toycar-loading": baseObject(
+      "toycar-loading",
+      "toycar",
+      "Toy car — at the loading dock",
+      STAGE_LOADING.id
+    ),
+    "toycar-transit": baseObject(
+      "toycar-transit",
+      "toycar",
+      "Toy car — in transit",
+      STAGE_TRANSIT.id
+    ),
+    "toycar-delivered": baseObject(
+      "toycar-delivered",
+      "toycar",
+      "Toy car — delivered",
+      STAGE_DELIVERED.id
+    ),
   },
   keyframes: {
     platform: [
-      { t: 0, position: { x: 0, y: -0.5, z: 0 }, rotation: IDENTITY_ROTATION, scale: { x: 12, y: 0.2, z: 4 } },
+      {
+        t: 0,
+        position: { x: 0, y: -0.5, z: 0 },
+        rotation: IDENTITY_ROTATION,
+        scale: { x: 12, y: 0.2, z: 4 },
+      },
     ],
-    crate: [{ t: 0, position: { x: 0, y: 0, z: 0 }, rotation: IDENTITY_ROTATION, scale: { x: 0.8, y: 0.8, z: 0.8 } }],
+    crate: [
+      {
+        t: 0,
+        position: { x: 0, y: 0, z: 0 },
+        rotation: IDENTITY_ROTATION,
+        scale: { x: 0.8, y: 0.8, z: 0.8 },
+      },
+    ],
     "crate-open": [
-      { t: 4, position: { x: -2.4, y: 0, z: 0.8 }, rotation: turned(15), scale: { x: 0.8, y: 0.8, z: 0.8 } },
+      {
+        t: 4,
+        position: { x: -2.4, y: 0, z: 0.8 },
+        rotation: turned(15),
+        scale: { x: 0.8, y: 0.8, z: 0.8 },
+      },
     ],
     // toycar.glb (client/public/models/toycar.LICENSE.txt) is modelled at
     // real-world scale — a bounding box roughly 7.3cm x 2.9cm x 7.4cm — so it
@@ -121,15 +174,40 @@ export const PRODUCT_PIPELINE: ProcessModel = {
     // y offset accounts for the model's origin sitting near the vertical
     // centre of its own mesh rather than at its base.
     "toycar-loading": [
-      { t: 4, position: { x: -2.4, y: -0.2, z: -0.8 }, rotation: turned(0), scale: TOYCAR_SCALE },
+      {
+        t: 4,
+        position: { x: -2.4, y: -0.2, z: -0.8 },
+        rotation: turned(0),
+        scale: TOYCAR_SCALE,
+      },
     ],
     "toycar-transit": [
-      { t: 8, position: { x: -2.4, y: -0.2, z: -0.8 }, rotation: turned(0), scale: TOYCAR_SCALE },
-      { t: 10, position: { x: 0, y: -0.2, z: -0.8 }, rotation: turned(180), scale: TOYCAR_SCALE },
-      { t: 12, position: { x: 4.2, y: -0.2, z: -0.8 }, rotation: turned(180), scale: TOYCAR_SCALE },
+      {
+        t: 8,
+        position: { x: -2.4, y: -0.2, z: -0.8 },
+        rotation: turned(0),
+        scale: TOYCAR_SCALE,
+      },
+      {
+        t: 10,
+        position: { x: 0, y: -0.2, z: -0.8 },
+        rotation: turned(180),
+        scale: TOYCAR_SCALE,
+      },
+      {
+        t: 12,
+        position: { x: 4.2, y: -0.2, z: -0.8 },
+        rotation: turned(180),
+        scale: TOYCAR_SCALE,
+      },
     ],
     "toycar-delivered": [
-      { t: 12, position: { x: 4.2, y: -0.2, z: -0.8 }, rotation: turned(180), scale: TOYCAR_SCALE },
+      {
+        t: 12,
+        position: { x: 4.2, y: -0.2, z: -0.8 },
+        rotation: turned(180),
+        scale: TOYCAR_SCALE,
+      },
     ],
   },
 };

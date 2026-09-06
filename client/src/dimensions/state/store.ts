@@ -21,7 +21,13 @@
  */
 
 import { useRef, useSyncExternalStore } from "react";
-import type { ActorId, ActorPresence, ObjectId, SceneObject, SceneState } from "./types";
+import type {
+  ActorId,
+  ActorPresence,
+  ObjectId,
+  SceneObject,
+  SceneState,
+} from "./types";
 import type { ProcessModel } from "../model/process";
 import { composeScene, type RemoteObjectOverride } from "./compose";
 import type { PhysicsSnapshot } from "../physics/sandbox";
@@ -128,7 +134,8 @@ export function createDimensionsStore(
 ): DimensionsStore {
   const now =
     options.now ??
-    (() => (typeof performance !== "undefined" ? performance.now() : Date.now()));
+    (() =>
+      typeof performance !== "undefined" ? performance.now() : Date.now());
   let revision = 0;
   let t = 0;
   let playing = false;
@@ -153,7 +160,14 @@ export function createDimensionsStore(
   const validObjectIds = new Set(Object.keys(model.objects));
 
   let cachedSnapshot: SceneState = {
-    ...composeScene({ model, t, physics: physicsSnapshot, selection, actors, remote: remoteOverrides }),
+    ...composeScene({
+      model,
+      t,
+      physics: physicsSnapshot,
+      selection,
+      actors,
+      remote: remoteOverrides,
+    }),
     revision,
   };
   const listeners = new Set<() => void>();
@@ -161,13 +175,20 @@ export function createDimensionsStore(
   function notify() {
     // `.forEach()` rather than `for...of` — the latter needs
     // `--downlevelIteration` at this project's tsconfig target for a Set.
-    listeners.forEach((listener) => listener());
+    listeners.forEach(listener => listener());
   }
 
   function commit() {
     revision += 1;
     cachedSnapshot = {
-      ...composeScene({ model, t, physics: physicsSnapshot, selection, actors, remote: remoteOverrides }),
+      ...composeScene({
+        model,
+        t,
+        physics: physicsSnapshot,
+        selection,
+        actors,
+        remote: remoteOverrides,
+      }),
       revision,
     };
     notify();
@@ -289,7 +310,12 @@ export function createDimensionsStore(
         // caller forgets.
         if (!validObjectIds.has(id)) continue;
         next[id] = {
-          patch: { position: obj.position, rotation: obj.rotation, scale: obj.scale, visible: obj.visible },
+          patch: {
+            position: obj.position,
+            rotation: obj.rotation,
+            scale: obj.scale,
+            visible: obj.visible,
+          },
           rev: obj.rev,
         };
         changed = true;
@@ -321,7 +347,10 @@ export function createDimensionsStore(
  * reference between calls on the *same* underlying snapshot — the store's
  * own `getSnapshot()` is already stable across non-committing reads.
  */
-export function useStoreValue<T>(store: DimensionsStore, selector: (state: SceneState) => T): T {
+export function useStoreValue<T>(
+  store: DimensionsStore,
+  selector: (state: SceneState) => T
+): T {
   const cache = useRef<{ snapshot: SceneState; value: T } | null>(null);
 
   const getSnapshot = () => {

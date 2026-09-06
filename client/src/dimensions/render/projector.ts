@@ -22,17 +22,29 @@ export type GeometryRegistry = Readonly<Record<string, THREE.Object3D | null>>;
 export function createPrimitiveRegistry(): Record<string, THREE.Object3D> {
   const platform = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshStandardMaterial({ color: 0x1c1f33, roughness: 0.85, metalness: 0.05 }),
+    new THREE.MeshStandardMaterial({
+      color: 0x1c1f33,
+      roughness: 0.85,
+      metalness: 0.05,
+    })
   );
 
   const crateClosed = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshStandardMaterial({ color: 0xb6803f, roughness: 0.7, metalness: 0.05 }),
+    new THREE.MeshStandardMaterial({
+      color: 0xb6803f,
+      roughness: 0.7,
+      metalness: 0.05,
+    })
   );
 
   const crateOpen = new THREE.Mesh(
     new THREE.BoxGeometry(1, 0.6, 1),
-    new THREE.MeshStandardMaterial({ color: 0xd4a25a, roughness: 0.7, metalness: 0.05 }),
+    new THREE.MeshStandardMaterial({
+      color: 0xd4a25a,
+      roughness: 0.7,
+      metalness: 0.05,
+    })
   );
 
   return { platform, "crate-closed": crateClosed, "crate-open": crateOpen };
@@ -45,8 +57,17 @@ export interface Projector {
 }
 
 function applyTransform(object3D: THREE.Object3D, source: SceneObject) {
-  object3D.position.set(source.position.x, source.position.y, source.position.z);
-  object3D.quaternion.set(source.rotation.x, source.rotation.y, source.rotation.z, source.rotation.w);
+  object3D.position.set(
+    source.position.x,
+    source.position.y,
+    source.position.z
+  );
+  object3D.quaternion.set(
+    source.rotation.x,
+    source.rotation.y,
+    source.rotation.z,
+    source.rotation.w
+  );
   object3D.scale.set(source.scale.x, source.scale.y, source.scale.z);
   object3D.visible = source.visible;
 }
@@ -84,7 +105,7 @@ export function createProjector(scene: THREE.Scene): Projector {
   }
 
   function dispose() {
-    instances.forEach((instance) => {
+    instances.forEach(instance => {
       scene.remove(instance);
     });
     instances.clear();

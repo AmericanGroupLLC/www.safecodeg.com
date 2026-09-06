@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 // One fixed port per suite, set by package.json's test:* scripts.
 //
@@ -12,31 +12,42 @@ import { defineConfig, devices } from '@playwright/test';
 const PORT = Number(process.env.PW_PORT ?? 3100);
 
 export default defineConfig({
-  testDir: './tests',
-  testMatch: ['**/e2e/**/*.spec.ts', '**/smoke/**/*.spec.ts', '**/regression/**/*.spec.ts', '**/acceptance/**/*.spec.ts'],
-  fullyParallel: false,
+  testDir: "./tests",
+  testMatch: [
+    "**/e2e/**/*.spec.ts",
+    "**/smoke/**/*.spec.ts",
+    "**/regression/**/*.spec.ts",
+    "**/acceptance/**/*.spec.ts",
+  ],
+  fullyParallel: true,
   retries: 1,
-  workers: 1,
+  // 4 workers, not 1: the suite took ~330-360 s serially, past the Stop-hook
+  // gate's 300 s per-check cap, so a passing suite was reported NOT RUN. One
+  // shared webServer, isolated browser contexts per test.
+  workers: 4,
   reporter: [
-    ['list'],
-    ['json', { outputFile: '../test-results/playwright-results.json' }],
-    ['html', { outputFolder: '../test-results/playwright-report', open: 'never' }],
+    ["list"],
+    ["json", { outputFile: "../test-results/playwright-results.json" }],
+    [
+      "html",
+      { outputFolder: "../test-results/playwright-report", open: "never" },
+    ],
   ],
   use: {
     baseURL: `http://localhost:${PORT}`,
     headless: true,
-    screenshot: 'only-on-failure',
-    video: 'off',
+    screenshot: "only-on-failure",
+    video: "off",
     actionTimeout: 15000,
     navigationTimeout: 30000,
     extraHTTPHeaders: {
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     },
   },
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
   ],
   // Builds the production bundle and serves it with the real Express server
@@ -45,7 +56,7 @@ export default defineConfig({
   // noise that would pollute the pageerror/console assertions the specs make.
   // The server binds PORT (default 3000) via server/_core/index.ts.
   webServer: {
-    command: 'npm run build && npm run start',
+    command: "npm run build && npm run start",
     url: `http://localhost:${PORT}`,
     // Never reuse: each suite owns its own server on its own port. Reuse plus
     // a shared port is what let one suite's teardown kill the server another

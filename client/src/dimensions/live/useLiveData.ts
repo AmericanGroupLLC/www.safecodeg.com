@@ -40,19 +40,27 @@ export function useLiveData(): UseLiveDataResult {
     const controller = new AbortController();
     abortRef.current = controller;
 
-    setState((current) => ({ ...current, status: "loading" }));
+    setState(current => ({ ...current, status: "loading" }));
 
     fetchLiveWeather(controller.signal).then(
-      (value) => {
+      value => {
         if (controller.signal.aborted) return;
         setState({ status: "ok", value, error: null, fetchedAt: Date.now() });
       },
       (error: unknown) => {
         if (controller.signal.aborted) return;
-        const message = error instanceof Error ? error.message : "This feed is currently unavailable.";
+        const message =
+          error instanceof Error
+            ? error.message
+            : "This feed is currently unavailable.";
         // `value: null` — an error never leaves the previous number on screen.
-        setState({ status: "error", value: null, error: message, fetchedAt: null });
-      },
+        setState({
+          status: "error",
+          value: null,
+          error: message,
+          fetchedAt: null,
+        });
+      }
     );
   }, []);
 

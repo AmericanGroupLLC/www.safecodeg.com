@@ -33,3 +33,14 @@ pnpm-lock.yaml
 # OS files
 .DS_Store
 Thumbs.db
+
+# Tracked build artifact (369 kB single-file bundle emitted by the Manus plugin,
+# not hand-authored source) — formatting it is meaningless and enormous.
+/index.html
+
+# Test runner output
+test-results/
+playwright-report/
+
+# Vendored runtime injected into the build, not our source
+client/public/__manus__/

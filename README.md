@@ -28,12 +28,12 @@ Fill in `.env` only if you need the features that use those values locally
 
 ## Environment variables
 
-| Variable | Used by | If empty |
-|---|---|---|
-| `SUPABASE_URL` | `server/contactRouter.ts` — saves contact-form submissions | The contact form's server route fails loudly rather than sending a request with `undefined` in the header |
-| `SUPABASE_SERVICE_KEY` | Same. **Service-role key — server-side only, never `VITE_`-prefixed.** | Same |
-| `VITE_SUPABASE_URL` | The 6D "shared stage" collaboration feature (`DIMENSIONS.md`) | The client's `createTransport()` returns a null transport; the 6D stage reports "unconfigured" instead of breaking |
-| `VITE_SUPABASE_ANON_KEY` | Same. Public-by-design once bundled — safety rests on the RLS policies in `supabase/migrations/`. | Same |
+| Variable                 | Used by                                                                                           | If empty                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `SUPABASE_URL`           | `server/contactRouter.ts` — saves contact-form submissions                                        | The contact form's server route fails loudly rather than sending a request with `undefined` in the header          |
+| `SUPABASE_SERVICE_KEY`   | Same. **Service-role key — server-side only, never `VITE_`-prefixed.**                            | Same                                                                                                               |
+| `VITE_SUPABASE_URL`      | The 6D "shared stage" collaboration feature (`DIMENSIONS.md`)                                     | The client's `createTransport()` returns a null transport; the 6D stage reports "unconfigured" instead of breaking |
+| `VITE_SUPABASE_ANON_KEY` | Same. Public-by-design once bundled — safety rests on the RLS policies in `supabase/migrations/`. | Same                                                                                                               |
 
 `.github/workflows/deploy.yml` also injects a handful of other `VITE_*`
 values at build time (`VITE_APP_ID`, `VITE_APP_TITLE`,
@@ -57,22 +57,22 @@ than one test category at a time.
 
 Every category has its own `npm run test:*` script. Each Playwright- or
 build-backed category runs on its **own port** by default, overridable via an
-environment variable — this avoids *port* collisions between suites, but
+environment variable — this avoids _port_ collisions between suites, but
 read the warning below before assuming that means they are safe to run at
 the same time:
 
-| Script | Framework | Port variable | Default port |
-|---|---|---|---|
-| `test:unit` | Vitest (`tests/unit`) | — | — |
-| `test:integration` | Vitest (`tests/integration`) | — | — |
-| `test:functional` | Vitest (`tests/functional`, `server`) | — | — |
-| `test:e2e` | Playwright (`tests/e2e`) | `PW_PORT` | 3101 |
-| `test:acceptance` | Playwright (`tests/acceptance`) | `PW_PORT` | 3102 |
-| `test:smoke` | Playwright (`tests/smoke`) | `PW_PORT` | 3103 |
-| `test:regression` | Playwright (`tests/regression`) | `PW_PORT` | 3104 |
-| `test:security` | Node script (`tests/security/security-audit.mjs`) against a locally served production build | `AUDIT_PORT` | 3105 |
-| `test:performance` | Node script (`tests/performance/lighthouse.mjs`) against a locally served production build | `PERF_PORT` | 3106 |
-| `test:ui` | Placeholder — prints a NOT-RUN notice and exits 0; category 10 (UI/UX) has no automated suite in this repo, per `TESTING.md` | — | — |
+| Script             | Framework                                                                                                                    | Port variable | Default port |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------ |
+| `test:unit`        | Vitest (`tests/unit`)                                                                                                        | —             | —            |
+| `test:integration` | Vitest (`tests/integration`)                                                                                                 | —             | —            |
+| `test:functional`  | Vitest (`tests/functional`, `server`)                                                                                        | —             | —            |
+| `test:e2e`         | Playwright (`tests/e2e`)                                                                                                     | `PW_PORT`     | 3101         |
+| `test:acceptance`  | Playwright (`tests/acceptance`)                                                                                              | `PW_PORT`     | 3102         |
+| `test:smoke`       | Playwright (`tests/smoke`)                                                                                                   | `PW_PORT`     | 3103         |
+| `test:regression`  | Playwright (`tests/regression`)                                                                                              | `PW_PORT`     | 3104         |
+| `test:security`    | Node script (`tests/security/security-audit.mjs`) against a locally served production build                                  | `AUDIT_PORT`  | 3105         |
+| `test:performance` | Node script (`tests/performance/lighthouse.mjs`) against a locally served production build                                   | `PERF_PORT`   | 3106         |
+| `test:ui`          | Placeholder — prints a NOT-RUN notice and exits 0; category 10 (UI/UX) has no automated suite in this repo, per `TESTING.md` | —             | —            |
 
 Run the whole vitest-backed set (safe, no build involved) with:
 
@@ -103,7 +103,7 @@ was clean.
 **Rule:** run one build-triggering category at a time. If you need
 isolation from another person's or agent's run, override the port
 (`PW_PORT=3301 pnpm run test:e2e`, `AUDIT_PORT=3305 pnpm run test:security`,
-`PERF_PORT=3306 pnpm run test:performance`), but that only prevents *port*
+`PERF_PORT=3306 pnpm run test:performance`), but that only prevents _port_
 collisions — it does **not** prevent two builds racing into the same
 `dist/` directory. The only real fix for that is not building concurrently:
 finish one build-triggering script before starting another.

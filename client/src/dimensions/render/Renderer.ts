@@ -21,7 +21,10 @@ export interface RendererCallbacks {
   onContextRestored?: () => void;
 }
 
-export function createRendererBundle(canvas: HTMLCanvasElement, callbacks: RendererCallbacks = {}): RendererBundle {
+export function createRendererBundle(
+  canvas: HTMLCanvasElement,
+  callbacks: RendererCallbacks = {}
+): RendererBundle {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;

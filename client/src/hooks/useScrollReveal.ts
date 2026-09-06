@@ -8,8 +8,8 @@ export function useScrollReveal() {
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
           }
@@ -20,7 +20,7 @@ export function useScrollReveal() {
 
     // Observe all .reveal elements within the container
     const revealEls = el.querySelectorAll(".reveal");
-    revealEls.forEach((el) => observer.observe(el));
+    revealEls.forEach(el => observer.observe(el));
 
     // Also observe the element itself if it has reveal class
     if (el.classList.contains("reveal")) {
@@ -42,8 +42,8 @@ export function useCountUp(target: number, duration = 2000) {
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting && !hasRun.current) {
             hasRun.current = true;
             const start = Date.now();

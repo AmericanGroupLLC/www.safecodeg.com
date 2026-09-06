@@ -24,12 +24,15 @@ export function pickObjectId(
   canvas: HTMLCanvasElement,
   camera: THREE.Camera,
   scene: THREE.Scene,
-  selectableIds: ReadonlySet<string>,
+  selectableIds: ReadonlySet<string>
 ): string | null {
   const rect = canvas.getBoundingClientRect();
   if (rect.width === 0 || rect.height === 0) return null;
 
-  ndc.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+  ndc.set(
+    ((clientX - rect.left) / rect.width) * 2 - 1,
+    -((clientY - rect.top) / rect.height) * 2 + 1
+  );
   raycaster.setFromCamera(ndc, camera);
   const hits = raycaster.intersectObjects(scene.children, true);
 

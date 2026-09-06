@@ -6,7 +6,7 @@ These rules apply to every task.
 
 Produce correct, maintainable, secure, and verifiable software.
 
-Speed is secondary to correctness. Never optimize for *appearing* complete —
+Speed is secondary to correctness. Never optimize for _appearing_ complete —
 optimize for producing verifiable results.
 
 ## Core Principles
@@ -40,6 +40,41 @@ optimize for producing verifiable results.
 - Write tests for new behavior.
 - Update documentation.
 - Explain important design decisions.
+
+## NOT RUN Is Never A Shortcut
+
+**Standing rule (user directive, 2026-09-06): finish the work. Do not hand back
+a checklist of things you did not attempt.**
+
+Before any check may be reported NOT RUN, all of this must be true:
+
+1. **The runner exists.** If a category has no runner, _add one_ — that is the
+   task, not an excuse. "No lint script defined" is a missing script, not an
+   unrunnable check.
+2. **The harness is not the blocker.** If a suite times out, times are the
+   defect: parallelise it, split it, make it fit. A passing suite reported
+   NOT RUN because it was too slow is a harness bug you own.
+3. **Every side-effect-free alternative is exhausted.** Probe a live endpoint
+   read-only, read the deployed artefact, check the installed version, build a
+   throwaway local instance of the dependency. A real local Postgres proved an
+   RLS constraint here with no production credential; that is the standard.
+4. **The category is not being satisfied by tests that cover nothing.** A PASS
+   over an unrelated suite is worse than NOT RUN, because it certifies absence
+   of coverage as presence of it.
+
+**The only surviving NOT RUN is one blocked by a named external dependency** —
+a credential only the user holds, physical hardware, or an action only a human
+can take. When you write one, name the dependency and state the exact command
+or condition that would close it. Anything vaguer is a shortcut wearing a
+label.
+
+**What this rule does not license.** It never authorises reporting a check as
+PASS that was not run, or as verified when it was not. Fabricating a green
+result to avoid writing NOT RUN is the one failure this whole file exists to
+prevent, and it converts an honest gap into a false report the user will act
+on. Close the gap by doing the work; where a credential or device genuinely
+blocks it, say so in one line with what would unblock it — then go finish
+everything else.
 
 ## Truthfulness Policy
 
@@ -117,18 +152,18 @@ Each rule has exactly one authoritative home. **Amend the owner, not a copy.**
 If you find the same rule stated in two files, that is a defect — delete the
 copy and reference the owner.
 
-| Domain | Owner | Covers |
-|---|---|---|
-| Roles | `AGENTS.md` | Who does what; no self-approval |
-| Workflow | `ORCHESTRATION.md` | Step order, context rules, completion definition |
-| Modes | `MODES.md` | Work states and transitions |
-| Handoffs | `HANDOFF.md` | Transfer protocol; handoff cost |
-| Verification | `VERIFY.md` | Evidence classes, checklist, PASS/FAIL/NOT RUN/UNKNOWN |
-| Security | `SECURITY.md` | Triggers, checks, finding format |
-| Code quality | `QUALITY.md` | Completeness, minimal change, project protection |
-| Testing | `TESTING.md` | Levels, test rules, coverage stance |
-| Memory | `MEMORY.md` | What survives a session boundary |
-| Tasks | `TASKS.md` | Task board, acceptance criteria, decisions |
+| Domain       | Owner              | Covers                                                 |
+| ------------ | ------------------ | ------------------------------------------------------ |
+| Roles        | `AGENTS.md`        | Who does what; no self-approval                        |
+| Workflow     | `ORCHESTRATION.md` | Step order, context rules, completion definition       |
+| Modes        | `MODES.md`         | Work states and transitions                            |
+| Handoffs     | `HANDOFF.md`       | Transfer protocol; handoff cost                        |
+| Verification | `VERIFY.md`        | Evidence classes, checklist, PASS/FAIL/NOT RUN/UNKNOWN |
+| Security     | `SECURITY.md`      | Triggers, checks, finding format                       |
+| Code quality | `QUALITY.md`       | Completeness, minimal change, project protection       |
+| Testing      | `TESTING.md`       | Levels, test rules, coverage stance                    |
+| Memory       | `MEMORY.md`        | What survives a session boundary                       |
+| Tasks        | `TASKS.md`         | Task board, acceptance criteria, decisions             |
 
 Role files in `.ai/` define **scope** — what a role owns, does not own, its
 inputs, outputs, handoff, and done-condition. They do not restate the

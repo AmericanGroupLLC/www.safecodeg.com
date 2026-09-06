@@ -24,9 +24,9 @@
  * enough to observe it without simulating time — and it sidesteps the real
  * race between React's effect scheduling and a manually-advanced fake clock.
  */
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import AIChatWidget from '@/components/AIChatWidget';
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import AIChatWidget from "@/components/AIChatWidget";
 
 // jsdom does not implement scrollIntoView; AIChatWidget calls it on every
 // new message to keep the transcript pinned to the bottom. Scoped to this
@@ -39,11 +39,11 @@ afterEach(() => {
 
 function openWidget() {
   const rendered = render(<AIChatWidget />);
-  fireEvent.click(screen.getByRole('button', { name: /chat with sophia/i }));
+  fireEvent.click(screen.getByRole("button", { name: /chat with sophia/i }));
   return rendered;
 }
 
-describe('AIChatWidget — default presentation discloses a scripted assistant, unasked', () => {
+describe("AIChatWidget — default presentation discloses a scripted assistant, unasked", () => {
   it('never renders "Online" as a presence claim anywhere in the widget', () => {
     openWidget();
     expect(screen.queryByText(/\bonline\b/i)).toBeNull();
@@ -68,8 +68,12 @@ describe('AIChatWidget — default presentation discloses a scripted assistant, 
     // AIChatWidget's `fmt()` splits each message into one <span> per line, so
     // the matched node is only the last line — read the whole bubble
     // (its parent) to see the full greeting text.
-    const lastLine = await screen.findByText(/what can i help you with today/i, {}, { timeout: 3000 });
-    const bubbleText = lastLine.parentElement?.textContent ?? '';
+    const lastLine = await screen.findByText(
+      /what can i help you with today/i,
+      {},
+      { timeout: 3000 }
+    );
+    const bubbleText = lastLine.parentElement?.textContent ?? "";
     expect(bubbleText).toMatch(/automated assistant/i);
     expect(bubbleText).toMatch(/not a live person/i);
     expect(bubbleText).not.toMatch(/from the agl team/i);
@@ -77,16 +81,26 @@ describe('AIChatWidget — default presentation discloses a scripted assistant, 
 
   it('asking "who are you" gets an honest scripted-assistant answer, not a human job title', async () => {
     openWidget();
-    await screen.findByText(/what can i help you with today/i, {}, { timeout: 3000 }); // wait for the greeting first
-    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), { target: { value: 'who are you' } });
-    fireEvent.click(screen.getByRole('button', { name: /^send$/i }));
-    const reply = await screen.findByText(/an automated assistant here on the agl site, not a person/i, {}, { timeout: 3000 });
+    await screen.findByText(
+      /what can i help you with today/i,
+      {},
+      { timeout: 3000 }
+    ); // wait for the greeting first
+    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), {
+      target: { value: "who are you" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^send$/i }));
+    const reply = await screen.findByText(
+      /an automated assistant here on the agl site, not a person/i,
+      {},
+      { timeout: 3000 }
+    );
     expect(reply.textContent).not.toMatch(/customer success/i);
   });
 
-  it('renders no <img> avatar — no image asset exists to 404 (Sophia is drawn as an icon, not a photo)', () => {
+  it("renders no <img> avatar — no image asset exists to 404 (Sophia is drawn as an icon, not a photo)", () => {
     const { container } = openWidget();
-    expect(container.querySelectorAll('img').length).toBe(0);
+    expect(container.querySelectorAll("img").length).toBe(0);
     expect(container.innerHTML).not.toMatch(/manus-storage/);
   });
 });

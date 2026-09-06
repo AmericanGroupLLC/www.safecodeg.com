@@ -4,13 +4,13 @@ What survives a session boundary. Sessions are disposable; this is not.
 
 ## What belongs here
 
-| Kind | Preserve | Lossy? |
-|---|---|---|
-| **Requirements** | Verbatim | Never — this is the contract |
-| **Architecture decisions** | Decision + alternatives rejected + reason | Never |
-| **Task status** | Open, in progress, blocked, done, with owner | Never |
-| **Resume summaries** | Narrative of completed work | Yes — this is the only lossy layer |
-| **Known risks** | What could break and what would reveal it | Never |
+| Kind                       | Preserve                                     | Lossy?                             |
+| -------------------------- | -------------------------------------------- | ---------------------------------- |
+| **Requirements**           | Verbatim                                     | Never — this is the contract       |
+| **Architecture decisions** | Decision + alternatives rejected + reason    | Never                              |
+| **Task status**            | Open, in progress, blocked, done, with owner | Never                              |
+| **Resume summaries**       | Narrative of completed work                  | Yes — this is the only lossy layer |
+| **Known risks**            | What could break and what would reveal it    | Never                              |
 
 Requirements and decisions are copied forward unchanged. Only the narrative of
 how work happened gets compressed.

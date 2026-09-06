@@ -29,7 +29,9 @@ const [, , portArg, ...command] = process.argv;
 const port = Number(portArg);
 
 if (!Number.isInteger(port) || command.length === 0) {
-  console.error("Usage: node scripts/with-server.mjs <port> <command> [...args]");
+  console.error(
+    "Usage: node scripts/with-server.mjs <port> <command> [...args]"
+  );
   process.exit(2);
 }
 
@@ -64,7 +66,10 @@ if (mode !== "app" && mode !== "static") {
 
 const server =
   mode === "static"
-    ? spawn("node", ["scripts/serve-static.mjs", String(port)], { stdio: "inherit", env: process.env })
+    ? spawn("node", ["scripts/serve-static.mjs", String(port)], {
+        stdio: "inherit",
+        env: process.env,
+      })
     : spawn("node", ["dist/index.js"], {
         stdio: "inherit",
         env: { ...process.env, NODE_ENV: "production", PORT: String(port) },

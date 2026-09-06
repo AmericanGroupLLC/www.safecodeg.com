@@ -7,19 +7,19 @@
  * timestamps rather than waiting on real wall-clock time, so these run in
  * milliseconds and are not flaky against real timers.
  */
-import { describe, it, expect } from 'vitest';
-import { createDimensionsStore } from '@/dimensions/state/store';
-import { PRODUCT_PIPELINE } from '@/dimensions/model/process';
+import { describe, it, expect } from "vitest";
+import { createDimensionsStore } from "@/dimensions/state/store";
+import { PRODUCT_PIPELINE } from "@/dimensions/model/process";
 
-describe('createDimensionsStore — quantisation (§5.5 rule 1)', () => {
-  it('setT snaps to the nearest 1/120 s lattice point', () => {
+describe("createDimensionsStore — quantisation (§5.5 rule 1)", () => {
+  it("setT snaps to the nearest 1/120 s lattice point", () => {
     const store = createDimensionsStore(PRODUCT_PIPELINE);
     store.setT(0.501); // not on the 1/120 s lattice
     // 0.501 * 120 = 60.12 -> rounds to 60 -> 60/120 = 0.5 exactly on the lattice
     expect(store.getSnapshot().t).toBeCloseTo(0.5, 10);
   });
 
-  it('clamps t into [0, duration]', () => {
+  it("clamps t into [0, duration]", () => {
     const store = createDimensionsStore(PRODUCT_PIPELINE);
     store.setT(-10);
     expect(store.getSnapshot().t).toBe(0);
@@ -27,7 +27,7 @@ describe('createDimensionsStore — quantisation (§5.5 rule 1)', () => {
     expect(store.getSnapshot().t).toBe(PRODUCT_PIPELINE.duration);
   });
 
-  it('t = 0.5 reached directly and t = 0.5 reached via many small setT calls are byte-identical', () => {
+  it("t = 0.5 reached directly and t = 0.5 reached via many small setT calls are byte-identical", () => {
     const direct = createDimensionsStore(PRODUCT_PIPELINE);
     direct.setT(0.5);
 
@@ -40,8 +40,8 @@ describe('createDimensionsStore — quantisation (§5.5 rule 1)', () => {
   });
 });
 
-describe('createDimensionsStore — playback (§5.5 rule 2: t = tAtPlay + elapsed, never t += dt)', () => {
-  it('tick computes t from elapsed wall-clock time, not by accumulating deltas', () => {
+describe("createDimensionsStore — playback (§5.5 rule 2: t = tAtPlay + elapsed, never t += dt)", () => {
+  it("tick computes t from elapsed wall-clock time, not by accumulating deltas", () => {
     // Fully controlled clock: play() and tick() now read the same injected
     // source, so the assertion is exact rather than a race against real time.
     let clock = 1_000;
@@ -63,7 +63,7 @@ describe('createDimensionsStore — playback (§5.5 rule 2: t = tAtPlay + elapse
     expect(tAfterSecondTick - tAfterFirstTick).toBeCloseTo(0.5, 5);
   });
 
-  it('pause freezes t exactly, and further ticks while paused are no-ops', () => {
+  it("pause freezes t exactly, and further ticks while paused are no-ops", () => {
     const store = createDimensionsStore(PRODUCT_PIPELINE);
     store.setT(1);
     store.play();
@@ -77,7 +77,7 @@ describe('createDimensionsStore — playback (§5.5 rule 2: t = tAtPlay + elapse
     expect(store.isPlaying()).toBe(false);
   });
 
-  it('playback stops automatically at the end of the duration rather than overshooting', () => {
+  it("playback stops automatically at the end of the duration rather than overshooting", () => {
     const store = createDimensionsStore(PRODUCT_PIPELINE);
     // `play()` reads the real clock internally, so `tick()`'s timestamps
     // must be offsets from that same clock, not arbitrary literals — this
@@ -91,8 +91,8 @@ describe('createDimensionsStore — playback (§5.5 rule 2: t = tAtPlay + elapse
   });
 });
 
-describe('createDimensionsStore — subscribe/notify', () => {
-  it('notifies subscribers on a committed setT change', () => {
+describe("createDimensionsStore — subscribe/notify", () => {
+  it("notifies subscribers on a committed setT change", () => {
     const store = createDimensionsStore(PRODUCT_PIPELINE);
     let calls = 0;
     const unsubscribe = store.subscribe(() => {
@@ -103,7 +103,7 @@ describe('createDimensionsStore — subscribe/notify', () => {
     unsubscribe();
   });
 
-  it('notifies subscribers when play()/pause() toggle, even though t has not changed yet', () => {
+  it("notifies subscribers when play()/pause() toggle, even though t has not changed yet", () => {
     const store = createDimensionsStore(PRODUCT_PIPELINE);
     let calls = 0;
     store.subscribe(() => {
@@ -116,7 +116,7 @@ describe('createDimensionsStore — subscribe/notify', () => {
     expect(calls).toBeGreaterThan(afterPlay);
   });
 
-  it('getSnapshot returns the same reference when nothing has changed (required by useSyncExternalStore)', () => {
+  it("getSnapshot returns the same reference when nothing has changed (required by useSyncExternalStore)", () => {
     const store = createDimensionsStore(PRODUCT_PIPELINE);
     const first = store.getSnapshot();
     const second = store.getSnapshot();

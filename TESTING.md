@@ -12,18 +12,18 @@ rounded up to a pass. Silence about a category is a defect in the report.
 
 ## The test matrix
 
-| # | Category | Proves | Owner | Required when |
-|---|---|---|---|---|
-| 1 | **Unit** | One unit behaves in isolation, including its failure paths | Testing | Always, for any new or changed behavior |
-| 2 | **Integration** | Units work across a real boundary — DB, HTTP, filesystem, queue | Testing | The change crosses a boundary |
-| 3 | **Functional** | A feature satisfies its specified behavior end of input to end of output, dependencies stubbed | Testing | The change adds or alters a user-visible feature |
-| 4 | **End-to-end** | A full user path works against the assembled system | Testing | The project has an E2E harness, or the change spans components |
-| 5 | **Acceptance** | Each acceptance criterion in `TASKS.md` is met, in the criterion's own terms | Testing | Always — the criteria are the contract |
-| 6 | **Security** | Auth, authorization, input validation, secrets, and dependencies hold under abuse | Security | Per `SECURITY.md` triggers |
-| 7 | **Performance** | No regression against a measured baseline | Performance | The change touches a hot path, or a budget is declared |
-| 8 | **Smoke** | The build starts and its critical paths respond at all | Testing | Always, once the project is runnable |
-| 9 | **Regression** | A previously fixed defect stays fixed | Testing | Any defect is fixed; the suite is re-run on every change |
-| 10 | **UI / UX** | Rendered output matches the requirement; keyboard, contrast, and breakpoints hold | Frontend, verified by Reviewer | The change touches UI |
+| #   | Category        | Proves                                                                                         | Owner                          | Required when                                                  |
+| --- | --------------- | ---------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------- |
+| 1   | **Unit**        | One unit behaves in isolation, including its failure paths                                     | Testing                        | Always, for any new or changed behavior                        |
+| 2   | **Integration** | Units work across a real boundary — DB, HTTP, filesystem, queue                                | Testing                        | The change crosses a boundary                                  |
+| 3   | **Functional**  | A feature satisfies its specified behavior end of input to end of output, dependencies stubbed | Testing                        | The change adds or alters a user-visible feature               |
+| 4   | **End-to-end**  | A full user path works against the assembled system                                            | Testing                        | The project has an E2E harness, or the change spans components |
+| 5   | **Acceptance**  | Each acceptance criterion in `TASKS.md` is met, in the criterion's own terms                   | Testing                        | Always — the criteria are the contract                         |
+| 6   | **Security**    | Auth, authorization, input validation, secrets, and dependencies hold under abuse              | Security                       | Per `SECURITY.md` triggers                                     |
+| 7   | **Performance** | No regression against a measured baseline                                                      | Performance                    | The change touches a hot path, or a budget is declared         |
+| 8   | **Smoke**       | The build starts and its critical paths respond at all                                         | Testing                        | Always, once the project is runnable                           |
+| 9   | **Regression**  | A previously fixed defect stays fixed                                                          | Testing                        | Any defect is fixed; the suite is re-run on every change       |
+| 10  | **UI / UX**     | Rendered output matches the requirement; keyboard, contrast, and breakpoints hold              | Frontend, verified by Reviewer | The change touches UI                                          |
 
 **Categories 1, 5, 8, and 9 have no escape hatch** on a change that ships
 behavior. The others have stated triggers; when a trigger is absent, say which
@@ -104,12 +104,12 @@ absence of evidence. Report it and say what it would take to run.
 Each category's result is one of PASS / FAIL / NOT RUN / UNKNOWN, and carries
 the evidence that produced it:
 
-| Category | What counts as evidence |
-|---|---|
-| Unit, Integration, Functional, E2E, Acceptance, Smoke, Regression | Runner output, read — not the exit code alone |
-| Security | The finding list from a Security-role pass, or a clean run with the checks named |
-| Performance | Two measurements — baseline and after — with the delta stated |
-| UI / UX | A rendered screenshot inspected against the requirement, plus keyboard order and contrast results |
+| Category                                                          | What counts as evidence                                                                           |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Unit, Integration, Functional, E2E, Acceptance, Smoke, Regression | Runner output, read — not the exit code alone                                                     |
+| Security                                                          | The finding list from a Security-role pass, or a clean run with the checks named                  |
+| Performance                                                       | Two measurements — baseline and after — with the delta stated                                     |
+| UI / UX                                                           | A rendered screenshot inspected against the requirement, plus keyboard order and contrast results |
 
 A UI category marked PASS without a rendered result inspected is a fabricated
 pass. `CLAUDE.md` forbids it.

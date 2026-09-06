@@ -63,7 +63,9 @@ async function startServer() {
   if (requestedPort) {
     port = parseInt(requestedPort, 10);
     if (!Number.isInteger(port) || port < 1 || port > 65535) {
-      throw new Error(`PORT is set to "${requestedPort}", which is not a valid port number.`);
+      throw new Error(
+        `PORT is set to "${requestedPort}", which is not a valid port number.`
+      );
     }
     if (!(await isPortAvailable(port))) {
       throw new Error(

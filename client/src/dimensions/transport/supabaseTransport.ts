@@ -41,7 +41,11 @@ import type {
   SceneSnapshot,
   TransportStatus,
 } from "./types";
-import { parseActorPresence, parseSceneOp, parseSceneSnapshot } from "./validation";
+import {
+  parseActorPresence,
+  parseSceneOp,
+  parseSceneSnapshot,
+} from "./validation";
 import { createRateLimiter } from "./rateLimiter";
 
 /** Must match `supabase/migrations/0001_dimensions_room_state.sql`. */

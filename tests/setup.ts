@@ -1,36 +1,36 @@
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 // Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
+vi.mock("framer-motion", () => ({
   motion: {
     div: ({ children, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('div', props, children);
+      const React = require("react");
+      return React.createElement("div", props, children);
     },
     h1: ({ children, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('h1', props, children);
+      const React = require("react");
+      return React.createElement("h1", props, children);
     },
     h2: ({ children, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('h2', props, children);
+      const React = require("react");
+      return React.createElement("h2", props, children);
     },
     p: ({ children, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('p', props, children);
+      const React = require("react");
+      return React.createElement("p", props, children);
     },
     section: ({ children, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('section', props, children);
+      const React = require("react");
+      return React.createElement("section", props, children);
     },
     span: ({ children, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('span', props, children);
+      const React = require("react");
+      return React.createElement("span", props, children);
     },
     a: ({ children, ...props }: any) => {
-      const React = require('react');
-      return React.createElement('a', props, children);
+      const React = require("react");
+      return React.createElement("a", props, children);
     },
   },
   AnimatePresence: ({ children }: any) => children,
@@ -41,12 +41,12 @@ vi.mock('framer-motion', () => ({
 }));
 
 // Mock wouter
-vi.mock('wouter', () => ({
+vi.mock("wouter", () => ({
   Link: ({ children, href }: any) => {
-    const React = require('react');
-    return React.createElement('a', { href }, children);
+    const React = require("react");
+    return React.createElement("a", { href }, children);
   },
-  useLocation: () => ['/', vi.fn()],
+  useLocation: () => ["/", vi.fn()],
   useRoute: () => [false, {}],
   Route: ({ children }: any) => children,
   Switch: ({ children }: any) => children,
@@ -67,7 +67,7 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 })) as any;
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
     matches: false,

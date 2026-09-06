@@ -65,16 +65,24 @@ function sizes(buf) {
  */
 function readEntryRefs(html) {
   const script = html.match(/<script[^>]+type="module"[^>]+src="([^"]+)"/);
-  const style = html.match(/<link[^>]+rel="stylesheet"[^>]+href="(\/assets\/[^"]+)"/)
-    ?? html.match(/<link[^>]+href="(\/assets\/[^"]+\.css)"[^>]*rel="stylesheet"/);
-  if (!script) throw new Error("index.html has no <script type=\"module\"> — cannot identify the entry chunk");
-  if (!style) throw new Error("index.html has no local <link rel=\"stylesheet\"> — cannot identify the entry CSS");
+  const style =
+    html.match(/<link[^>]+rel="stylesheet"[^>]+href="(\/assets\/[^"]+)"/) ??
+    html.match(/<link[^>]+href="(\/assets\/[^"]+\.css)"[^>]*rel="stylesheet"/);
+  if (!script)
+    throw new Error(
+      'index.html has no <script type="module"> — cannot identify the entry chunk'
+    );
+  if (!style)
+    throw new Error(
+      'index.html has no local <link rel="stylesheet"> — cannot identify the entry CSS'
+    );
   return { script: script[1], style: style[1] };
 }
 
 export function measureBundle(distDir = DIST_DIR) {
   const htmlPath = join(distDir, "index.html");
-  if (!statSync(htmlPath).isFile()) throw new Error(`No built index.html at ${htmlPath} — run npm run build`);
+  if (!statSync(htmlPath).isFile())
+    throw new Error(`No built index.html at ${htmlPath} — run npm run build`);
   const htmlBuf = readFileSync(htmlPath);
   const html = htmlBuf.toString("utf8");
   const { script, style } = readEntryRefs(html);
@@ -116,23 +124,37 @@ const kb = n => (n / 1000).toFixed(2) + " kB";
 export function checkBundleBudget(measurement, budget) {
   const failures = [];
   const lines = [];
-  lines.push("Bundle bytes (prod = Apache-calibrated transfer; gzip6 = what vite build prints)");
   lines.push(
-    "  " + "group".padEnd(16) + "prod".padStart(12) + "ceiling".padStart(12) +
-    "headroom".padStart(12) + "gzip6".padStart(12) + "raw".padStart(12)
+    "Bundle bytes (prod = Apache-calibrated transfer; gzip6 = what vite build prints)"
+  );
+  lines.push(
+    "  " +
+      "group".padEnd(16) +
+      "prod".padStart(12) +
+      "ceiling".padStart(12) +
+      "headroom".padStart(12) +
+      "gzip6".padStart(12) +
+      "raw".padStart(12)
   );
 
   for (const [name, limit] of Object.entries(budget.budgets.bytes)) {
     const g = measurement.groups[name];
     if (!g) {
-      failures.push(`budget.json names byte group "${name}", which the build does not produce`);
+      failures.push(
+        `budget.json names byte group "${name}", which the build does not produce`
+      );
       continue;
     }
     const over = g.prod > limit.ceilingBytes;
     lines.push(
-      "  " + name.padEnd(16) + kb(g.prod).padStart(12) + kb(limit.ceilingBytes).padStart(12) +
-      kb(limit.ceilingBytes - g.prod).padStart(12) + kb(g.gzip6).padStart(12) + kb(g.raw).padStart(12) +
-      (over ? "   <== OVER" : "")
+      "  " +
+        name.padEnd(16) +
+        kb(g.prod).padStart(12) +
+        kb(limit.ceilingBytes).padStart(12) +
+        kb(limit.ceilingBytes - g.prod).padStart(12) +
+        kb(g.gzip6).padStart(12) +
+        kb(g.raw).padStart(12) +
+        (over ? "   <== OVER" : "")
     );
     if (over) {
       failures.push(
@@ -147,13 +169,17 @@ export function checkBundleBudget(measurement, budget) {
   lines.push("Emitted chunks:");
   for (const c of measurement.chunks) {
     const lazy = LAZY_CHUNK_PREFIXES.some(p => c.file.startsWith(p));
-    lines.push(`  ${c.file.padEnd(34)} ${kb(c.prod).padStart(11)} prod  ${kb(c.gzip6).padStart(11)} gzip6  ${lazy ? "[lazy]" : ""}`);
+    lines.push(
+      `  ${c.file.padEnd(34)} ${kb(c.prod).padStart(11)} prod  ${kb(c.gzip6).padStart(11)} gzip6  ${lazy ? "[lazy]" : ""}`
+    );
   }
 
   return { failures, lines };
 }
 
-const isMain = process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
+const isMain =
+  process.argv[1] &&
+  resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
 if (isMain) {
   const m = measureBundle();
   const { failures, lines } = checkBundleBudget(m, loadBudget());

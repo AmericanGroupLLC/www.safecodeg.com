@@ -51,26 +51,37 @@ export interface LiveWeather {
 }
 
 /** Every failure path names `LIVE_DATA_HOST` in the thrown message — the UI renders that message verbatim, never a stale value in its place. */
-export async function fetchLiveWeather(signal?: AbortSignal): Promise<LiveWeather> {
+export async function fetchLiveWeather(
+  signal?: AbortSignal
+): Promise<LiveWeather> {
   let response: Response;
   try {
     response = await fetch(LIVE_DATA_URL, { signal });
   } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") throw error;
+    if (error instanceof DOMException && error.name === "AbortError")
+      throw error;
     const message = error instanceof Error ? error.message : "a network error";
     throw new Error(`Could not reach ${LIVE_DATA_HOST}: ${message}.`);
   }
 
   if (!response.ok) {
-    throw new Error(`${LIVE_DATA_HOST} responded with HTTP ${response.status}.`);
+    throw new Error(
+      `${LIVE_DATA_HOST} responded with HTTP ${response.status}.`
+    );
   }
 
   const json: unknown = await response.json();
   const parsed = weatherResponseSchema.safeParse(json);
   if (!parsed.success) {
-    throw new Error(`${LIVE_DATA_HOST} returned a response this page could not understand.`);
+    throw new Error(
+      `${LIVE_DATA_HOST} returned a response this page could not understand.`
+    );
   }
 
   const { temperature, windspeed, time } = parsed.data.current_weather;
-  return { temperatureF: temperature, windspeedMph: windspeed, observedAt: time };
+  return {
+    temperatureF: temperature,
+    windspeedMph: windspeed,
+    observedAt: time,
+  };
 }

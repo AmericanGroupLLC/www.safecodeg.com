@@ -30,7 +30,11 @@ import type {
   SceneSnapshot,
   TransportStatus,
 } from "./types";
-import { parseActorPresence, parseSceneOp, parseSceneSnapshot } from "./validation";
+import {
+  parseActorPresence,
+  parseSceneOp,
+  parseSceneSnapshot,
+} from "./validation";
 import { createRateLimiter, type RateLimiter } from "./rateLimiter";
 
 type WireMessage =

@@ -62,7 +62,10 @@ import {
   measureBundle,
 } from "./bundle-budget.mjs";
 
-const OUT_DIR = resolve(dirname(fileURLToPath(import.meta.url)), "../../test-results");
+const OUT_DIR = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  "../../test-results"
+);
 const BASE_URL = process.env.AUDIT_BASE_URL ?? "http://localhost:3000";
 const RECORD = process.argv.includes("--record");
 const RUNS = Math.max(1, Number(process.env.PERF_RUNS ?? (RECORD ? 5 : 1)));
@@ -71,8 +74,20 @@ const budget = loadBudget();
 const PAGES = budget.pages;
 
 const SCREEN = {
-  mobile: { mobile: true, width: 412, height: 823, deviceScaleFactor: 1.75, disabled: false },
-  desktop: { mobile: false, width: 1350, height: 940, deviceScaleFactor: 1, disabled: false },
+  mobile: {
+    mobile: true,
+    width: 412,
+    height: 823,
+    deviceScaleFactor: 1.75,
+    disabled: false,
+  },
+  desktop: {
+    mobile: false,
+    width: 1350,
+    height: 940,
+    deviceScaleFactor: 1,
+    disabled: false,
+  },
 };
 
 function lighthouseSettings() {
@@ -118,20 +133,31 @@ async function runOnce(url) {
     // script at a dead port: it reported "gate PASSED" for three pages that
     // never loaded. Both guards below exist because of that run.
     if (lhr.runtimeError && lhr.runtimeError.code !== "NO_ERROR") {
-      throw new Error(`Lighthouse runtimeError ${lhr.runtimeError.code}: ${lhr.runtimeError.message}`);
+      throw new Error(
+        `Lighthouse runtimeError ${lhr.runtimeError.code}: ${lhr.runtimeError.message}`
+      );
     }
     const a = lhr.audits;
     const num = id => Math.round(a[id]?.numericValue ?? NaN);
-    for (const id of ["first-contentful-paint", "largest-contentful-paint", "speed-index", "total-blocking-time"]) {
+    for (const id of [
+      "first-contentful-paint",
+      "largest-contentful-paint",
+      "speed-index",
+      "total-blocking-time",
+    ]) {
       if (!Number.isFinite(num(id))) {
-        throw new Error(`Lighthouse produced no numeric value for "${id}" — the page did not load measurably`);
+        throw new Error(
+          `Lighthouse produced no numeric value for "${id}" — the page did not load measurably`
+        );
       }
     }
     return {
       scores: {
         performance: Math.round(lhr.categories.performance.score * 100),
         accessibility: Math.round(lhr.categories.accessibility.score * 100),
-        "best-practices": Math.round(lhr.categories["best-practices"].score * 100),
+        "best-practices": Math.round(
+          lhr.categories["best-practices"].score * 100
+        ),
         seo: Math.round(lhr.categories.seo.score * 100),
       },
       metrics: {
@@ -156,7 +182,9 @@ async function runOnce(url) {
 
 const median = xs => {
   const s = [...xs].sort((a, b) => a - b);
-  return s.length % 2 ? s[(s.length - 1) / 2] : Math.round((s[s.length / 2 - 1] + s[s.length / 2]) / 2);
+  return s.length % 2
+    ? s[(s.length - 1) / 2]
+    : Math.round((s[s.length / 2 - 1] + s[s.length / 2]) / 2);
 };
 
 async function measurePage(page) {
@@ -165,7 +193,9 @@ async function measurePage(page) {
   for (let i = 0; i < RUNS; i++) runs.push(await runOnce(url));
 
   const metricNames = Object.keys(runs[0].metrics);
-  const metrics = Object.fromEntries(metricNames.map(m => [m, median(runs.map(r => r.metrics[m]))]));
+  const metrics = Object.fromEntries(
+    metricNames.map(m => [m, median(runs.map(r => r.metrics[m]))])
+  );
   const spread = Object.fromEntries(
     metricNames.map(m => {
       const vs = runs.map(r => r.metrics[m]);
@@ -178,7 +208,10 @@ async function measurePage(page) {
     url,
     runs: RUNS,
     scores: Object.fromEntries(
-      Object.keys(runs[0].scores).map(k => [k, median(runs.map(r => r.scores[k]))])
+      Object.keys(runs[0].scores).map(k => [
+        k,
+        median(runs.map(r => r.scores[k])),
+      ])
     ),
     metrics,
     spread,
@@ -201,7 +234,9 @@ function checkTiming(results, calibrationValid) {
   for (const r of results) {
     const base = budget.baseline.pages[r.name];
     if (!base) {
-      failures.push(`No recorded baseline for page "${r.name}" — run with --record`);
+      failures.push(
+        `No recorded baseline for page "${r.name}" — run with --record`
+      );
       continue;
     }
     for (const [metric, rule] of Object.entries(t)) {
@@ -209,8 +244,12 @@ function checkTiming(results, calibrationValid) {
       if (!Number.isFinite(got)) {
         // Belt and braces behind runOnce's guard: a comparison against a
         // non-number is always false, which reads as a pass.
-        failures.push(`${r.name} ${metric}: no numeric value was measured (${got})`);
-        lines.push(`  ${r.name.padEnd(9)} ${metric.padEnd(4)} ${String(got).padStart(7)}  NOT MEASURED  FAIL`);
+        failures.push(
+          `${r.name} ${metric}: no numeric value was measured (${got})`
+        );
+        lines.push(
+          `  ${r.name.padEnd(9)} ${metric.padEnd(4)} ${String(got).padStart(7)}  NOT MEASURED  FAIL`
+        );
         continue;
       }
       const ceiling =
@@ -242,7 +281,9 @@ function checkTiming(results, calibrationValid) {
 }
 
 async function main() {
-  console.log(`\nPerformance gate — profile "${budget.profile.name}", ${RUNS} run(s) per page, target ${BASE_URL}\n`);
+  console.log(
+    `\nPerformance gate — profile "${budget.profile.name}", ${RUNS} run(s) per page, target ${BASE_URL}\n`
+  );
 
   // ---- 2. Bundle bytes (no browser needed; fails fastest) -----------------
   const bundle = measureBundle();
@@ -254,7 +295,9 @@ async function main() {
   const results = [];
   const unmeasured = [];
   for (const page of PAGES) {
-    process.stdout.write(`  measuring ${page.name} (${BASE_URL}${page.path}) ... `);
+    process.stdout.write(
+      `  measuring ${page.name} (${BASE_URL}${page.path}) ... `
+    );
     try {
       const r = await measurePage(page);
       results.push(r);
@@ -270,10 +313,14 @@ async function main() {
 
   // ---- 3. Route isolation -------------------------------------------------
   const isolationFailures = [];
-  console.log("\nRoute isolation (lazy chunks must not be requested outside /dimensions):");
+  console.log(
+    "\nRoute isolation (lazy chunks must not be requested outside /dimensions):"
+  );
   for (const r of results) {
     const ok = r.lazyChunksRequested.length === 0;
-    console.log(`  ${r.path.padEnd(12)} ${ok ? "PASS — none requested" : "FAIL — " + r.lazyChunksRequested.join(", ")}`);
+    console.log(
+      `  ${r.path.padEnd(12)} ${ok ? "PASS — none requested" : "FAIL — " + r.lazyChunksRequested.join(", ")}`
+    );
     if (!ok) {
       isolationFailures.push(
         `${r.path} requested lazy chunk(s) that must load only on /dimensions: ${r.lazyChunksRequested.join(", ")}`
@@ -284,8 +331,7 @@ async function main() {
   // ---- CPU calibration ----------------------------------------------------
   const bi = results.length ? median(results.map(r => r.benchmarkIndex)) : null;
   const band = budget.baseline.benchmarkIndexBand;
-  const calibrationValid =
-    bi !== null && bi >= band.min && bi <= band.max;
+  const calibrationValid = bi !== null && bi >= band.min && bi <= band.max;
   console.log(
     `\nCPU calibration: benchmarkIndex ${bi} (baseline ${budget.baseline.benchmarkIndex}, ` +
       `valid band ${band.min}-${band.max}) — ${calibrationValid ? "timing budgets ENFORCED" : "timing budgets reported UNKNOWN, not enforced"}`
@@ -307,7 +353,9 @@ async function main() {
   console.log("\nCore Web Vitals vs budget:");
   let timing = { failures: [], lines: [] };
   if (RECORD) {
-    console.log("  (skipped — this is a --record run; the baseline is being written, not tested against)");
+    console.log(
+      "  (skipped — this is a --record run; the baseline is being written, not tested against)"
+    );
   } else if (!budget.baseline.pages) {
     timing.failures.push(
       "No timing baseline recorded in tests/performance/budget.json. " +
@@ -323,19 +371,32 @@ async function main() {
   const report = {
     recordedAt: new Date().toISOString(),
     commit: (() => {
-      try { return execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim(); }
-      catch { return "unknown"; }
+      try {
+        return execSync("git rev-parse --short HEAD", {
+          encoding: "utf8",
+        }).trim();
+      } catch {
+        return "unknown";
+      }
     })(),
     profile: budget.profile,
     baseUrl: BASE_URL,
     runsPerPage: RUNS,
     benchmarkIndex: bi,
-    bundle: { entryScript: bundle.entryScript, entryStylesheet: bundle.entryStylesheet, groups: bundle.groups, chunks: bundle.chunks },
+    bundle: {
+      entryScript: bundle.entryScript,
+      entryStylesheet: bundle.entryStylesheet,
+      groups: bundle.groups,
+      chunks: bundle.chunks,
+    },
     pages: results,
     unmeasured,
   };
   mkdirSync(OUT_DIR, { recursive: true });
-  writeFileSync(resolve(OUT_DIR, "lighthouse-results.json"), JSON.stringify(report, null, 2));
+  writeFileSync(
+    resolve(OUT_DIR, "lighthouse-results.json"),
+    JSON.stringify(report, null, 2)
+  );
   console.log("\nResults written to test-results/lighthouse-results.json");
 
   if (RECORD) {
@@ -344,21 +405,39 @@ async function main() {
     next.baseline.commit = report.commit;
     next.baseline.runsPerPage = RUNS;
     next.baseline.benchmarkIndex = bi;
-    next.baseline.benchmarkIndexBand = { min: Math.round(bi * 0.7), max: Math.round(bi * 1.6) };
+    next.baseline.benchmarkIndexBand = {
+      min: Math.round(bi * 0.7),
+      max: Math.round(bi * 1.6),
+    };
     next.baseline.bundle = Object.fromEntries(
       Object.entries(bundle.groups).map(([k, v]) => [k, v])
     );
     next.baseline.pages = Object.fromEntries(
-      results.map(r => [r.name, { path: r.path, metrics: r.metrics, spread: r.spread, scores: r.scores, transferTotal: r.transferTotal }])
+      results.map(r => [
+        r.name,
+        {
+          path: r.path,
+          metrics: r.metrics,
+          spread: r.spread,
+          scores: r.scores,
+          transferTotal: r.transferTotal,
+        },
+      ])
     );
     writeFileSync(BUDGET_PATH, JSON.stringify(next, null, 2) + "\n");
-    console.log(`Baseline re-recorded into ${BUDGET_PATH} (${RUNS} runs per page, median).`);
-    console.log("Ceilings were NOT changed — a baseline is evidence, a ceiling is a decision.");
+    console.log(
+      `Baseline re-recorded into ${BUDGET_PATH} (${RUNS} runs per page, median).`
+    );
+    console.log(
+      "Ceilings were NOT changed — a baseline is evidence, a ceiling is a decision."
+    );
   }
 
   // ---- Verdict ------------------------------------------------------------
   const failures = [
-    ...unmeasured.map(u => `${u.name} (${u.path}) could not be measured: ${u.error}`),
+    ...unmeasured.map(
+      u => `${u.name} (${u.path}) could not be measured: ${u.error}`
+    ),
     ...bundleCheck.failures,
     ...isolationFailures,
     ...timing.failures,
@@ -366,14 +445,22 @@ async function main() {
 
   console.log("");
   if (failures.length > 0) {
-    console.error(`Performance gate FAILED — ${failures.length} budget violation(s):`);
+    console.error(
+      `Performance gate FAILED — ${failures.length} budget violation(s):`
+    );
     for (const f of failures) console.error(`  - ${f}`);
     console.error("");
-    console.error("A ceiling is a decision, not a measurement. If a violation is intended,");
-    console.error("change tests/performance/budget.json and record why in TASKS.md Decisions.");
+    console.error(
+      "A ceiling is a decision, not a measurement. If a violation is intended,"
+    );
+    console.error(
+      "change tests/performance/budget.json and record why in TASKS.md Decisions."
+    );
     process.exit(1);
   }
-  console.log("Performance gate PASSED — measurability, bundle bytes, route isolation, Core Web Vitals.");
+  console.log(
+    "Performance gate PASSED — measurability, bundle bytes, route isolation, Core Web Vitals."
+  );
   process.exit(0);
 }
 

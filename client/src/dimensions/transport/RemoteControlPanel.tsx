@@ -35,7 +35,10 @@
 import { useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 import type { ActorId, ActorPresence, TransportStatus } from "./types";
-import type { RemoteControlCommandResult, RemoteControlRole } from "./useCollaboration";
+import type {
+  RemoteControlCommandResult,
+  RemoteControlRole,
+} from "./useCollaboration";
 
 export interface RemoteControlPanelProps {
   status: TransportStatus;
@@ -51,9 +54,14 @@ export interface RemoteControlPanelProps {
 
 const NUDGE_STEP = 0.4;
 
-function displayNameFor(actors: readonly ActorPresence[], actorId: ActorId | null): string {
+function displayNameFor(
+  actors: readonly ActorPresence[],
+  actorId: ActorId | null
+): string {
   if (actorId === null) return "another session";
-  return actors.find((a) => a.actorId === actorId)?.displayName ?? "another session";
+  return (
+    actors.find(a => a.actorId === actorId)?.displayName ?? "another session"
+  );
 }
 
 export default function RemoteControlPanel({
@@ -68,48 +76,85 @@ export default function RemoteControlPanel({
   lastReceivedCommand,
 }: RemoteControlPanelProps) {
   const [pendingRole, setPendingRole] = useState<RemoteControlRole>(role);
-  const peerCount = actors.filter((a) => a.actorId !== selfActorId).length;
+  const peerCount = actors.filter(a => a.actorId !== selfActorId).length;
 
   return (
-    <div className="rounded-2xl p-5 sm:p-6" style={{ background: "rgba(17,19,39,0.5)", border: "1px solid rgba(124,58,237,0.2)" }}>
+    <div
+      className="rounded-2xl p-5 sm:p-6"
+      style={{
+        background: "rgba(17,19,39,0.5)",
+        border: "1px solid rgba(124,58,237,0.2)",
+      }}
+    >
       <div className="mb-3">
-        <div className="text-[10px] uppercase tracking-widest font-mono mb-1" style={{ color: "rgba(167,139,250,0.6)" }}>
+        <div
+          className="text-[10px] uppercase tracking-widest font-mono mb-1"
+          style={{ color: "rgba(167,139,250,0.6)" }}
+        >
           6D — Remote session control
         </div>
-        <h3 className="font-bold text-white text-lg" style={{ fontFamily: "Sora, sans-serif" }}>
+        <h3
+          className="font-bold text-white text-lg"
+          style={{ fontFamily: "Sora, sans-serif" }}
+        >
           One browser session driving another
         </h3>
       </div>
 
       <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
-        This sends move commands to another joined browser session over the shared-stage channel above — it
-        does not control any physical device. If no other session is available to receive a command, that is
-        reported honestly below rather than shown as if it worked.
+        This sends move commands to another joined browser session over the
+        shared-stage channel above — it does not control any physical device. If
+        no other session is available to receive a command, that is reported
+        honestly below rather than shown as if it worked.
       </p>
 
       {status.kind === "unconfigured" ? (
-        <p role="status" data-testid="remote-control-status" className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <p
+          role="status"
+          data-testid="remote-control-status"
+          className="text-xs"
+          style={{ color: "rgba(255,255,255,0.5)" }}
+        >
           Not available in this build: {status.reason}
         </p>
       ) : !joined ? (
-        <p role="status" data-testid="remote-control-status" className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <p
+          role="status"
+          data-testid="remote-control-status"
+          className="text-xs"
+          style={{ color: "rgba(255,255,255,0.5)" }}
+        >
           Join the shared stage above to use remote session control.
         </p>
       ) : (
         <>
           <fieldset className="mb-4">
-            <legend className="text-[10px] uppercase tracking-widest font-mono mb-2" style={{ color: "rgba(167,139,250,0.6)" }}>
+            <legend
+              className="text-[10px] uppercase tracking-widest font-mono mb-2"
+              style={{ color: "rgba(167,139,250,0.6)" }}
+            >
               This session&apos;s role
             </legend>
             <div className="flex flex-col gap-2">
-              {(
-                [
-                  { value: "none" as const, label: "Do not send or receive commands" },
-                  { value: "controller" as const, label: "Send commands to another session" },
-                  { value: "controlled" as const, label: "Receive commands and report back" },
-                ]
-              ).map((option) => (
-                <label key={option.value} className="flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+              {[
+                {
+                  value: "none" as const,
+                  label: "Do not send or receive commands",
+                },
+                {
+                  value: "controller" as const,
+                  label: "Send commands to another session",
+                },
+                {
+                  value: "controlled" as const,
+                  label: "Receive commands and report back",
+                },
+              ].map(option => (
+                <label
+                  key={option.value}
+                  className="flex items-center gap-2 text-sm"
+                  style={{ color: "rgba(255,255,255,0.85)" }}
+                >
                   <input
                     type="radio"
                     name="remote-control-role"
@@ -130,8 +175,14 @@ export default function RemoteControlPanel({
           {pendingRole === "controller" && (
             <div data-testid="remote-control-controller">
               {peerCount === 0 ? (
-                <p role="status" data-testid="remote-control-no-peer" className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
-                  No other session is available yet — a command would have nowhere to go.
+                <p
+                  role="status"
+                  data-testid="remote-control-no-peer"
+                  className="text-xs"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                >
+                  No other session is available yet — a command would have
+                  nowhere to go.
                 </p>
               ) : (
                 <>
@@ -142,7 +193,9 @@ export default function RemoteControlPanel({
                       onClick={() => onSendCommand({ x: -NUDGE_STEP })}
                       disabled={lastCommand?.status === "sending"}
                       className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
-                      style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                      style={{
+                        background: "linear-gradient(135deg, #7C3AED, #5B21B6)",
+                      }}
                     >
                       <ArrowLeftRight className="w-4 h-4" /> Send: move left
                     </button>
@@ -152,14 +205,22 @@ export default function RemoteControlPanel({
                       onClick={() => onSendCommand({ x: NUDGE_STEP })}
                       disabled={lastCommand?.status === "sending"}
                       className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
-                      style={{ background: "linear-gradient(135deg, #7C3AED, #5B21B6)" }}
+                      style={{
+                        background: "linear-gradient(135deg, #7C3AED, #5B21B6)",
+                      }}
                     >
                       <ArrowLeftRight className="w-4 h-4" /> Send: move right
                     </button>
                   </div>
-                  <p role="status" data-testid="remote-control-command-status" className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  <p
+                    role="status"
+                    data-testid="remote-control-command-status"
+                    className="text-xs"
+                    style={{ color: "rgba(255,255,255,0.5)" }}
+                  >
                     {lastCommand === null && "No command sent yet."}
-                    {lastCommand?.status === "sending" && "Command sent — waiting for the other session to report back…"}
+                    {lastCommand?.status === "sending" &&
+                      "Command sent — waiting for the other session to report back…"}
                     {lastCommand?.status === "confirmed" &&
                       `Reported back by ${displayNameFor(actors, lastCommand.confirmedByActorId)}: the move was applied there.`}
                     {lastCommand?.status === "timed-out" &&
@@ -171,7 +232,12 @@ export default function RemoteControlPanel({
           )}
 
           {pendingRole === "controlled" && (
-            <p role="status" data-testid="remote-control-received" className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <p
+              role="status"
+              data-testid="remote-control-received"
+              className="text-xs"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+            >
               {lastReceivedCommand
                 ? `Received and applied a move command from ${displayNameFor(actors, lastReceivedCommand.fromActorId)} at ${new Date(lastReceivedCommand.at).toLocaleTimeString()}, and reported it back.`
                 : "Waiting to receive a move command from a session set to “Send commands to another session”."}

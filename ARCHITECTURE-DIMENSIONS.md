@@ -28,7 +28,7 @@ presence + broadcast + row read/write for transport). Built with
 under `gzip -9`.
 
 A baseline entry of `react@19.2.8` + `react-dom@19.2.8` alone measured
-**60,369 B gzip**. Every "delta" below is *total minus that baseline*, which is
+**60,369 B gzip**. Every "delta" below is _total minus that baseline_, which is
 the quantity that matters here: the entry chunk already contains React, so the
 delta is what a lazily-loaded chunk actually costs.
 
@@ -37,24 +37,24 @@ kB means 1,000 bytes throughout, matching Vite's own reporting and the
 
 **Honest caveat (stated, not buried).** The probe entries approximate the final
 code; they are not the final code. Final chunk sizes will differ. These figures
-are decision-grade for *choosing between libraries* — they are not a prediction of
+are decision-grade for _choosing between libraries_ — they are not a prediction of
 the shipped bundle. T-015 measures the real thing and is the authority on it.
 
 ### Measured results
 
-| Probe | total gzip B | delta over React base | delta kB gzip |
-|---|---|---|---|
-| react 19.2.8 + react-dom (baseline) | 60,369 | — | — |
-| `three` 0.185.1, core classes only | 188,491 | 128,122 | **128.12** |
-| `three` + `GLTFLoader` + `OrbitControls` | 220,102 | 159,733 | **159.73** |
-| … + `@react-three/fiber` 9.7.0 | 314,130 | 253,761 | **253.76** |
-| … + `@react-three/drei` 10.7.8 (6 components) | 349,927 | 289,558 | **289.56** |
-| `cannon-es` 0.20.0 | 85,529 | 25,160 | **25.16** |
-| `@dimforge/rapier3d-compat` 0.20.0 | 1,144,093 | 1,083,724 | **1083.72** |
-| `@react-three/rapier` 2.2.0 (+ fiber + three) | 1,144,713 | 1,084,344 | **1084.34** |
-| `@supabase/supabase-js` 2.115.0 | 118,385 | 58,016 | **58.02** |
-| `@supabase/realtime-js` 2.115.0 alone | 77,675 | 17,306 | **17.31** |
-| `realtime-js` + `postgrest-js` 2.115.0 | 82,732 | 22,363 | **22.36** |
+| Probe                                         | total gzip B | delta over React base | delta kB gzip |
+| --------------------------------------------- | ------------ | --------------------- | ------------- |
+| react 19.2.8 + react-dom (baseline)           | 60,369       | —                     | —             |
+| `three` 0.185.1, core classes only            | 188,491      | 128,122               | **128.12**    |
+| `three` + `GLTFLoader` + `OrbitControls`      | 220,102      | 159,733               | **159.73**    |
+| … + `@react-three/fiber` 9.7.0                | 314,130      | 253,761               | **253.76**    |
+| … + `@react-three/drei` 10.7.8 (6 components) | 349,927      | 289,558               | **289.56**    |
+| `cannon-es` 0.20.0                            | 85,529       | 25,160                | **25.16**     |
+| `@dimforge/rapier3d-compat` 0.20.0            | 1,144,093    | 1,083,724             | **1083.72**   |
+| `@react-three/rapier` 2.2.0 (+ fiber + three) | 1,144,713    | 1,084,344             | **1084.34**   |
+| `@supabase/supabase-js` 2.115.0               | 118,385      | 58,016                | **58.02**     |
+| `@supabase/realtime-js` 2.115.0 alone         | 77,675       | 17,306                | **17.31**     |
+| `realtime-js` + `postgrest-js` 2.115.0        | 82,732       | 22,363                | **22.36**     |
 
 Derived (Verified — arithmetic on the rows above):
 
@@ -122,7 +122,7 @@ directly:
 
 - **T-005** requires triangle and draw-call counts. `renderer.info.render.calls`
   and `.triangles` are read straight off the renderer we own.
-- **T-006** requires *byte-identical* state when `t` is reached two different
+- **T-006** requires _byte-identical_ state when `t` is reached two different
   ways. Determinism is far easier to guarantee when one file performs every
   mutation.
 - **T-010** requires peer labels that are "keyboard-reachable with accessible
@@ -131,11 +131,11 @@ directly:
 
 ### Alternatives rejected
 
-| Rejected | Why |
-|---|---|
-| `@react-three/fiber` + `@react-three/drei` | Zero WebXR support (Verified, §1.1); +129.83 kB gzip (Verified); its main benefit duplicates §5's invariant. |
-| `@react-three/fiber` + `drei` + `@react-three/xr` | All of the above plus a third dependency and a second render-loop owner, expanding T-016's review surface for no capability raw three lacks. |
-| Babylon.js | Would replace, not extend, a stack this repo has none of; no measurement taken, so no size claim is made. Rejected on "prefer the smallest arrangement" (`QUALITY.md`), not on measured size. |
+| Rejected                                          | Why                                                                                                                                                                                           |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@react-three/fiber` + `@react-three/drei`        | Zero WebXR support (Verified, §1.1); +129.83 kB gzip (Verified); its main benefit duplicates §5's invariant.                                                                                  |
+| `@react-three/fiber` + `drei` + `@react-three/xr` | All of the above plus a third dependency and a second render-loop owner, expanding T-016's review surface for no capability raw three lacks.                                                  |
+| Babylon.js                                        | Would replace, not extend, a stack this repo has none of; no measurement taken, so no size claim is made. Rejected on "prefer the smallest arrangement" (`QUALITY.md`), not on measured size. |
 
 ### Consequences the implementer must accept
 
@@ -229,7 +229,7 @@ it.
 part of the 4D timeline, and an implementer would hit the wall without this
 paragraph.**
 
-- T-006: setting `t` to a value and returning to it must restore *byte-identical*
+- T-006: setting `t` to a value and returning to it must restore _byte-identical_
   state. That demands a pure, reversible `f(t)`.
 - T-007: physics must be a genuine forward integration with path-dependent
   resting positions. A stateful integrator **cannot be scrubbed backwards**.
@@ -243,8 +243,8 @@ They are therefore **two separate state domains with two separate clocks**:
   control, never by scrubbing.
 
 The UI must state this rather than hide it: while the physics sandbox is running,
-the timeline scrubber is disabled with the visible reason *"the physics sandbox
-runs forward only — use Reset to return it to its starting state."* That is the
+the timeline scrubber is disabled with the visible reason _"the physics sandbox
+runs forward only — use Reset to return it to its starting state."_ That is the
 honesty rule applied to an internal design constraint.
 
 ---
@@ -272,7 +272,7 @@ not justify.**
 - **Verified — ran it this session.** `https://smvvjivvlprjhzhoizym.supabase.co`
   returns **401** on `/rest/v1/`, `/realtime/v1/` and `/auth/v1/health`. 401 rather
   than 404 or a connection failure means the project exists and those paths are
-  routed. This is *not* evidence that Realtime is enabled in project settings —
+  routed. This is _not_ evidence that Realtime is enabled in project settings —
   see §3.4.
 - **Verified — read `deploy.yml:52-59`.** The build step already injects `VITE_*`
   variables. Adding `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` requires two
@@ -303,7 +303,7 @@ rather than server code we control" — is correct but **understates the exposur
 one specific way that T-009 and T-016 must not miss**:
 
 > **Row Level Security does not inspect broadcast payloads.** RLS governs rows in
-> Postgres. Supabase Realtime *broadcast* and *presence* messages are relayed
+> Postgres. Supabase Realtime _broadcast_ and _presence_ messages are relayed
 > between clients; Realtime Authorization gates **who may join a channel**, not
 > what they may put in a message. A peer that can join can send arbitrary JSON.
 
@@ -318,7 +318,7 @@ discovered later:
    anon key and no authentication, anyone who can load the page can move objects
    and can reset the twin. There is no per-user data, so there is nothing to
    leak — but there is something to vandalise. The UI says so in plain words.
-   *Rejected alternative:* Supabase anonymous auth with per-room ownership
+   _Rejected alternative:_ Supabase anonymous auth with per-room ownership
    policies. Rejected because it adds `@supabase/auth-js` (part of the 35.66 kB
    just removed), a user-identity concept this feature has no use for, and an
    auth surface for T-016 — to protect a public demo stage with no private data.
@@ -336,10 +336,10 @@ discovered later:
 **NOT VERIFIED, and I could not verify them — I have no anon key.** Each is a
 precondition, with the check that settles it:
 
-| Unverified | The check that settles it |
-|---|---|
-| Realtime is enabled for project `smvvjivvlprjhzhoizym` | Open a channel with the anon key and observe `SUBSCRIBED`; a disabled project fails to subscribe. |
-| The plan's concurrent-connection and message-rate limits | Supabase dashboard → project usage. Record the numbers in T-009's Notes. |
+| Unverified                                                    | The check that settles it                                                                                             |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Realtime is enabled for project `smvvjivvlprjhzhoizym`        | Open a channel with the anon key and observe `SUBSCRIBED`; a disabled project fails to subscribe.                     |
+| The plan's concurrent-connection and message-rate limits      | Supabase dashboard → project usage. Record the numbers in T-009's Notes.                                              |
 | Realtime Authorization is required for this project's channel | Attempt to join with the anon key; if rejected, an RLS policy on `realtime.messages` is needed and T-009 must add it. |
 
 A **401 is not evidence that Realtime is enabled.** It is evidence the host exists
@@ -347,12 +347,12 @@ and routes the path. No claim beyond that is supported.
 
 ### 3.5 Alternatives rejected
 
-| Rejected | Why |
-|---|---|
-| A dedicated WebSocket host | No deploy target exists (Verified, §3.1); would reverse a recorded decision; would still need a database for the twin. |
-| WebRTC data channels, peer-to-peer | Still requires a signalling server and a TURN relay — the same "nowhere to run it" problem, plus NAT traversal, plus no durable twin. |
-| `@supabase/supabase-js` | +35.66 kB gzip and three unused subsystems added to T-016's review (Verified, §3.2). |
-| A CRDT library (Yjs, Automerge) | No stated requirement for text merging or intention preservation. §6.4's last-writer-wins register converges in ~15 lines. `QUALITY.md`: do not design for hypothetical requirements. |
+| Rejected                           | Why                                                                                                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A dedicated WebSocket host         | No deploy target exists (Verified, §3.1); would reverse a recorded decision; would still need a database for the twin.                                                                |
+| WebRTC data channels, peer-to-peer | Still requires a signalling server and a TURN relay — the same "nowhere to run it" problem, plus NAT traversal, plus no durable twin.                                                 |
+| `@supabase/supabase-js`            | +35.66 kB gzip and three unused subsystems added to T-016's review (Verified, §3.2).                                                                                                  |
+| A CRDT library (Yjs, Automerge)    | No stated requirement for text merging or intention preservation. §6.4's last-writer-wins register converges in ~15 lines. `QUALITY.md`: do not design for hypothetical requirements. |
 
 ---
 
@@ -392,11 +392,11 @@ because there is nowhere for a marketing adjective to live.
 
 **Impact of each answer on this architecture** (so the user's choice is informed):
 
-| OQ-1 answer | Owner | Bundle | Deployment |
-|---|---|---|---|
-| In-browser solver (Planner default) | frontend | small; own chunk | none — ships through the existing rsync |
-| In-browser model | frontend | large model download; must be a separate lazy chunk and must not enter the entry chunk | none, but see the entry-chunk budget in §9 |
-| Supabase Edge Function proxy | backend | ~0 client | **adds `supabase functions deploy` outside the rsync pipeline.** `DEPLOYMENT.md` must gain a step; T-017's fifth criterion covers this. |
+| OQ-1 answer                         | Owner    | Bundle                                                                                 | Deployment                                                                                                                              |
+| ----------------------------------- | -------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| In-browser solver (Planner default) | frontend | small; own chunk                                                                       | none — ships through the existing rsync                                                                                                 |
+| In-browser model                    | frontend | large model download; must be a separate lazy chunk and must not enter the entry chunk | none, but see the entry-chunk budget in §9                                                                                              |
+| Supabase Edge Function proxy        | backend  | ~0 client                                                                              | **adds `supabase functions deploy` outside the rsync pipeline.** `DEPLOYMENT.md` must gain a step; T-017's fifth criterion covers this. |
 
 **What this seam forecloses: nothing among the three.** All three implement
 `ScenarioSolver`. The remote-endpoint option is the only one with a deployment
@@ -417,13 +417,13 @@ Everything else composes correctly only if this part is right.
 This one rule is what makes the five layers compose instead of becoming five
 separate demos. Each layer needs it for a different reason:
 
-| Layer | Why it needs state outside the scene graph |
-|---|---|
-| 4D | `sceneAt(t)` must be pure and reversible. `Object3D` accumulates; a pure function cannot live inside it. |
-| 5D | Physics writes transforms; a raycast writes selection. Both need one place to write. |
-| 6D | State must go on the wire and into a database row. `Object3D` holds matrices, parent pointers and cyclic references, and does not serialize. |
-| 7D | The same state renders into an `XRSession`. If it lived in the scene graph, the XR path would fork. |
-| Tests | T-005 … T-012 read state through a hook with no GPU involved. |
+| Layer | Why it needs state outside the scene graph                                                                                                   |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4D    | `sceneAt(t)` must be pure and reversible. `Object3D` accumulates; a pure function cannot live inside it.                                     |
+| 5D    | Physics writes transforms; a raycast writes selection. Both need one place to write.                                                         |
+| 6D    | State must go on the wire and into a database row. `Object3D` holds matrices, parent pointers and cyclic references, and does not serialize. |
+| 7D    | The same state renders into an `XRSession`. If it lived in the scene graph, the XR path would fork.                                          |
+| Tests | T-005 … T-012 read state through a hook with no GPU involved.                                                                                |
 
 The inverse is the failure mode this design exists to prevent: if state lives in
 the scene graph, 4D scrubbing becomes a property of animation code rather than of
@@ -435,10 +435,19 @@ twice.
 ```ts
 // client/src/dimensions/state/types.ts
 export type ObjectId = string & { readonly __objectId: unique symbol };
-export type ActorId  = string & { readonly __actorId:  unique symbol };
+export type ActorId = string & { readonly __actorId: unique symbol };
 
-export interface Vec3 { x: number; y: number; z: number }
-export interface Quat { x: number; y: number; z: number; w: number }
+export interface Vec3 {
+  x: number;
+  y: number;
+  z: number;
+}
+export interface Quat {
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
 
 export interface SceneObject {
   id: ObjectId;
@@ -481,11 +490,11 @@ always answerable:
 ```ts
 // client/src/dimensions/state/compose.ts
 export interface ComposeInput {
-  model: ProcessModel;                       // authored baseline
-  t: number;                                 // 4D
-  physics: PhysicsSnapshot | null;           // 5D, forward-only
-  interaction: InteractionState;             // 5D  (selection, scenario inputs)
-  remote: RemoteState;                       // 6D  (peer ops + presence)
+  model: ProcessModel; // authored baseline
+  t: number; // 4D
+  physics: PhysicsSnapshot | null; // 5D, forward-only
+  interaction: InteractionState; // 5D  (selection, scenario inputs)
+  remote: RemoteState; // 6D  (peer ops + presence)
 }
 
 /** Pure. Same input object graph ⇒ structurally identical output, every time. */
@@ -549,7 +558,7 @@ export interface StageDescriptor {
   id: string;
   /** Rendered in the UI. T-006 compares rendered labels against this list. */
   label: string;
-  startsAt: number;   // seconds
+  startsAt: number; // seconds
   endsAt: number;
   objectIds: readonly ObjectId[];
 }
@@ -599,8 +608,8 @@ type appears in it, ever.
 
 ```ts
 export type TransportStatus =
-  | { kind: "unconfigured"; reason: string }        // no anon key in this build
-  | { kind: "idle" }                                // configured, never joined
+  | { kind: "unconfigured"; reason: string } // no anon key in this build
+  | { kind: "idle" } // configured, never joined
   | { kind: "connecting" }
   | { kind: "connected"; since: number }
   | { kind: "reconnecting"; attempt: number; lastError: string }
@@ -608,7 +617,7 @@ export type TransportStatus =
 
 export interface ActorPresence {
   actorId: ActorId;
-  displayName: string;   // never empty — this is an accessible name (§8)
+  displayName: string; // never empty — this is an accessible name (§8)
   colorHex: string;
   joinedAt: number;
   lastSeenAt: number;
@@ -623,7 +632,9 @@ export interface SceneOp {
   seq: number;
   /** Advisory display only. Never used for ordering — peer clocks are untrusted. */
   at: number;
-  patch: Partial<Pick<SceneObject, "position" | "rotation" | "scale" | "visible">>;
+  patch: Partial<
+    Pick<SceneObject, "position" | "rotation" | "scale" | "visible">
+  >;
 }
 
 export interface SceneSnapshot {
@@ -636,7 +647,10 @@ export interface CollaborationTransport {
   readonly status: TransportStatus;
 
   /** Explicit user action only. MUST NOT be called on mount. */
-  join(roomId: string, self: Pick<ActorPresence, "actorId" | "displayName" | "colorHex">): Promise<void>;
+  join(
+    roomId: string,
+    self: Pick<ActorPresence, "actorId" | "displayName" | "colorHex">
+  ): Promise<void>;
   leave(): Promise<void>;
 
   /** Resolves when the op is handed to the wire, not when a peer acknowledges it. */
@@ -673,7 +687,9 @@ export function createTransport(): CollaborationTransport {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
   if (!url || !key) {
-    return createNullTransport("This build has no shared-session configuration.");
+    return createNullTransport(
+      "This build has no shared-session configuration."
+    );
   }
   return createSupabaseTransport(url, key);
 }
@@ -693,11 +709,11 @@ returns matches **only** in `client/src/dimensions/transport/supabaseTransport.t
 
 ### 6.3 Joining is an explicit user action
 
-`join()` is called from a control labelled *"Join the shared stage"*, never from
+`join()` is called from a control labelled _"Join the shared stage"_, never from
 an effect on mount. Three reasons, all load-bearing:
 
-1. **Honesty.** Before you join, the UI says *"You are working alone — the shared
-   stage is not connected."* That is true, and it is the default state.
+1. **Honesty.** Before you join, the UI says _"You are working alone — the shared
+   stage is not connected."_ That is true, and it is the default state.
 2. **Privacy.** Presence broadcasts your existence to strangers. That needs an
    act, not a page load.
 3. **Quota.** §3.4 records that concurrency limits are unverified. Every visitor
@@ -712,7 +728,7 @@ This also puts the 6D payload (22.36 kB gzip) behind its own dynamic import (§9
 /** Total order per object. Deterministic on every peer, so all peers converge. */
 export function opWins(op: SceneOp, current: SceneObject["rev"]): boolean {
   if (op.seq !== current.seq) return op.seq > current.seq;
-  return (op.actorId as string) > ((current.actorId ?? "") as string);  // stable tiebreak
+  return (op.actorId as string) > ((current.actorId ?? "") as string); // stable tiebreak
 }
 ```
 
@@ -760,13 +776,13 @@ T-016 reviews this path. It is the highest-value control in the 6D layer.
 
 The brief requires this, and the honest split is:
 
-| Testable now, no key | Blocked on the key |
-|---|---|
+| Testable now, no key                                                      | Blocked on the key                                      |
+| ------------------------------------------------------------------------- | ------------------------------------------------------- |
 | `merge.ts` convergence — unit tests, both orderings, ties. Pure function. | T-010's two-`browser.newContext()` synchronisation test |
-| Payload validation — malformed, hostile, `NaN`, unknown ids | T-010's presence-count test |
-| Every `TransportStatus` UI state, driven by a stub transport | T-010's third-context digital-twin test |
-| The `unconfigured` state end-to-end via `nullTransport` | T-009 entirely (migration, RLS, negative test) |
-| Cross-tab behaviour in dev via `loopbackTransport` | |
+| Payload validation — malformed, hostile, `NaN`, unknown ids               | T-010's presence-count test                             |
+| Every `TransportStatus` UI state, driven by a stub transport              | T-010's third-context digital-twin test                 |
+| The `unconfigured` state end-to-end via `nullTransport`                   | T-009 entirely (migration, RLS, negative test)          |
+| Cross-tab behaviour in dev via `loopbackTransport`                        |                                                         |
 
 **`loopbackTransport` is a development aid and a unit-test fixture. It is not a
 substitute for the T-010 acceptance test and must never be used to make that test
@@ -786,9 +802,16 @@ cannot be genuinely delivered is reported NOT RUN, never simulated.
 ```ts
 // client/src/dimensions/xr/detect.ts
 export type XrUiState =
-  | "no-webgl" | "no-webxr" | "quicklook-only" | "no-device"
-  | "blocked-by-policy" | "ar-only" | "vr-only" | "ar-and-vr"
-  | "session-rejected" | "session-running";
+  | "no-webgl"
+  | "no-webxr"
+  | "quicklook-only"
+  | "no-device"
+  | "blocked-by-policy"
+  | "ar-only"
+  | "vr-only"
+  | "ar-and-vr"
+  | "session-rejected"
+  | "session-running";
 
 export async function probeXR(): Promise<XrCapability>;
 ```
@@ -819,7 +842,7 @@ Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(sel
 WebXR permissions-policy feature is `xr-spatial-tracking`, and a feature omitted
 from a `Permissions-Policy` header keeps its default allowlist (`self`), so this
 header should not block same-origin WebXR; plain `immersive-ar` passthrough is
-not gated on the `camera` feature, which gates raw camera *access*. **This is
+not gated on the `camera` feature, which gates raw camera _access_. **This is
 reasoning, not a measurement.** T-012 must verify it on a real Android Chrome
 device, and if AR is blocked, the remedy is one line appended to that header:
 `, xr-spatial-tracking=(self)`. The `blocked-by-policy` state exists so that a
@@ -830,19 +853,19 @@ at fault.
 
 Every row renders, every row is truthful, and T-012 covers every row.
 
-| State | Condition | What `[data-testid="xr-status"]` says | What renders |
-|---|---|---|---|
-| `no-webgl` | No WebGL context | "3D is unavailable: this browser or device did not provide a WebGL context." | No canvas. Static HTML fallback: the model's stage list and object labels as real text. No XR controls. |
-| `no-webxr` | WebGL ok; no `navigator.xr`; no Quick Look | "Immersive AR and VR are not available in this browser. The 3D stage below is fully interactive." | 3D scene. XR control **absent**, not disabled-but-present. |
-| `quicklook-only` | No `navigator.xr`; `relList.supports("ar")` | "This browser has no WebXR. Apple's AR Quick Look is available — open the model in AR." | 3D scene + a real `<a rel="ar" href="/models/<name>.usdz">` |
-| `no-device` | `navigator.xr` present; both `isSessionSupported` false | "WebXR is present in this browser, but no immersive VR or AR device was detected." | 3D scene; XR control absent |
-| `blocked-by-policy` | `isSessionSupported` rejected | "Immersive sessions are blocked by this page's permissions policy." | 3D scene; XR control absent; reason named |
-| `ar-only` | ar true, vr false | "Immersive AR is available on this device." | 3D scene + "Enter AR" |
-| `vr-only` | vr true, ar false | "Immersive VR is available on this device." | 3D scene + "Enter VR" |
-| `ar-and-vr` | both true | "Immersive AR and VR are available on this device." | 3D scene + both |
-| `session-rejected` | `requestSession` rejected | "The immersive session did not start: \<reason from the rejection\>." | 3D scene; control re-enabled |
-| `session-running` | live `XRSession` | "Immersive \<ar\|vr\> session is running." | Headset render; page shows an exit control |
-| — | session ended | reverts to `ar-only`/`vr-only`/`ar-and-vr` | 3D scene restored |
+| State               | Condition                                               | What `[data-testid="xr-status"]` says                                                             | What renders                                                                                            |
+| ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `no-webgl`          | No WebGL context                                        | "3D is unavailable: this browser or device did not provide a WebGL context."                      | No canvas. Static HTML fallback: the model's stage list and object labels as real text. No XR controls. |
+| `no-webxr`          | WebGL ok; no `navigator.xr`; no Quick Look              | "Immersive AR and VR are not available in this browser. The 3D stage below is fully interactive." | 3D scene. XR control **absent**, not disabled-but-present.                                              |
+| `quicklook-only`    | No `navigator.xr`; `relList.supports("ar")`             | "This browser has no WebXR. Apple's AR Quick Look is available — open the model in AR."           | 3D scene + a real `<a rel="ar" href="/models/<name>.usdz">`                                             |
+| `no-device`         | `navigator.xr` present; both `isSessionSupported` false | "WebXR is present in this browser, but no immersive VR or AR device was detected."                | 3D scene; XR control absent                                                                             |
+| `blocked-by-policy` | `isSessionSupported` rejected                           | "Immersive sessions are blocked by this page's permissions policy."                               | 3D scene; XR control absent; reason named                                                               |
+| `ar-only`           | ar true, vr false                                       | "Immersive AR is available on this device."                                                       | 3D scene + "Enter AR"                                                                                   |
+| `vr-only`           | vr true, ar false                                       | "Immersive VR is available on this device."                                                       | 3D scene + "Enter VR"                                                                                   |
+| `ar-and-vr`         | both true                                               | "Immersive AR and VR are available on this device."                                               | 3D scene + both                                                                                         |
+| `session-rejected`  | `requestSession` rejected                               | "The immersive session did not start: \<reason from the rejection\>."                             | 3D scene; control re-enabled                                                                            |
+| `session-running`   | live `XRSession`                                        | "Immersive \<ar\|vr\> session is running."                                                        | Headset render; page shows an exit control                                                              |
+| —                   | session ended                                           | reverts to `ar-only`/`vr-only`/`ar-and-vr`                                                        | 3D scene restored                                                                                       |
 
 **The rule T-012 asserts:** the affirmative strings — `in VR`, `XR active`,
 `immersive session running`, `connected` — appear in the DOM in **`session-running`
@@ -869,10 +892,10 @@ WebXR and not as something this page implements.
 - Location: `client/public/models/<name>.usdz` ⇒ `dist/public/models/<name>.usdz`.
   T-012 checks it with `curl -I` returning 200, so it must be a static file, not
   a bundled import.
-- **`.htaccess` needs `AddType model/vnd.usdz+zip .usdz`.** *(Verified: no
+- **`.htaccess` needs `AddType model/vnd.usdz+zip .usdz`.** _(Verified: no
   `AddType` directive of any kind exists in the current `.htaccess`. Inferred:
   stock Apache `mime.types` has no `.usdz` entry, and iOS Quick Look is
-  MIME-sensitive.)* This is the **only** deployment change this architecture
+  MIME-sensitive.)_ This is the **only** deployment change this architecture
   requires, and T-017's fifth criterion should record it. `.glb` needs nothing —
   `GLTFLoader` reads an `ArrayBuffer` and ignores the response MIME type.
 - Both files must be edited in **`client/public/.htaccess`**, which is what
@@ -890,13 +913,13 @@ and writes the same store."**
 
 ### 8.1 `prefers-reduced-motion: reduce`
 
-| Behaviour | Under `reduce` |
-|---|---|
-| 4D autoplay | **Does not start.** The timeline stays fully operable by direct control. (T-006 criterion.) |
-| Render loop | **Invalidation-driven.** Renders only when `revision` changed or an interaction is in flight; stops when the interaction settles. No ambient drift, no auto-orbit. |
-| Physics sandbox | Does not auto-start. Requires the explicit **Run** control. |
-| Camera | `OrbitControls.enableDamping = false` — discrete steps, no easing. |
-| Framer Motion page chrome | The library respects the media query; no bespoke handling. |
+| Behaviour                 | Under `reduce`                                                                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 4D autoplay               | **Does not start.** The timeline stays fully operable by direct control. (T-006 criterion.)                                                                        |
+| Render loop               | **Invalidation-driven.** Renders only when `revision` changed or an interaction is in flight; stops when the interaction settles. No ambient drift, no auto-orbit. |
+| Physics sandbox           | Does not auto-start. Requires the explicit **Run** control.                                                                                                        |
+| Camera                    | `OrbitControls.enableDamping = false` — discrete steps, no easing.                                                                                                 |
+| Framer Motion page chrome | The library respects the media query; no bespoke handling.                                                                                                         |
 
 Observable in the DOM, which T-004 requires: `[data-testid="motion-mode"]` reads
 `reduced` or `full`, and `getRenderStats().frame` stops increasing within 500 ms
@@ -995,11 +1018,11 @@ to catch, and it is why the check is mechanical.
 
 ### 9.4 Sub-splits — three chunks, not one
 
-| Chunk | Contains | Loaded when | Third-party gzip |
-|---|---|---|---|
-| `vendor-three` + `DimensionsStage` | three, GLTFLoader, OrbitControls, projector, store, 3D + 4D + 7D | on entering `/dimensions` | **159.73 kB** |
-| `vendor-physics` | cannon-es + the 5D sandbox | first time the 5D panel is opened | **25.16 kB** |
-| `vendor-collab` | realtime-js, postgrest-js, the transport adapter | when the user clicks **Join the shared stage** (§6.3) | **22.36 kB** |
+| Chunk                              | Contains                                                         | Loaded when                                           | Third-party gzip |
+| ---------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------- | ---------------- |
+| `vendor-three` + `DimensionsStage` | three, GLTFLoader, OrbitControls, projector, store, 3D + 4D + 7D | on entering `/dimensions`                             | **159.73 kB**    |
+| `vendor-physics`                   | cannon-es + the 5D sandbox                                       | first time the 5D panel is opened                     | **25.16 kB**     |
+| `vendor-collab`                    | realtime-js, postgrest-js, the transport adapter                 | when the user clicks **Join the shared stage** (§6.3) | **22.36 kB**     |
 
 Third-party total for the chosen stack: **207.26 kB gzip**, of which only 159.73 kB
 loads on route entry. The rejected stack (R3F + drei + rapier + supabase-js) totals
@@ -1048,14 +1071,14 @@ baseline. Headroom: **12.92 kB gzip**.
 What this feature adds to the entry chunk (**Inferred** — these are estimates from
 comparable source sizes in this repo, not measurements; T-015 measures the truth):
 
-| Addition | Est. gzip |
-|---|---|
-| `pages/Dimensions.tsx` route shell + degradation panels | ~2 kB |
-| `dimensions/contract.ts` | <0.5 kB |
-| T-013 Home teaser + AGL card | ~1.5 kB |
-| T-014 level badge + filter on Products | ~0.8 kB |
-| Navigation entry, `lazy`/`Suspense` | ~0 (React 19 already present) |
-| **Total** | **~5 kB** |
+| Addition                                                | Est. gzip                     |
+| ------------------------------------------------------- | ----------------------------- |
+| `pages/Dimensions.tsx` route shell + degradation panels | ~2 kB                         |
+| `dimensions/contract.ts`                                | <0.5 kB                       |
+| T-013 Home teaser + AGL card                            | ~1.5 kB                       |
+| T-014 level badge + filter on Products                  | ~0.8 kB                       |
+| Navigation entry, `lazy`/`Suspense`                     | ~0 (React 19 already present) |
+| **Total**                                               | **~5 kB**                     |
 
 That fits, with margin — **provided §9.3 holds.** `framer-motion` and
 `lucide-react` are already in the entry chunk, so the new page reusing them costs
@@ -1069,8 +1092,8 @@ requests for the 3D chunk. The teaser is therefore **static markup only**:
 - Five cards, one per level, with a CSS-transform depth motif — no WebGL, no
   canvas.
 - One inline SVG isometric wireframe, a few hundred bytes, part of the HTML.
-- **The copy does not overstate what it is.** The CTA reads *"Open the live 3D–7D
-  stage"* — it points at the live thing. It never says "3D preview", because a
+- **The copy does not overstate what it is.** The CTA reads _"Open the live 3D–7D
+  stage"_ — it points at the live thing. It never says "3D preview", because a
   static SVG is not a preview of a 3D scene, and calling it one is precisely the
   small lie this feature exists to avoid.
 - **No `rel="prefetch"` or `rel="modulepreload"` for the 3D chunk on `/`.** Vite
@@ -1102,21 +1125,37 @@ export interface DimensionsTestHook {
   /** The authoritative store snapshot (§5.2). */
   getState(): SceneState;
   /** From three's renderer.info. null before the first frame. */
-  getRenderStats(): { frame: number; calls: number; triangles: number; programs: number } | null;
+  getRenderStats(): {
+    frame: number;
+    calls: number;
+    triangles: number;
+    programs: number;
+  } | null;
   getCamera(): { position: Vec3; target: Vec3; distance: number };
   /** null until the 5D physics chunk has loaded. */
-  getPhysics(): { steps: number; bodies: Record<string, { position: Vec3; velocity: Vec3 }> } | null;
+  getPhysics(): {
+    steps: number;
+    bodies: Record<string, { position: Vec3; velocity: Vec3 }>;
+  } | null;
   getTransport(): {
-    status: TransportStatus; actorCount: number;
-    actors: readonly ActorId[]; opsApplied: number; opsRejected: number;
+    status: TransportStatus;
+    actorCount: number;
+    actors: readonly ActorId[];
+    opsApplied: number;
+    opsRejected: number;
   };
   getXR(): {
-    state: XrUiState; supported: { vr: boolean; ar: boolean } | null;
-    sessionMode: "immersive-ar" | "immersive-vr" | null; xrFrames: number;
+    state: XrUiState;
+    supported: { vr: boolean; ar: boolean } | null;
+    sessionMode: "immersive-ar" | "immersive-vr" | null;
+    xrFrames: number;
   };
   getLiveData(): {
-    source: string; status: "idle" | "loading" | "ok" | "error";
-    fetchedAt: number | null; value: unknown; error: string | null;
+    source: string;
+    status: "idle" | "loading" | "ok" | "error";
+    fetchedAt: number | null;
+    value: unknown;
+    error: string | null;
   };
 }
 ```
@@ -1166,12 +1205,14 @@ export type DimensionLevel = (typeof DIMENSION_LEVELS)[number];
 
 export interface DimensionLevelMeta {
   level: DimensionLevel;
-  short: string;    // "Spatial model"
-  label: string;    // "3D — Spatial model and navigation"
+  short: string; // "Spatial model"
+  label: string; // "3D — Spatial model and navigation"
   summary: string;
 }
 
-export const DIMENSION_LEVEL_META: Readonly<Record<DimensionLevel, DimensionLevelMeta>>;
+export const DIMENSION_LEVEL_META: Readonly<
+  Record<DimensionLevel, DimensionLevelMeta>
+>;
 
 /** A product's HIGHEST verified dimensional capability.
  *  undefined means UNKNOWN. It never means "none" and never means "3D". */
@@ -1191,7 +1232,7 @@ type from there and from nowhere else.
    never set it.** Checkable: `grep -n "dimensionLevel" client/src/pages/ProductDetail.tsx`
    shows it only inside `productDatabase` entries, never inside the generator
    body. This matters because 49 of the 58 listed products currently render a
-   *generated* detail page, and a capability claim attached to that generator
+   _generated_ detail page, and a capability claim attached to that generator
    would put an invented technical assertion on 49 pages.
 4. The value is a **claim about a real product** and requires a source. Until OQ-3
    names one, the correct number of products carrying the field is **zero**, and
@@ -1200,7 +1241,7 @@ type from there and from nowhere else.
 
 ### 11.2 What this forecloses — stated, per the brief
 
-**It forecloses one plausible OQ-3 answer: that a product carries *several* levels
+**It forecloses one plausible OQ-3 answer: that a product carries _several_ levels
 at once** (e.g. "3D and 5D but not 4D"). `DimensionLevel | undefined` models a
 single highest level.
 
@@ -1276,10 +1317,10 @@ convention. `shared/` is not used: nothing here is shared with `server/`, and
 
 ## 13. Environment variables
 
-| Variable | Purpose | Where |
-|---|---|---|
-| `VITE_SUPABASE_URL` | Realtime + PostgREST base URL | `deploy.yml:52-59` `env:` block |
-| `VITE_SUPABASE_ANON_KEY` | Anon key. Public by design; safe only because of T-009's RLS. | same |
+| Variable                 | Purpose                                                       | Where                           |
+| ------------------------ | ------------------------------------------------------------- | ------------------------------- |
+| `VITE_SUPABASE_URL`      | Realtime + PostgREST base URL                                 | `deploy.yml:52-59` `env:` block |
+| `VITE_SUPABASE_ANON_KEY` | Anon key. Public by design; safe only because of T-009's RLS. | same                            |
 
 Both absent ⇒ `createTransport()` returns `nullTransport` and the UI reports
 `unconfigured`. **Absence degrades honestly; it never breaks the page and never
@@ -1320,29 +1361,29 @@ architecture that changes the deploy surface.
 
 ## 15. Open questions this design deliberately does not answer
 
-| OQ | Blocks | The seam left for it |
-|---|---|---|
-| OQ-1 — what "AI" means in 5D | T-008 | `ScenarioSolver` + `SolverDisclosure` (§4). All three answers implement it. Only the Edge Function answer changes deployment. |
-| OQ-2 — what "remote device control" controls | T-011 | Not designed. `TransportStatus` and the honest-unavailable pattern (§7.2) generalise to it. If OQ-2 has no good answer, 6D ships as multi-user + digital twin and remote device control is **NOT RUN with the reason**. |
-| OQ-3 — source of truth for per-product level | T-014 | `contract.ts` (§11). Source-agnostic. Forecloses only the multi-level-per-product reading, and §11.2 gives the widening. |
-| OQ-4 — Supabase + RLS as the 6D data plane | T-009 | Answered by D-6D-TRANSPORT, **conditional on §3.4's preconditions**, which are unverified. |
-| The existing simulated chat widget | — | Out of scope. **Noted:** `client/src/components/AIChatWidget.tsx` is mounted globally at `client/src/App.tsx:49`, so it renders on `/dimensions` too. A page whose contract is "never claim a capability that is not active", sharing a viewport with a regex engine presented as an AI assistant, is a coherence problem for T-018's honesty audit. Not this design's to fix; flagged so it is not discovered at the verdict. |
+| OQ                                           | Blocks | The seam left for it                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| OQ-1 — what "AI" means in 5D                 | T-008  | `ScenarioSolver` + `SolverDisclosure` (§4). All three answers implement it. Only the Edge Function answer changes deployment.                                                                                                                                                                                                                                                                                                  |
+| OQ-2 — what "remote device control" controls | T-011  | Not designed. `TransportStatus` and the honest-unavailable pattern (§7.2) generalise to it. If OQ-2 has no good answer, 6D ships as multi-user + digital twin and remote device control is **NOT RUN with the reason**.                                                                                                                                                                                                        |
+| OQ-3 — source of truth for per-product level | T-014  | `contract.ts` (§11). Source-agnostic. Forecloses only the multi-level-per-product reading, and §11.2 gives the widening.                                                                                                                                                                                                                                                                                                       |
+| OQ-4 — Supabase + RLS as the 6D data plane   | T-009  | Answered by D-6D-TRANSPORT, **conditional on §3.4's preconditions**, which are unverified.                                                                                                                                                                                                                                                                                                                                     |
+| The existing simulated chat widget           | —      | Out of scope. **Noted:** `client/src/components/AIChatWidget.tsx` is mounted globally at `client/src/App.tsx:49`, so it renders on `/dimensions` too. A page whose contract is "never claim a capability that is not active", sharing a viewport with a regex engine presented as an AI assistant, is a coherence problem for T-018's honesty audit. Not this design's to fix; flagged so it is not discovered at the verdict. |
 
 ---
 
 ## 16. Summary of decisions
 
-| ID | Decision | Strongest reason |
-|---|---|---|
-| **D-3D-RUNTIME** | raw `three@0.185.1` + `OrbitControls` + `GLTFLoader`. No R3F, no drei, no `@react-three/xr`. | `@react-three/fiber@9.7.0` contains **zero** occurrences of `xr` (Verified), while `three` delegates `setAnimationLoop` to `xr` at `WebGLRenderer.js:1584` (Verified). 7D is a requirement, not an extra. |
-| **D-5D-PHYSICS** | `cannon-es@0.20.0`, main thread, `fixedStep()`. | 25.16 kB vs rapier's 1083.72 kB gzip — **43.1×** (Verified). Staleness (last release 2022-08-12, Verified) accepted with named controls; owner Security/T-016. |
-| **D-6D-TRANSPORT** | Supabase Realtime + PostgREST via `realtime-js` + `postgrest-js`, behind `CollaborationTransport`. | A WebSocket host has nowhere to run — deployment is `rsync dist/public/` to shared hosting (Verified, `deploy.yml:76-81`). |
-| **D-5D-AI** | **OPEN** — seam decided (`ScenarioSolver` + `SolverDisclosure`), policy left to the user. | OQ-1 is the user's call; the three options differ in deployment surface. Disclosure is enforced by the type, not by copy review. |
-| **D-7D-DETECT** | 4-step probe; 11 enumerated UI states; a rejected `isSessionSupported` maps to `blocked-by-policy`, never to "unsupported". | `.htaccess:51` sets a `Permissions-Policy`, so "blocked by policy" is a live possibility that must not be reported as a browser deficiency. |
-| **D-SPLIT** | One lazy entry, `@/dimensions/DimensionsStage`; three vendor chunks; a grep-enforced import rule. | One missing `import type` pulls 159.73 kB gzip (Verified) onto every page. Mechanical checks, not convention. |
-| **D-STATE** | Plain serializable store; scene graph is a derived projection; `projector.ts` is the only mutation site. | 4D purity, 6D serialization, 7D reuse and GPU-free tests all fail if state lives in `Object3D`. |
-| **D-HOOK** | `window.__AGL_DIMENSIONS__`, read-only, present in production. | `VERIFY.md` forbids a UI PASS on inspection; a dev-only hook would verify an artifact that is not the deployed one. |
-| **D-A11Y** | Parallel DOM control tree; invalidation-driven loop; reduced motion stops autoplay and ambient render. | A WebGL canvas is opaque to assistive technology; `QUALITY.md:46` forbids ignoring that. |
+| ID                 | Decision                                                                                                                    | Strongest reason                                                                                                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **D-3D-RUNTIME**   | raw `three@0.185.1` + `OrbitControls` + `GLTFLoader`. No R3F, no drei, no `@react-three/xr`.                                | `@react-three/fiber@9.7.0` contains **zero** occurrences of `xr` (Verified), while `three` delegates `setAnimationLoop` to `xr` at `WebGLRenderer.js:1584` (Verified). 7D is a requirement, not an extra. |
+| **D-5D-PHYSICS**   | `cannon-es@0.20.0`, main thread, `fixedStep()`.                                                                             | 25.16 kB vs rapier's 1083.72 kB gzip — **43.1×** (Verified). Staleness (last release 2022-08-12, Verified) accepted with named controls; owner Security/T-016.                                            |
+| **D-6D-TRANSPORT** | Supabase Realtime + PostgREST via `realtime-js` + `postgrest-js`, behind `CollaborationTransport`.                          | A WebSocket host has nowhere to run — deployment is `rsync dist/public/` to shared hosting (Verified, `deploy.yml:76-81`).                                                                                |
+| **D-5D-AI**        | **OPEN** — seam decided (`ScenarioSolver` + `SolverDisclosure`), policy left to the user.                                   | OQ-1 is the user's call; the three options differ in deployment surface. Disclosure is enforced by the type, not by copy review.                                                                          |
+| **D-7D-DETECT**    | 4-step probe; 11 enumerated UI states; a rejected `isSessionSupported` maps to `blocked-by-policy`, never to "unsupported". | `.htaccess:51` sets a `Permissions-Policy`, so "blocked by policy" is a live possibility that must not be reported as a browser deficiency.                                                               |
+| **D-SPLIT**        | One lazy entry, `@/dimensions/DimensionsStage`; three vendor chunks; a grep-enforced import rule.                           | One missing `import type` pulls 159.73 kB gzip (Verified) onto every page. Mechanical checks, not convention.                                                                                             |
+| **D-STATE**        | Plain serializable store; scene graph is a derived projection; `projector.ts` is the only mutation site.                    | 4D purity, 6D serialization, 7D reuse and GPU-free tests all fail if state lives in `Object3D`.                                                                                                           |
+| **D-HOOK**         | `window.__AGL_DIMENSIONS__`, read-only, present in production.                                                              | `VERIFY.md` forbids a UI PASS on inspection; a dev-only hook would verify an artifact that is not the deployed one.                                                                                       |
+| **D-A11Y**         | Parallel DOM control tree; invalidation-driven loop; reduced motion stops autoplay and ambient render.                      | A WebGL canvas is opaque to assistive technology; `QUALITY.md:46` forbids ignoring that.                                                                                                                  |
 
 ---
 

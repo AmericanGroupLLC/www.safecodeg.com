@@ -19,15 +19,16 @@
  * `createSupabaseTransport` rather than mocking the module, unlike
  * `dimensions-transport-index.test.ts`.
  */
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { createSupabaseTransport } from '@/dimensions/transport/supabaseTransport';
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { createSupabaseTransport } from "@/dimensions/transport/supabaseTransport";
 
 function mockPostgrestFetch(bodyText: string, status = 200): typeof fetch {
-  return vi.fn(async () =>
-    new Response(bodyText, {
-      status,
-      headers: { 'content-type': 'application/json' },
-    }),
+  return vi.fn(
+    async () =>
+      new Response(bodyText, {
+        status,
+        headers: { "content-type": "application/json" },
+      })
   ) as unknown as typeof fetch;
 }
 
@@ -40,25 +41,30 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('createSupabaseTransport — loadSnapshot validates the stored row (T-016 S-2)', () => {
-  it('returns a well-formed row, translating saved_at to savedAt', async () => {
+describe("createSupabaseTransport — loadSnapshot validates the stored row (T-016 S-2)", () => {
+  it("returns a well-formed row, translating saved_at to savedAt", async () => {
     vi.stubGlobal(
-      'fetch',
-      mockPostgrestFetch(`{"objects":{"obj-1":${VALID_OBJECT_JSON}},"revision":3,"saved_at":123456}`),
+      "fetch",
+      mockPostgrestFetch(
+        `{"objects":{"obj-1":${VALID_OBJECT_JSON}},"revision":3,"saved_at":123456}`
+      )
     );
-    const transport = createSupabaseTransport('https://example.supabase.co', 'anon-key-value');
-    const loaded = await transport.loadSnapshot('dimensions-demo');
+    const transport = createSupabaseTransport(
+      "https://example.supabase.co",
+      "anon-key-value"
+    );
+    const loaded = await transport.loadSnapshot("dimensions-demo");
     expect(loaded).toEqual({
       objects: {
-        'obj-1': {
-          id: 'obj-1',
-          kind: 'crate-closed',
+        "obj-1": {
+          id: "obj-1",
+          kind: "crate-closed",
           position: { x: 9, y: 9, z: 9 },
           rotation: { x: 0, y: 0, z: 0, w: 1 },
           scale: { x: 1, y: 1, z: 1 },
           visible: true,
           stage: null,
-          label: 'Closed crate',
+          label: "Closed crate",
           rev: { seq: 0, actorId: null },
         },
       },
@@ -67,10 +73,13 @@ describe('createSupabaseTransport — loadSnapshot validates the stored row (T-0
     });
   });
 
-  it('resolves null when no row exists for the room (PostgREST returns an empty body)', async () => {
-    vi.stubGlobal('fetch', mockPostgrestFetch(''));
-    const transport = createSupabaseTransport('https://example.supabase.co', 'anon-key-value');
-    const loaded = await transport.loadSnapshot('dimensions-demo');
+  it("resolves null when no row exists for the room (PostgREST returns an empty body)", async () => {
+    vi.stubGlobal("fetch", mockPostgrestFetch(""));
+    const transport = createSupabaseTransport(
+      "https://example.supabase.co",
+      "anon-key-value"
+    );
+    const loaded = await transport.loadSnapshot("dimensions-demo");
     expect(loaded).toBeNull();
   });
 
@@ -82,18 +91,21 @@ describe('createSupabaseTransport — loadSnapshot validates the stored row (T-0
    * hostile once parsed. §6.5: "NaN and Infinity are rejected before they
    * can poison the physics integrator or the projector."
    */
-  it('discards a stored row whose position is Infinity rather than returning it', async () => {
+  it("discards a stored row whose position is Infinity rather than returning it", async () => {
     vi.stubGlobal(
-      'fetch',
+      "fetch",
       mockPostgrestFetch(
         '{"objects":{"obj-1":{"id":"obj-1","kind":"crate-closed","position":{"x":1e309,"y":0,"z":0},' +
           '"rotation":{"x":0,"y":0,"z":0,"w":1},"scale":{"x":1,"y":1,"z":1},"visible":true,"stage":null,' +
-          '"label":"Closed crate","rev":{"seq":0,"actorId":null}}},"revision":1,"saved_at":1}',
-      ),
+          '"label":"Closed crate","rev":{"seq":0,"actorId":null}}},"revision":1,"saved_at":1}'
+      )
     );
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const transport = createSupabaseTransport('https://example.supabase.co', 'anon-key-value');
-    const loaded = await transport.loadSnapshot('dimensions-demo');
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const transport = createSupabaseTransport(
+      "https://example.supabase.co",
+      "anon-key-value"
+    );
+    const loaded = await transport.loadSnapshot("dimensions-demo");
 
     expect(loaded).toBeNull();
     expect(warnSpy).toHaveBeenCalled();
@@ -105,32 +117,44 @@ describe('createSupabaseTransport — loadSnapshot validates the stored row (T-0
    * value into. This literal is far beyond `Number.MAX_SAFE_INTEGER` while
    * still being syntactically a normal (if huge) JSON integer.
    */
-  it('discards a stored row whose revision exceeds Number.MAX_SAFE_INTEGER', async () => {
+  it("discards a stored row whose revision exceeds Number.MAX_SAFE_INTEGER", async () => {
     vi.stubGlobal(
-      'fetch',
-      mockPostgrestFetch(`{"objects":{},"revision":90071992547409929999,"saved_at":1}`),
+      "fetch",
+      mockPostgrestFetch(
+        `{"objects":{},"revision":90071992547409929999,"saved_at":1}`
+      )
     );
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const transport = createSupabaseTransport('https://example.supabase.co', 'anon-key-value');
-    const loaded = await transport.loadSnapshot('dimensions-demo');
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const transport = createSupabaseTransport(
+      "https://example.supabase.co",
+      "anon-key-value"
+    );
+    const loaded = await transport.loadSnapshot("dimensions-demo");
 
     expect(loaded).toBeNull();
     expect(warnSpy).toHaveBeenCalled();
     warnSpy.mockRestore();
   });
 
-  it('discards a stored row with more objects than the cap', async () => {
+  it("discards a stored row with more objects than the cap", async () => {
     const objects: string[] = [];
     for (let i = 0; i < 200; i++) {
-      objects.push(`"obj-${i}":${VALID_OBJECT_JSON.replace('"obj-1"', `"obj-${i}"`)}`);
+      objects.push(
+        `"obj-${i}":${VALID_OBJECT_JSON.replace('"obj-1"', `"obj-${i}"`)}`
+      );
     }
     vi.stubGlobal(
-      'fetch',
-      mockPostgrestFetch(`{"objects":{${objects.join(',')}},"revision":1,"saved_at":1}`),
+      "fetch",
+      mockPostgrestFetch(
+        `{"objects":{${objects.join(",")}},"revision":1,"saved_at":1}`
+      )
     );
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const transport = createSupabaseTransport('https://example.supabase.co', 'anon-key-value');
-    const loaded = await transport.loadSnapshot('dimensions-demo');
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const transport = createSupabaseTransport(
+      "https://example.supabase.co",
+      "anon-key-value"
+    );
+    const loaded = await transport.loadSnapshot("dimensions-demo");
 
     expect(loaded).toBeNull();
     warnSpy.mockRestore();

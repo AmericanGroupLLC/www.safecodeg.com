@@ -22,9 +22,15 @@
  * Real timers are used (RESPONSE_DELAY_MS is a flat 500ms — see
  * ai-chat-widget-honesty.test.tsx for why), so no fake-timer/async race.
  */
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
-import AIChatWidget from '@/components/AIChatWidget';
+import { describe, it, expect, vi, afterEach } from "vitest";
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  waitFor,
+} from "@testing-library/react";
+import AIChatWidget from "@/components/AIChatWidget";
 
 // jsdom does not implement scrollIntoView; AIChatWidget calls it on every
 // new message to keep the transcript pinned to the bottom.
@@ -42,46 +48,76 @@ const TIMEOUT = 3000;
  * and send the confirmation itself. */
 async function openWidgetAndReachReview() {
   render(<AIChatWidget />);
-  fireEvent.click(screen.getByRole('button', { name: /chat with sophia/i }));
-  await screen.findByText(/what can i help you with today/i, {}, { timeout: TIMEOUT });
+  fireEvent.click(screen.getByRole("button", { name: /chat with sophia/i }));
+  await screen.findByText(
+    /what can i help you with today/i,
+    {},
+    { timeout: TIMEOUT }
+  );
 
   const input = () => screen.getByPlaceholderText(/message sophia/i);
-  const sendBtn = () => screen.getByRole('button', { name: /^send$/i });
+  const sendBtn = () => screen.getByRole("button", { name: /^send$/i });
   const say = (text: string) => {
     fireEvent.change(input(), { target: { value: text } });
     fireEvent.click(sendBtn());
   };
 
-  say('send a message');
-  await screen.findByText(/first — what's your name/i, {}, { timeout: TIMEOUT });
+  say("send a message");
+  await screen.findByText(
+    /first — what's your name/i,
+    {},
+    { timeout: TIMEOUT }
+  );
 
-  say('Jane Visitor');
-  await screen.findByText(/what's your email address/i, {}, { timeout: TIMEOUT });
+  say("Jane Visitor");
+  await screen.findByText(
+    /what's your email address/i,
+    {},
+    { timeout: TIMEOUT }
+  );
 
-  say('jane@example.com');
-  await screen.findByText(/what company or organization/i, {}, { timeout: TIMEOUT });
+  say("jane@example.com");
+  await screen.findByText(
+    /what company or organization/i,
+    {},
+    { timeout: TIMEOUT }
+  );
 
-  say('Acme Inc');
-  await screen.findByText(/what's your message or question/i, {}, { timeout: TIMEOUT });
+  say("Acme Inc");
+  await screen.findByText(
+    /what's your message or question/i,
+    {},
+    { timeout: TIMEOUT }
+  );
 
-  say('I would like a product demo, please get back to me');
-  await screen.findByText(/shall i send this to the agl team/i, {}, { timeout: TIMEOUT });
+  say("I would like a product demo, please get back to me");
+  await screen.findByText(
+    /shall i send this to the agl team/i,
+    {},
+    { timeout: TIMEOUT }
+  );
 }
 
-describe('AIChatWidget — confirming the form actually submits it, and only reports what happened', () => {
-  it('POSTs to Web3Forms with the same shape Contact.tsx uses, and reports success only once data.success is confirmed', async () => {
+describe("AIChatWidget — confirming the form actually submits it, and only reports what happened", () => {
+  it("POSTs to Web3Forms with the same shape Contact.tsx uses, and reports success only once data.success is confirmed", async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ success: true }),
     });
-    vi.stubGlobal('fetch', mockFetch);
+    vi.stubGlobal("fetch", mockFetch);
 
     await openWidgetAndReachReview();
-    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), { target: { value: 'yes' } });
-    fireEvent.click(screen.getByRole('button', { name: /^send$/i }));
+    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), {
+      target: { value: "yes" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^send$/i }));
 
-    const successLine = await screen.findByText(/has been sent to the agl team/i, {}, { timeout: TIMEOUT });
-    const bubbleText = successLine.parentElement?.textContent ?? '';
+    const successLine = await screen.findByText(
+      /has been sent to the agl team/i,
+      {},
+      { timeout: TIMEOUT }
+    );
+    const bubbleText = successLine.parentElement?.textContent ?? "";
     expect(bubbleText).toMatch(/jane@example\.com/);
     // Consistent with Contact.tsx's own SLA wording ("1–2 business days"),
     // not a tighter, invented promise.
@@ -90,67 +126,91 @@ describe('AIChatWidget — confirming the form actually submits it, and only rep
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
     const [url, options] = mockFetch.mock.calls[0];
-    expect(url).toBe('https://api.web3forms.com/submit');
-    expect(options.method).toBe('POST');
+    expect(url).toBe("https://api.web3forms.com/submit");
+    expect(options.method).toBe("POST");
     const body = JSON.parse(options.body);
-    expect(body.access_key).toBe('97f985ce-75d3-47e8-b941-3e85db2e7395');
-    expect(body.name).toBe('Jane Visitor');
-    expect(body.email).toBe('jane@example.com');
-    expect(body.company).toBe('Acme Inc');
-    expect(body.message).toContain('product demo');
-    expect(body.botcheck).toBe('');
+    expect(body.access_key).toBe("97f985ce-75d3-47e8-b941-3e85db2e7395");
+    expect(body.name).toBe("Jane Visitor");
+    expect(body.email).toBe("jane@example.com");
+    expect(body.company).toBe("Acme Inc");
+    expect(body.message).toContain("product demo");
+    expect(body.botcheck).toBe("");
   });
 
-  it('a request Web3Forms itself rejects (data.success: false) produces an honest failure message with a working alternative route, never a success claim', async () => {
+  it("a request Web3Forms itself rejects (data.success: false) produces an honest failure message with a working alternative route, never a success claim", async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ success: false, message: 'Invalid access key' }),
+      json: async () => ({ success: false, message: "Invalid access key" }),
     });
-    vi.stubGlobal('fetch', mockFetch);
+    vi.stubGlobal("fetch", mockFetch);
 
     await openWidgetAndReachReview();
-    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), { target: { value: 'yes' } });
-    fireEvent.click(screen.getByRole('button', { name: /^send$/i }));
+    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), {
+      target: { value: "yes" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^send$/i }));
 
-    await screen.findByText(/contact@safecodeg\.com/i, {}, { timeout: TIMEOUT });
+    await screen.findByText(
+      /contact@safecodeg\.com/i,
+      {},
+      { timeout: TIMEOUT }
+    );
     expect(screen.queryByText(/has been sent to the agl team/i)).toBeNull();
     expect(screen.queryByText(/done! ✅/i)).toBeNull();
 
-    const contactLink = await screen.findByRole('link', { name: /visit contact page/i });
-    expect(contactLink.getAttribute('href')).toBe('/contact');
+    const contactLink = await screen.findByRole("link", {
+      name: /visit contact page/i,
+    });
+    expect(contactLink.getAttribute("href")).toBe("/contact");
   });
 
-  it('a rejected fetch (network failure) also produces the honest failure message, never a success claim', async () => {
-    const mockFetch = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
-    vi.stubGlobal('fetch', mockFetch);
+  it("a rejected fetch (network failure) also produces the honest failure message, never a success claim", async () => {
+    const mockFetch = vi
+      .fn()
+      .mockRejectedValue(new TypeError("Failed to fetch"));
+    vi.stubGlobal("fetch", mockFetch);
 
     await openWidgetAndReachReview();
-    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), { target: { value: 'yes' } });
-    fireEvent.click(screen.getByRole('button', { name: /^send$/i }));
+    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), {
+      target: { value: "yes" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^send$/i }));
 
-    await screen.findByText(/contact@safecodeg\.com/i, {}, { timeout: TIMEOUT });
+    await screen.findByText(
+      /contact@safecodeg\.com/i,
+      {},
+      { timeout: TIMEOUT }
+    );
     expect(screen.queryByText(/has been sent to the agl team/i)).toBeNull();
     expect(screen.queryByText(/done! ✅/i)).toBeNull();
   });
 
-  it('while the request is in flight, no success message appears yet and the input is disabled', async () => {
+  it("while the request is in flight, no success message appears yet and the input is disabled", async () => {
     let resolveFetch: (v: unknown) => void = () => {};
-    const pending = new Promise((resolve) => {
+    const pending = new Promise(resolve => {
       resolveFetch = resolve;
     });
     const mockFetch = vi.fn().mockReturnValue(pending);
-    vi.stubGlobal('fetch', mockFetch);
+    vi.stubGlobal("fetch", mockFetch);
 
     await openWidgetAndReachReview();
-    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), { target: { value: 'yes' } });
-    fireEvent.click(screen.getByRole('button', { name: /^send$/i }));
+    fireEvent.change(screen.getByPlaceholderText(/message sophia/i), {
+      target: { value: "yes" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^send$/i }));
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
     // The request is still pending — nothing has confirmed delivery yet.
     expect(screen.queryByText(/has been sent to the agl team/i)).toBeNull();
-    expect(screen.getByPlaceholderText(/message sophia|sending/i)).toBeDisabled();
+    expect(
+      screen.getByPlaceholderText(/message sophia|sending/i)
+    ).toBeDisabled();
 
     resolveFetch({ ok: true, json: async () => ({ success: true }) });
-    await screen.findByText(/has been sent to the agl team/i, {}, { timeout: TIMEOUT });
+    await screen.findByText(
+      /has been sent to the agl team/i,
+      {},
+      { timeout: TIMEOUT }
+    );
   });
 });

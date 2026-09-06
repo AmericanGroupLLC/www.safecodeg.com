@@ -20,16 +20,27 @@ export interface SceneOutlineProps {
   onSelect: (id: string | null) => void;
 }
 
-export default function SceneOutline({ items, selectedId, onSelect }: SceneOutlineProps) {
+export default function SceneOutline({
+  items,
+  selectedId,
+  onSelect,
+}: SceneOutlineProps) {
   if (items.length === 0) return null;
 
   return (
     <div className="mb-4">
-      <div className="text-[10px] uppercase tracking-widest font-mono mb-2" style={{ color: "rgba(167,139,250,0.6)" }}>
+      <div
+        className="text-[10px] uppercase tracking-widest font-mono mb-2"
+        style={{ color: "rgba(167,139,250,0.6)" }}
+      >
         Scene objects
       </div>
-      <ul className="flex flex-wrap gap-2" aria-label="Selectable scene objects" data-testid="dimensions-scene-outline">
-        {items.map((item) => {
+      <ul
+        className="flex flex-wrap gap-2"
+        aria-label="Selectable scene objects"
+        data-testid="dimensions-scene-outline"
+      >
+        {items.map(item => {
           const pressed = item.id === selectedId;
           return (
             <li key={item.id}>
@@ -40,9 +51,15 @@ export default function SceneOutline({ items, selectedId, onSelect }: SceneOutli
                 onClick={() => onSelect(pressed ? null : item.id)}
                 className="text-xs font-medium px-3 py-1.5 rounded-full transition-all"
                 style={{
-                  background: pressed ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.04)",
-                  border: pressed ? "1px solid rgba(245,158,11,0.5)" : "1px solid rgba(255,255,255,0.08)",
-                  color: pressed ? "rgba(252,211,77,1)" : "rgba(255,255,255,0.6)",
+                  background: pressed
+                    ? "rgba(245,158,11,0.2)"
+                    : "rgba(255,255,255,0.04)",
+                  border: pressed
+                    ? "1px solid rgba(245,158,11,0.5)"
+                    : "1px solid rgba(255,255,255,0.08)",
+                  color: pressed
+                    ? "rgba(252,211,77,1)"
+                    : "rgba(255,255,255,0.6)",
                 }}
               >
                 {item.label}

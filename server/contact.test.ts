@@ -28,7 +28,8 @@ const validInput = {
   email: "jane@example.com",
   company: "Acme Corp",
   subject: "Product Demo Request",
-  message: "We would like to schedule a demo of CogniCore AI for our enterprise team.",
+  message:
+    "We would like to schedule a demo of CogniCore AI for our enterprise team.",
 };
 
 describe("contact.submit", () => {
@@ -41,7 +42,9 @@ describe("contact.submit", () => {
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => [{ id: "test-uuid-1234", ...validInput, status: "new" }],
+        json: async () => [
+          { id: "test-uuid-1234", ...validInput, status: "new" },
+        ],
       })
       // Mock notification service
       .mockResolvedValueOnce({
@@ -64,7 +67,9 @@ describe("contact.submit", () => {
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => [{ id: "test-uuid-5678", ...validInput, status: "new" }],
+        json: async () => [
+          { id: "test-uuid-5678", ...validInput, status: "new" },
+        ],
       })
       // Mock notification service fails
       .mockRejectedValueOnce(new Error("Notification service unavailable"));
@@ -132,7 +137,16 @@ describe("contact.submit", () => {
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => [{ id: "test-uuid-no-company", name: validInput.name, email: validInput.email, subject: validInput.subject, message: validInput.message, status: "new" }],
+        json: async () => [
+          {
+            id: "test-uuid-no-company",
+            name: validInput.name,
+            email: validInput.email,
+            subject: validInput.subject,
+            message: validInput.message,
+            status: "new",
+          },
+        ],
       })
       .mockResolvedValueOnce({
         ok: true,

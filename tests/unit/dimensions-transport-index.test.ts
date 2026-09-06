@@ -15,16 +15,27 @@
  * requires a live anon key this repo does not have — see this task's
  * report), not something this suite needs a real network for.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { ActorId, CollaborationTransport, ObjectId, SceneOp } from '@/dimensions/transport/types';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type {
+  ActorId,
+  CollaborationTransport,
+  ObjectId,
+  SceneOp,
+} from "@/dimensions/transport/types";
 
-const { createSupabaseTransport } = vi.hoisted(() => ({ createSupabaseTransport: vi.fn() }));
+const { createSupabaseTransport } = vi.hoisted(() => ({
+  createSupabaseTransport: vi.fn(),
+}));
 
-vi.mock('@/dimensions/transport/supabaseTransport', () => ({ createSupabaseTransport }));
+vi.mock("@/dimensions/transport/supabaseTransport", () => ({
+  createSupabaseTransport,
+}));
 
-function stubRealTransport(overrides: Partial<CollaborationTransport> = {}): CollaborationTransport {
+function stubRealTransport(
+  overrides: Partial<CollaborationTransport> = {}
+): CollaborationTransport {
   return {
-    status: { kind: 'idle' },
+    status: { kind: "idle" },
     join: vi.fn(async () => {}),
     leave: vi.fn(async () => {}),
     publish: vi.fn(async () => {}),
@@ -37,7 +48,11 @@ function stubRealTransport(overrides: Partial<CollaborationTransport> = {}): Col
   };
 }
 
-const self = { actorId: 'a' as ActorId, displayName: 'Ada', colorHex: '#112233' };
+const self = {
+  actorId: "a" as ActorId,
+  displayName: "Ada",
+  colorHex: "#112233",
+};
 
 beforeEach(() => {
   createSupabaseTransport.mockReset();
@@ -48,78 +63,81 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe('createTransport — env-based selection (§6.2, §13)', () => {
-  it('returns the null transport, honestly unconfigured, when both env vars are absent', async () => {
-    vi.stubEnv('VITE_SUPABASE_URL', '');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', '');
-    const { createTransport } = await import('@/dimensions/transport/index');
+describe("createTransport — env-based selection (§6.2, §13)", () => {
+  it("returns the null transport, honestly unconfigured, when both env vars are absent", async () => {
+    vi.stubEnv("VITE_SUPABASE_URL", "");
+    vi.stubEnv("VITE_SUPABASE_ANON_KEY", "");
+    const { createTransport } = await import("@/dimensions/transport/index");
     expect(createTransport().status).toEqual({
-      kind: 'unconfigured',
-      reason: 'This build has no shared-session configuration.',
+      kind: "unconfigured",
+      reason: "This build has no shared-session configuration.",
     });
   });
 
-  it('returns the null transport when only the URL is present', async () => {
-    vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', '');
-    const { createTransport } = await import('@/dimensions/transport/index');
-    expect(createTransport().status.kind).toBe('unconfigured');
+  it("returns the null transport when only the URL is present", async () => {
+    vi.stubEnv("VITE_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("VITE_SUPABASE_ANON_KEY", "");
+    const { createTransport } = await import("@/dimensions/transport/index");
+    expect(createTransport().status.kind).toBe("unconfigured");
   });
 
-  it('returns the null transport when only the anon key is present', async () => {
-    vi.stubEnv('VITE_SUPABASE_URL', '');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'anon-key-value');
-    const { createTransport } = await import('@/dimensions/transport/index');
-    expect(createTransport().status.kind).toBe('unconfigured');
+  it("returns the null transport when only the anon key is present", async () => {
+    vi.stubEnv("VITE_SUPABASE_URL", "");
+    vi.stubEnv("VITE_SUPABASE_ANON_KEY", "anon-key-value");
+    const { createTransport } = await import("@/dimensions/transport/index");
+    expect(createTransport().status.kind).toBe("unconfigured");
   });
 
-  it('never calls createSupabaseTransport when unconfigured', async () => {
-    vi.stubEnv('VITE_SUPABASE_URL', '');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', '');
-    const { createTransport } = await import('@/dimensions/transport/index');
+  it("never calls createSupabaseTransport when unconfigured", async () => {
+    vi.stubEnv("VITE_SUPABASE_URL", "");
+    vi.stubEnv("VITE_SUPABASE_ANON_KEY", "");
+    const { createTransport } = await import("@/dimensions/transport/index");
     createTransport();
     expect(createSupabaseTransport).not.toHaveBeenCalled();
   });
 });
 
-describe('createTransport — the Supabase payload loads only on join(), not on construction', () => {
+describe("createTransport — the Supabase payload loads only on join(), not on construction", () => {
   beforeEach(() => {
-    vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'anon-key-value');
+    vi.stubEnv("VITE_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("VITE_SUPABASE_ANON_KEY", "anon-key-value");
   });
 
-  it('createTransport() itself never touches ./supabaseTransport', async () => {
-    const { createTransport } = await import('@/dimensions/transport/index');
+  it("createTransport() itself never touches ./supabaseTransport", async () => {
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
-    expect(transport.status).toEqual({ kind: 'idle' });
+    expect(transport.status).toEqual({ kind: "idle" });
     expect(createSupabaseTransport).not.toHaveBeenCalled();
   });
 
-  it('join() triggers exactly one createSupabaseTransport call, with the configured url/key', async () => {
-    const { createTransport } = await import('@/dimensions/transport/index');
+  it("join() triggers exactly one createSupabaseTransport call, with the configured url/key", async () => {
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
 
-    await transport.join('room-1', self);
+    await transport.join("room-1", self);
 
     expect(createSupabaseTransport).toHaveBeenCalledTimes(1);
-    expect(createSupabaseTransport).toHaveBeenCalledWith('https://example.supabase.co', 'anon-key-value');
+    expect(createSupabaseTransport).toHaveBeenCalledWith(
+      "https://example.supabase.co",
+      "anon-key-value"
+    );
   });
 
-  it('a second join() does not construct a second real transport', async () => {
-    const { createTransport } = await import('@/dimensions/transport/index');
+  it("a second join() does not construct a second real transport", async () => {
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
-    await transport.join('room-1', self);
+    await transport.join("room-1", self);
     await transport.leave();
-    await transport.join('room-1', self);
+    await transport.join("room-1", self);
     expect(createSupabaseTransport).toHaveBeenCalledTimes(1);
   });
 
-  it('publish() before join() throws rather than silently discarding the op', async () => {
-    const { createTransport } = await import('@/dimensions/transport/index');
+  it("publish() before join() throws rather than silently discarding the op", async () => {
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
     const op: SceneOp = {
-      opId: 'op-1',
-      objectId: 'obj-1' as ObjectId,
+      opId: "op-1",
+      objectId: "obj-1" as ObjectId,
       actorId: self.actorId,
       seq: 1,
       at: Date.now(),
@@ -129,27 +147,27 @@ describe('createTransport — the Supabase payload loads only on join(), not on 
     expect(createSupabaseTransport).not.toHaveBeenCalled();
   });
 
-  it('loadSnapshot() before join() throws rather than returning a misleading null', async () => {
-    const { createTransport } = await import('@/dimensions/transport/index');
+  it("loadSnapshot() before join() throws rather than returning a misleading null", async () => {
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
-    await expect(transport.loadSnapshot('room-1')).rejects.toThrow();
+    await expect(transport.loadSnapshot("room-1")).rejects.toThrow();
   });
 
-  it('leave() before any join() is a safe no-op', async () => {
-    const { createTransport } = await import('@/dimensions/transport/index');
+  it("leave() before any join() is a safe no-op", async () => {
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
     await expect(transport.leave()).resolves.toBeUndefined();
     expect(createSupabaseTransport).not.toHaveBeenCalled();
   });
 });
 
-describe('createTransport — the wrapper forwards the real transport\'s events', () => {
+describe("createTransport — the wrapper forwards the real transport's events", () => {
   beforeEach(() => {
-    vi.stubEnv('VITE_SUPABASE_URL', 'https://example.supabase.co');
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'anon-key-value');
+    vi.stubEnv("VITE_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("VITE_SUPABASE_ANON_KEY", "anon-key-value");
   });
 
-  it('forwards onOp callbacks registered before join() completes', async () => {
+  it("forwards onOp callbacks registered before join() completes", async () => {
     let capturedOnOp: ((op: SceneOp) => void) | undefined;
     createSupabaseTransport.mockImplementation(() =>
       stubRealTransport({
@@ -157,44 +175,51 @@ describe('createTransport — the wrapper forwards the real transport\'s events'
           capturedOnOp = cb;
           return () => {};
         }),
-      }),
+      })
     );
 
-    const { createTransport } = await import('@/dimensions/transport/index');
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
 
     const received: SceneOp[] = [];
-    transport.onOp((op) => received.push(op));
+    transport.onOp(op => received.push(op));
 
-    await transport.join('room-1', self);
+    await transport.join("room-1", self);
 
     expect(capturedOnOp).toBeDefined();
-    const op: SceneOp = { opId: 'op-1', objectId: 'obj-1' as ObjectId, actorId: self.actorId, seq: 1, at: 0, patch: {} };
+    const op: SceneOp = {
+      opId: "op-1",
+      objectId: "obj-1" as ObjectId,
+      actorId: self.actorId,
+      seq: 1,
+      at: 0,
+      patch: {},
+    };
     capturedOnOp!(op);
 
     expect(received).toEqual([op]);
   });
 
   it("mirrors the real transport's status transitions through .status and onStatus", async () => {
-    let pushStatus: ((s: CollaborationTransport['status']) => void) | undefined;
+    let pushStatus: ((s: CollaborationTransport["status"]) => void) | undefined;
     createSupabaseTransport.mockImplementation(() =>
       stubRealTransport({
-        onStatus: vi.fn((cb: (s: CollaborationTransport['status']) => void) => {
+        onStatus: vi.fn((cb: (s: CollaborationTransport["status"]) => void) => {
           pushStatus = cb;
           return () => {};
         }),
-      }),
+      })
     );
 
-    const { createTransport } = await import('@/dimensions/transport/index');
+    const { createTransport } = await import("@/dimensions/transport/index");
     const transport = createTransport();
-    const seen: CollaborationTransport['status'][] = [];
-    transport.onStatus((s) => seen.push(s));
+    const seen: CollaborationTransport["status"][] = [];
+    transport.onStatus(s => seen.push(s));
 
-    await transport.join('room-1', self);
-    pushStatus!({ kind: 'connected', since: 12345 });
+    await transport.join("room-1", self);
+    pushStatus!({ kind: "connected", since: 12345 });
 
-    expect(transport.status).toEqual({ kind: 'connected', since: 12345 });
-    expect(seen.at(-1)).toEqual({ kind: 'connected', since: 12345 });
+    expect(transport.status).toEqual({ kind: "connected", since: 12345 });
+    expect(seen.at(-1)).toEqual({ kind: "connected", since: 12345 });
   });
 });

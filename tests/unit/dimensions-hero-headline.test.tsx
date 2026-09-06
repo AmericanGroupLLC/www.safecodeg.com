@@ -9,21 +9,23 @@
  * badges underneath it, so the headline's overstatement is the honesty
  * defect, independent of the (already-honest) subhead and matrix.
  */
-import { describe, it, expect } from 'vitest';
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import DimensionsPage from '@/pages/Dimensions';
-import { DIMENSION_AVAILABILITY } from '@/dimensions/contract';
+import { describe, it, expect } from "vitest";
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import DimensionsPage from "@/pages/Dimensions";
+import { DIMENSION_AVAILABILITY } from "@/dimensions/contract";
 
-describe('/dimensions hero headline does not overstate what the matrix below it shows', () => {
+describe("/dimensions hero headline does not overstate what the matrix below it shows", () => {
   it('does not claim every level is "genuinely working"', () => {
     render(<DimensionsPage />);
-    const heading = screen.getByRole('heading', { level: 1 });
+    const heading = screen.getByRole("heading", { level: 1 });
     expect(heading.textContent).not.toMatch(/genuinely working/i);
   });
 
   it('sanity: the restraint is warranted — the real availability data has at least one "partial" level, not all "live"', () => {
-    const partialLevels = Object.values(DIMENSION_AVAILABILITY).filter((a) => a.status === 'partial');
+    const partialLevels = Object.values(DIMENSION_AVAILABILITY).filter(
+      a => a.status === "partial"
+    );
     expect(partialLevels.length).toBeGreaterThan(0);
   });
 });

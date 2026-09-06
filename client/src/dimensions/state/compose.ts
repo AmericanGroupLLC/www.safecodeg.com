@@ -34,14 +34,26 @@
  * can derive on its own. `state/store.ts` attaches it.
  */
 
-import type { ActorId, ActorPresence, ObjectId, Quat, SceneObject, SceneState, Vec3 } from "./types";
+import type {
+  ActorId,
+  ActorPresence,
+  ObjectId,
+  Quat,
+  SceneObject,
+  SceneState,
+  Vec3,
+} from "./types";
 import type { ProcessModel } from "../model/process";
 import { timelineAt } from "../model/timeline";
 import type { PhysicsSnapshot } from "../physics/sandbox";
 import { PHYSICS_BALL_RADIUS } from "../physics/constants";
 
 const IDENTITY_ROTATION: Quat = { x: 0, y: 0, z: 0, w: 1 };
-const PHYSICS_BODY_SCALE: Vec3 = { x: PHYSICS_BALL_RADIUS, y: PHYSICS_BALL_RADIUS, z: PHYSICS_BALL_RADIUS };
+const PHYSICS_BODY_SCALE: Vec3 = {
+  x: PHYSICS_BALL_RADIUS,
+  y: PHYSICS_BALL_RADIUS,
+  z: PHYSICS_BALL_RADIUS,
+};
 
 /**
  * One object's already-resolved 6D state — the *winning* value of the LWW
@@ -54,7 +66,9 @@ const PHYSICS_BODY_SCALE: Vec3 = { x: PHYSICS_BALL_RADIUS, y: PHYSICS_BALL_RADIU
  * actorId:null}`.
  */
 export interface RemoteObjectOverride {
-  patch: Partial<Pick<SceneObject, "position" | "rotation" | "scale" | "visible">>;
+  patch: Partial<
+    Pick<SceneObject, "position" | "rotation" | "scale" | "visible">
+  >;
   rev: { seq: number; actorId: ActorId | null };
 }
 
@@ -96,7 +110,13 @@ export function composeScene(input: ComposeInput): ComposedScene {
     const visible = slice.visible[id];
     objects[id] = {
       ...base,
-      ...(transform ? { position: transform.position, rotation: transform.rotation, scale: transform.scale } : {}),
+      ...(transform
+        ? {
+            position: transform.position,
+            rotation: transform.rotation,
+            scale: transform.scale,
+          }
+        : {}),
       ...(visible !== undefined ? { visible } : {}),
     };
   }
@@ -144,6 +164,8 @@ export function composeScene(input: ComposeInput): ComposedScene {
 }
 
 /** Re-exported so callers that only need actor ids don't have to know the field name. */
-export function actorIds(actors: Readonly<Record<string, ActorPresence>>): readonly ActorId[] {
-  return Object.values(actors).map((a) => a.actorId);
+export function actorIds(
+  actors: Readonly<Record<string, ActorPresence>>
+): readonly ActorId[] {
+  return Object.values(actors).map(a => a.actorId);
 }

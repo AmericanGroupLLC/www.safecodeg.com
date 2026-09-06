@@ -178,15 +178,22 @@ export function createStaticServer(root) {
 
     let entry;
     try {
-      const type = MIME[extname(target).toLowerCase()] ?? "application/octet-stream";
+      const type =
+        MIME[extname(target).toLowerCase()] ?? "application/octet-stream";
       entry = loadFile(target, type);
     } catch (err) {
-      res.writeHead(404, { "Content-Type": "text/plain" }).end(`Not found: ${req.url}`);
+      res
+        .writeHead(404, { "Content-Type": "text/plain" })
+        .end(`Not found: ${req.url}`);
       return;
     }
 
     const bare = entry.type.split(";")[0].trim();
-    const headers = { ...SECURITY_HEADERS, "Content-Type": entry.type, Vary: "Accept-Encoding" };
+    const headers = {
+      ...SECURITY_HEADERS,
+      "Content-Type": entry.type,
+      Vary: "Accept-Encoding",
+    };
     if (bare in MAX_AGE) headers["Cache-Control"] = `max-age=${MAX_AGE[bare]}`;
 
     const wantsGzip = /\bgzip\b/.test(req.headers["accept-encoding"] ?? "");
@@ -200,7 +207,9 @@ export function createStaticServer(root) {
   });
 }
 
-const isMain = process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
+const isMain =
+  process.argv[1] &&
+  resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
 if (isMain) {
   const port = Number(process.argv[2]);
   const root = process.argv[3] ?? join(REPO_ROOT, "dist", "public");
@@ -209,6 +218,8 @@ if (isMain) {
     process.exit(2);
   }
   createStaticServer(root).listen(port, () => {
-    console.log(`Static production-parity server on http://localhost:${port}/ (root: ${root})`);
+    console.log(
+      `Static production-parity server on http://localhost:${port}/ (root: ${root})`
+    );
   });
 }

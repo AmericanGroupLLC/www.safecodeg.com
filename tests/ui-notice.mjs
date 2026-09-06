@@ -11,9 +11,19 @@
  *
  * Exits 0: absence of an owned suite here is not a failure of the harness.
  */
-console.log('UI / UX (category 10) is owned by Frontend and verified by Reviewer, per TESTING.md.');
-console.log('No automated suite exists in this repository — this script performs no checks.');
-console.log('A real PASS requires a rendered screenshot inspected against the requirement,');
-console.log('plus keyboard focus order and contrast, captured by Frontend when UI ships.');
-console.log('Result: NOT RUN (by design, no suite present) — not a fabricated PASS.');
+console.log(
+  "UI / UX (category 10) is owned by Frontend and verified by Reviewer, per TESTING.md."
+);
+console.log(
+  "No automated suite exists in this repository — this script performs no checks."
+);
+console.log(
+  "A real PASS requires a rendered screenshot inspected against the requirement,"
+);
+console.log(
+  "plus keyboard focus order and contrast, captured by Frontend when UI ships."
+);
+console.log(
+  "Result: NOT RUN (by design, no suite present) — not a fabricated PASS."
+);
 process.exit(0);

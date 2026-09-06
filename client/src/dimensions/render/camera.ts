@@ -38,7 +38,7 @@ const DOLLY_SCALE = 0.85;
 export function createCameraController(
   camera: THREE.PerspectiveCamera,
   domElement: HTMLElement,
-  options: { reducedMotion: boolean; onChange: () => void },
+  options: { reducedMotion: boolean; onChange: () => void }
 ): CameraController {
   const controls = new OrbitControls(camera, domElement);
   controls.target.set(0.6, 0.4, -0.4); // roughly centered on the pipeline platform, see model/process.ts
@@ -89,8 +89,16 @@ export function createCameraController(
 
   function getSnapshot(): CameraSnapshot {
     return {
-      position: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
-      target: { x: controls.target.x, y: controls.target.y, z: controls.target.z },
+      position: {
+        x: camera.position.x,
+        y: camera.position.y,
+        z: camera.position.z,
+      },
+      target: {
+        x: controls.target.x,
+        y: controls.target.y,
+        z: controls.target.z,
+      },
       distance: controls.getDistance(),
     };
   }

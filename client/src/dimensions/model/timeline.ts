@@ -64,7 +64,12 @@ function slerpQuat(a: Quat, b: Quat, f: number): Quat {
   const sinHalfTheta = Math.sqrt(1 - cosHalfTheta * cosHalfTheta);
 
   if (Math.abs(sinHalfTheta) < 1e-6) {
-    return { x: lerp(a.x, bx, 0.5), y: lerp(a.y, by, 0.5), z: lerp(a.z, bz, 0.5), w: lerp(a.w, bw, 0.5) };
+    return {
+      x: lerp(a.x, bx, 0.5),
+      y: lerp(a.y, by, 0.5),
+      z: lerp(a.z, bz, 0.5),
+      w: lerp(a.w, bw, 0.5),
+    };
   }
 
   const halfTheta = Math.acos(cosHalfTheta);
@@ -79,15 +84,26 @@ function slerpQuat(a: Quat, b: Quat, f: number): Quat {
   };
 }
 
-function sampleKeyframes(frames: readonly Keyframe[], t: number): TimelineTransform {
+function sampleKeyframes(
+  frames: readonly Keyframe[],
+  t: number
+): TimelineTransform {
   const first = frames[0];
   if (frames.length === 1 || t <= first.t) {
-    return { position: first.position, rotation: first.rotation, scale: first.scale };
+    return {
+      position: first.position,
+      rotation: first.rotation,
+      scale: first.scale,
+    };
   }
 
   const last = frames[frames.length - 1];
   if (t >= last.t) {
-    return { position: last.position, rotation: last.rotation, scale: last.scale };
+    return {
+      position: last.position,
+      rotation: last.rotation,
+      scale: last.scale,
+    };
   }
 
   for (let i = 0; i < frames.length - 1; i++) {
@@ -105,11 +121,18 @@ function sampleKeyframes(frames: readonly Keyframe[], t: number): TimelineTransf
   }
 
   // Unreachable given the clamps above; kept exhaustive rather than asserting.
-  return { position: last.position, rotation: last.rotation, scale: last.scale };
+  return {
+    position: last.position,
+    rotation: last.rotation,
+    scale: last.scale,
+  };
 }
 
 /** Exported so the UI layer (which needs "which stage is `t` in" for display) does not re-derive this search itself. */
-export function findActiveStage(model: ProcessModel, t: number): StageDescriptor | null {
+export function findActiveStage(
+  model: ProcessModel,
+  t: number
+): StageDescriptor | null {
   for (const stage of model.stages) {
     if (t >= stage.startsAt && t < stage.endsAt) return stage;
   }
@@ -136,7 +159,10 @@ export function timelineAt(model: ProcessModel, t: number): TimelineSlice {
   return { activeStage, visible, transforms };
 }
 
-export function visibleObjectIds(model: ProcessModel, t: number): ReadonlySet<ObjectId> {
+export function visibleObjectIds(
+  model: ProcessModel,
+  t: number
+): ReadonlySet<ObjectId> {
   const slice = timelineAt(model, t);
   const ids = new Set<ObjectId>();
   for (const [id, isVisible] of Object.entries(slice.visible)) {

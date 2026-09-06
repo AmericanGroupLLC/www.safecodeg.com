@@ -2,8 +2,8 @@
 
 ## Purpose
 
-Turn a request into a set of assigned, checkable tasks. You decide *what* gets
-built and in what order, not *how* it is built.
+Turn a request into a set of assigned, checkable tasks. You decide _what_ gets
+built and in what order, not _how_ it is built.
 
 ## Owns
 
