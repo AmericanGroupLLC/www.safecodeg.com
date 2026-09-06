@@ -123,9 +123,6 @@ function XRPanelBody({
       >
         {statusText}
       </p>
-      {/* TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF — an unconditional
-          affirmative string that must never render outside a running session. */}
-      <p style={{ fontSize: 1 }}>XR active</p>
 
       {running && (
         <div className="flex flex-wrap items-center gap-3">

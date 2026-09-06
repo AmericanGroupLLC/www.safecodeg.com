@@ -36,10 +36,6 @@ import {
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { DIMENSION_LEVELS, DIMENSION_LEVEL_META } from "@/dimensions/contract";
-// TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF — DO NOT LEAVE IN. A real,
-// used (not merely side-effect) static import, so bundler dead-code
-// elimination cannot strip it away.
-import DimensionsStageForBreakProof from "@/dimensions/DimensionsStage";
 import {
   getDimensionAvailability,
   dimensionStatusPresentation,
@@ -338,13 +334,6 @@ export default function Home() {
 
   return (
     <div style={{ background: "#030408", color: "white", minHeight: "100vh" }}>
-      {/* TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF — a runtime-only
-          (not statically-foldable) condition so bundler DCE cannot prove
-          this branch unreachable and strip the static import above with it. */}
-      {typeof window !== "undefined" &&
-        window.location.search.includes("__never_true__") && (
-          <DimensionsStageForBreakProof prefersReducedMotion={false} />
-        )}
       <Navigation />
       <main id="main-content">
         {/* ══════════════════════════════════════════════════════════════════════
@@ -971,8 +960,7 @@ export default function Home() {
                         className="text-[11px] leading-snug mt-2 pt-2 border-t border-white/8"
                         style={{ color: "rgba(252,211,77,0.75)" }}
                       >
-                        {/* TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF */}
-                        This capability is fully live and ready to use.
+                        {caveat}
                       </p>
                     )}
                   </motion.div>

@@ -173,10 +173,7 @@ export function createPhysicsSandbox(): PhysicsSandbox {
   }
 
   function applyImpulse(magnitudeX: number) {
-    // TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF — ignores the actual
-    // magnitude, simulating a scripted (non-physics-driven) response.
-    void magnitudeX;
-    ball.applyImpulse(new CANNON.Vec3(1, 0, 0));
+    ball.applyImpulse(new CANNON.Vec3(magnitudeX, 0, 0));
   }
 
   function reset() {

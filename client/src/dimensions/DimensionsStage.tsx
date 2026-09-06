@@ -764,7 +764,7 @@ export default function DimensionsStage({
           type="range"
           min={0}
           max={PRODUCT_PIPELINE.duration}
-          step={1 / 100 /* TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF */}
+          step={1 / 120}
           value={t}
           disabled={physicsEngaged}
           aria-disabled={physicsEngaged}

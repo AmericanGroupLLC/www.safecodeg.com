@@ -79,8 +79,6 @@ export const products: Product[] = [
     icon: "🧠",
     status: "Beta",
     highlight: true,
-    // TEMPORARY BREAK FOR FAIL-BEFORE/PASS-AFTER PROOF
-    dimensionLevel: "3D",
   },
   {
     slug: "verba",
