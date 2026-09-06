@@ -51,6 +51,16 @@ RewriteRule ^ index.html [QSA,L]
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(self)"
 </IfModule>
 
+# ── MIME types Apache doesn't know by default ────────────────
+# .usdz (Apple AR Quick Look, model/vnd.usdz+zip): iOS Quick Look is
+# MIME-sensitive and refuses to open the model without this. This is the
+# only deployment change ARCHITECTURE-DIMENSIONS.md §7.4/§14 (T-012, 7D
+# AR/VR/MR) requires — .glb needs nothing, since GLTFLoader reads an
+# ArrayBuffer and ignores the response Content-Type.
+<IfModule mod_mime.c>
+    AddType model/vnd.usdz+zip .usdz
+</IfModule>
+
 # ── Cache Control ────────────────────────────────────────────
 <IfModule mod_expires.c>
     ExpiresActive On

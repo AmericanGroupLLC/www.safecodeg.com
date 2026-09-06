@@ -7,15 +7,9 @@
  * and a hook that vanished in production would mean every acceptance test
  * verified an artifact that is not the one deployed.
  *
- * Scope note (T-004/T-005/T-006/T-007): the full §10.1 interface also
- * specifies `getTransport()` and `getXR()`. Those are added by the tasks
- * that build those capabilities (T-009/T-010, T-011/T-012) — adding them
- * here now would mean inventing the shape of a transport status and an XR
- * probe result for capabilities that do not exist in this build yet, which
- * is exactly what the user's "never claim a capability that is not active"
- * rule forbids. `getPhysics()` and `getLiveData()` are T-007's, added here
- * now that 5D interaction, physics and live data are real. This hook
- * reports only what this build actually does.
+ * Scope note (T-010): `getTransport()` is now populated — the full §10.1
+ * interface's last piece. `getPhysics()` and `getLiveData()` are T-007's;
+ * `getXR()` is T-012's. This hook reports only what this build actually does.
  */
 
 import type { CameraSnapshot } from "../render/camera";
@@ -24,7 +18,10 @@ import type { RenderStats } from "../render/loop";
 // this must never become a value import from this file.
 import type { PhysicsSnapshot } from "../physics/sandbox";
 import type { LiveDataStatus } from "../live/useLiveData";
-import type { SceneState } from "./types";
+import type { XrUiState } from "../xr/detect";
+import type { XrSessionMode } from "../xr/session";
+import type { ActorId, SceneState } from "./types";
+import type { TransportStatus } from "../transport/types";
 
 export interface DimensionsLiveDataSnapshot {
   source: string;
@@ -32,6 +29,31 @@ export interface DimensionsLiveDataSnapshot {
   fetchedAt: number | null;
   value: unknown;
   error: string | null;
+}
+
+export interface DimensionsXrSnapshot {
+  state: XrUiState;
+  supported: { vr: boolean; ar: boolean } | null;
+  sessionMode: XrSessionMode | null;
+  /** Frames actually rendered to a live `XRSession`. 0 until one starts (render/loop.ts's `getXrFrameCount()`). */
+  xrFrames: number;
+}
+
+/**
+ * 6D (T-010). No key or token appears here — `status` is the same
+ * discriminated union the UI already renders (§7.2-style honesty), `actors`
+ * is the presence list already shown on screen, and the op counters are
+ * telemetry, not credentials (D-HOOK, §10.3: "no key, no token, no
+ * credential" — the anon key lives only in `transport/supabaseTransport.ts`).
+ */
+export interface DimensionsTransportSnapshot {
+  status: TransportStatus;
+  actorCount: number;
+  actors: readonly ActorId[];
+  /** Ops that passed the S-5 allowlist check and won the LWW comparison. */
+  opsApplied: number;
+  /** Ops dropped — either not a member of the authored model, or lost the LWW comparison. */
+  opsRejected: number;
 }
 
 export interface DimensionsTestHook {
@@ -43,6 +65,9 @@ export interface DimensionsTestHook {
   /** `null` until the physics chunk has loaded and been run at least once (§10.2). */
   getPhysics(): PhysicsSnapshot | null;
   getLiveData(): DimensionsLiveDataSnapshot;
+  /** `null` until the async capability probe (`xr/detect.ts`'s `probeXR()`) has resolved at least once. */
+  getXR(): DimensionsXrSnapshot | null;
+  getTransport(): DimensionsTransportSnapshot;
 }
 
 export interface DimensionsTestHookSource {
@@ -51,6 +76,8 @@ export interface DimensionsTestHookSource {
   getCamera(): CameraSnapshot;
   getPhysics(): PhysicsSnapshot | null;
   getLiveData(): DimensionsLiveDataSnapshot;
+  getXR(): DimensionsXrSnapshot | null;
+  getTransport(): DimensionsTransportSnapshot;
 }
 
 declare global {
@@ -77,6 +104,8 @@ export function installTestHook(source: DimensionsTestHookSource): InstalledTest
     getCamera: () => source.getCamera(),
     getPhysics: () => source.getPhysics(),
     getLiveData: () => source.getLiveData(),
+    getXR: () => source.getXR(),
+    getTransport: () => source.getTransport(),
   };
 
   window.__AGL_DIMENSIONS__ = hook;

@@ -7,6 +7,19 @@
  * started a server for them, so one script audited an error page and reported
  * a clean result, and the other hung until the gate's timeout.
  *
+ * Two servers are available, because the two audits need different things:
+ *
+ *   default (WITH_SERVER_MODE unset or "app")
+ *     `node dist/index.js` — the Express app. What the security audit wants:
+ *     it exercises the tRPC routes and the storage proxy.
+ *
+ *   WITH_SERVER_MODE=static
+ *     `node scripts/serve-static.mjs` — Apache-parity static serving of
+ *     dist/public. What the performance audit wants, because that is what
+ *     production actually is: deploy.yml:87-91 rsyncs dist/public to Apache
+ *     and deploys no Node process at all. Express serves every asset
+ *     uncompressed, which inflated every network-bound Lighthouse metric.
+ *
  * Usage: node scripts/with-server.mjs <port> <command> [...args]
  */
 import { spawn } from "child_process";
@@ -43,10 +56,19 @@ async function waitForServer(url, timeoutMs = 60_000) {
 const buildCode = await run("npm", ["run", "build"]);
 if (buildCode !== 0) process.exit(buildCode);
 
-const server = spawn("node", ["dist/index.js"], {
-  stdio: "inherit",
-  env: { ...process.env, NODE_ENV: "production", PORT: String(port) },
-});
+const mode = process.env.WITH_SERVER_MODE ?? "app";
+if (mode !== "app" && mode !== "static") {
+  console.error(`WITH_SERVER_MODE must be "app" or "static", got "${mode}"`);
+  process.exit(2);
+}
+
+const server =
+  mode === "static"
+    ? spawn("node", ["scripts/serve-static.mjs", String(port)], { stdio: "inherit", env: process.env })
+    : spawn("node", ["dist/index.js"], {
+        stdio: "inherit",
+        env: { ...process.env, NODE_ENV: "production", PORT: String(port) },
+      });
 
 let exitCode = 1;
 try {

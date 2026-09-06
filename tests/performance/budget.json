@@ -1,0 +1,404 @@
+{
+  "$schema": "https://json.schemastore.org/base.json",
+  "$comment": [
+    "THE PERFORMANCE BUDGET FOR www.safecodeg.com.",
+    "",
+    "Every number here traces to a measurement or to a stated assumption. A",
+    "round figure that felt right is not a budget — it is an obstacle with no",
+    "argument behind it, and the first person it inconveniences will delete it.",
+    "",
+    "Two kinds of number live in this file and they must not be confused:",
+    "  BASELINE — evidence. What the site measured on a stated date, machine",
+    "             and commit. Re-recorded with `--record`; never edited by hand.",
+    "  CEILING  — a decision. What the site is allowed to become. Changed only",
+    "             deliberately, with the reason recorded in TASKS.md Decisions.",
+    "",
+    "The gate enforces ceilings. A baseline is what a ceiling is derived from."
+  ],
+  "method": {
+    "server": "scripts/serve-static.mjs — Apache-parity static server over dist/public",
+    "why": [
+      "Production is Apache on HostGator serving dist/public as static files:",
+      ".github/workflows/deploy.yml:87-91 rsyncs that directory and nothing",
+      "else, so the Express app in dist/index.js is never deployed. Measuring",
+      "Lighthouse against Express measured the wrong server, and served every",
+      "asset uncompressed.",
+      "",
+      "Paired runs, identical build and profile, 2026-09-06, 3 runs each:",
+      "  Express (uncompressed)  transfer 1,929,039 B  FCP 8,352 ms  LCP 11,844 ms",
+      "  Apache-parity (gzip)    transfer 1,125,838 B  FCP 3,844 ms  LCP  7,824 ms",
+      "  delta                            -41.6%          -54.0%        -34.0%",
+      "",
+      "Compression is calibrated to the real host, not to `gzip -6`. Apache on",
+      "safecodeg.com emits 1.284x (HTML), 1.343x (CSS) and 1.408x (JS) as many",
+      "bytes as `gzip -6` for byte-identical input, measured by fetching each",
+      "live URL twice with Accept-Encoding: identity and gzip. See the header",
+      "of scripts/serve-static.mjs for the table and the parameter sweep that",
+      "reproduces all three within 1.05%."
+    ],
+    "cannotTellUs": [
+      "Field performance. There is no RUM and no CrUX access from here, so no",
+      "claim about real visitors' 75th percentile is made anywhere in this file.",
+      "Every timing number is a Lighthouse Lantern SIMULATION on the profile",
+      "below, and Lantern models a device this machine is not.",
+      "Production is HTTP/2 over TLS; the parity server is HTTP/1.1 on localhost.",
+      "Google Fonts is fetched from its real origin, so a run needs internet."
+    ]
+  },
+  "profile": {
+    "name": "mobileSlow4G",
+    "formFactor": "mobile",
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 562.5,
+      "downloadThroughputKbps": 1474.56,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "derivation": [
+      "These are Lighthouse's own default constants, read from",
+      "node_modules/lighthouse/core/config/constants.js (throttling.mobileSlow4G).",
+      "Chosen for three reasons, in order:",
+      " 1. It is the default, so it is what any third party auditing this site",
+      "    — a customer, a prospect, PageSpeed Insights — actually sees.",
+      " 2. Google's Core Web Vitals 'good' thresholds, which the TARGETS below",
+      "    are derived from, are defined against this class of device.",
+      " 3. There is no analytics access from this repo, so the device mix is",
+      "    UNKNOWN. Faced with an unmeasured assumption, the budget takes the",
+      "    conservative side rather than the flattering one.",
+      "",
+      "The previous script set formFactor 'desktop' and a desktop screen but",
+      "left throttling and the user agent at these mobile defaults: a desktop",
+      "viewport with a Moto G Power user agent on a slow-4G link at 4x CPU.",
+      "That is not a device, and no budget can be derived from it."
+    ],
+    "downlinkBytesPerSecond": 184320,
+    "downlinkDerivation": "1474.56 kbps downlink = 1,474,560 bits/s / 8 = 184,320 bytes/s. Every byte allowance below is stated in this unit."
+  },
+  "pages": [
+    {
+      "path": "/",
+      "name": "Home"
+    },
+    {
+      "path": "/products",
+      "name": "Products"
+    },
+    {
+      "path": "/about",
+      "name": "About"
+    }
+  ],
+  "budgets": {
+    "bytes": {
+      "document": {
+        "baselineBytes": 137210,
+        "ceilingBytes": 146426,
+        "derivation": "Baseline + the 9,216 B standard allowance. index.html is served Cache-Control: max-age=0 (.htaccess:69), so unlike the hashed assets this is paid in full on EVERY page view, by every visitor, forever. It is 137,210 B because vite-plugin-manus-runtime injects 366,824 characters of inline parser-blocking JavaScript into it (see findings)."
+      },
+      "entryJs": {
+        "baselineBytes": 364514,
+        "ceilingBytes": 373730,
+        "derivation": "Baseline + the 9,216 B standard allowance. Replaces the previous 270 kB gzip cap, which was a round figure with no derivation: 270,000 B of `gzip -6` is 7,399 B of headroom over a 262,601 B build, but it is measured in a unit production does not use — Apache puts 364,514 B of this chunk on the wire, 38.8% more than the number the cap governs."
+      },
+      "entryCss": {
+        "baselineBytes": 31881,
+        "ceilingBytes": 41097,
+        "derivation": "Baseline + the 9,216 B standard allowance. Render-blocking: the SPA cannot paint before it arrives."
+      },
+      "criticalPath": {
+        "baselineBytes": 533605,
+        "ceilingBytes": 542821,
+        "derivation": "document + entryJs + entryCss — everything a visitor must download before the page can paint anything. Baseline + ONE 9,216 B allowance, deliberately not the sum of the three individual allowances (which would be 27,648 B): the aggregate is what the visitor pays, so the aggregate gets one allowance. Spending the whole allowance on one asset therefore costs it from the others."
+      }
+    },
+    "standardAllowanceBytes": 9216,
+    "standardAllowanceDerivation": [
+      "9,216 B = 50 ms of download at the profile's 184,320 B/s.",
+      "",
+      "Two independent lines pick 50 ms, which is why it is the number:",
+      " 1. Google's RAIL guidance treats 100 ms as the threshold at which a",
+      "    response stops feeling instantaneous. Half of that is a conservative",
+      "    'not perceptible' increment for a single change.",
+      " 2. The largest feature this repository has shipped — the entire 3D-7D",
+      "    dimensional stack — added 5.52 kB gzip-6 to the entry chunk",
+      "    (257.08 -> 262.60 kB, recorded in TASKS.md). At this build's measured",
+      "    JS inflation factor of 1.388 that is 7,662 B of production transfer.",
+      "    So the allowance admits one more feature the size of the biggest one",
+      "    ever shipped, plus 20% margin, and nothing larger without a decision.",
+      "",
+      "The allowance needs no noise margin: `npm run build` was run twice on",
+      "identical source and every output file matched by md5. Byte budgets are",
+      "deterministic, so they are enforced with zero tolerance."
+    ],
+    "timing": {
+      "fcp": {
+        "kind": "spread",
+        "factor": 1.5,
+        "derivation": "1.5x the worst value seen across the 5 baseline runs. FCP here is bimodal rather than noisy-around-a-centre: on byte-identical input it lands either at ~3,840 ms or at ~4,600-4,750 ms, a 17.1-23.6% spread, and the ~800 ms step is the render-blocking third-party stylesheet from fonts.googleapis.com on the critical path (client/index.html:21) resolving fast or slow. The ceiling is loose as a direct consequence of that finding, and it tightens when the font stylesheet leaves the critical path, not before."
+      },
+      "lcp": {
+        "kind": "spread",
+        "factor": 1.5,
+        "derivation": "1.5x the worst of 5 baseline runs. LCP is the stable metric here - measured spread 0.2% (Home), 0.2% (Products), 6.3% (About) on byte-identical input, because Lantern derives it mostly from transfer size - so this is the ceiling most likely to catch a real regression."
+      },
+      "si": {
+        "kind": "spread",
+        "factor": 1.5,
+        "derivation": "1.5x the worst of 5 baseline runs. Speed Index tracked FCP to the millisecond in every run measured, so it inherits FCP's bimodality and its derivation."
+      },
+      "cls": {
+        "kind": "absolute",
+        "ceiling": 0.1,
+        "derivation": "Google's Core Web Vitals 'good' threshold, used verbatim. The one metric where the site is already comfortably inside the external standard - measured 0 to 0.0163, at least 6x better than the threshold - so an absolute external number is both honest and non-vacuous: any layout-shift regression that matters trips it."
+      }
+    },
+    "notGated": {
+      "performanceScore": [
+        "The composite Lighthouse performance score is REPORTED and NOT GATED.",
+        "It is 30% TBT by weight, and TBT measured a 3.07x run-to-run spread on",
+        "byte-identical input — the same build scored 49, 60 and 62 in three",
+        "consecutive runs. A threshold on a number that moves 13 points without",
+        "the code changing is either flaky or vacuous; there is no third option.",
+        "The metrics the score is made of are gated individually above, which is",
+        "the same information without the noise."
+      ],
+      "accessibility/best-practices/seo": [
+        "Measured and reported, not gated here. They are not performance, and",
+        "gating them from the performance script would put the accessibility",
+        "verdict somewhere no one reviewing accessibility would look."
+      ],
+      "tbt": [
+        "Total Blocking Time is MEASURED AND REPORTED, NOT GATED.",
+        "",
+        "On byte-identical input it measured 32.1% (About), 72.4% (Home) and",
+        "111.7% (Products) spread across 5 runs - Products produced 510 ms and",
+        "1,141 ms in the same set - and across every run taken this session Home",
+        "ranged 234-731 ms. A 1.5x-of-observed-max ceiling for Home would sit at",
+        "765 ms, which is inside the range already observed with nothing changed:",
+        "it would fail on noise. A ceiling wide enough not to fail on noise is",
+        "wide enough to miss any regression worth catching.",
+        "",
+        "This is a property of the measurement, not of the site. It becomes",
+        "gateable on a machine with a quiet CPU, or with throttlingMethod",
+        "'provided' against real hardware. Until then a TBT threshold here would be",
+        "either flaky or decorative, and saying so is more useful than either."
+      ]
+    },
+    "timingRuleDerivation": [
+      "Every gated timing ceiling is `1.5 x the worst value observed across the",
+      "baseline runs`, and every baseline is recorded with 5 runs per page.",
+      "",
+      "WHY MAX-OF-N AND NOT A PERCENTAGE OF THE MEDIAN. Measured run-to-run",
+      "spread on BYTE-IDENTICAL input, 5 runs per page, 2026-09-06:",
+      "  LCP  0.2% - 6.3%     stable; derived mostly from transfer size",
+      "  FCP  17.1% - 23.6%   bimodal on the third-party font stylesheet",
+      "  SI   17.1% - 23.6%   tracks FCP exactly",
+      "  TBT  32.1% - 111.7%  tracks whatever else the machine is doing",
+      "A percentage-of-median tolerance tight enough to be useful for LCP would",
+      "false-FAIL on FCP about one run in five. Anchoring each ceiling to that",
+      "metric's own observed worst case gives every metric a headroom",
+      "proportional to its own measured noise, from a single rule, with no",
+      "per-metric hand-tuning.",
+      "",
+      "WHY THE FACTOR IS 1.5 AND NOT SOMETHING SMALLER. It is set from a real",
+      "regression, then verified by causing that regression. The largest realistic",
+      "non-code regression this site can suffer is losing mod_deflate — one edit to",
+      ".htaccess and every asset ships uncompressed. That was forced directly, by",
+      "emptying DEFLATE_TYPES in scripts/serve-static.mjs and re-running this gate",
+      "(2026-09-06). Measured, against ceilings of FCP 6,918 / LCP 11,763 on Home:",
+      "  Home      FCP 8,340   LCP 13,521   (baseline 3,854 / 7,832)",
+      "  Products  FCP 8,350   LCP 13,006   (baseline 3,849 / 7,302)",
+      "  About     FCP 8,348   LCP 13,003   (baseline 4,462 / 7,304)",
+      "Nine FAILs, exit 1. So 1.5x absorbs the measured noise AND still catches the",
+      "worst realistic regression. A larger factor would not; a smaller one would",
+      "false-FAIL on FCP's bimodality. The harness was restored immediately after.",
+      "",
+      "The gate runs 1 run per page (PERF_RUNS, default 1) and finishes in about",
+      "55 s, inside the 300 s cap the verification gate applies to this check."
+    ]
+  },
+  "targets": {
+    "$comment": [
+      "Where this site should be, as opposed to where it is. These are NOT",
+      "gated — the gate's job is to stop the site getting worse, and a gate",
+      "that fails on the day it is written stops being read. They are recorded",
+      "so the gap is a stated number rather than a vague sense that the site",
+      "feels slow, and so any future optimisation has something to aim at."
+    ],
+    "criticalPathBytes": 276480,
+    "criticalPathDerivation": [
+      "Derived from Google's 2.5 s 'good' LCP threshold on the profile above:",
+      "  2500 ms total LCP objective",
+      "  - 600 ms  connection setup (DNS + TCP + TLS + the extra RTT to discover",
+      "            the CSS and JS referenced by the HTML, at 150 ms modelled RTT)",
+      "  -  400 ms parse, compile, execute and first paint at 4x CPU slowdown",
+      "            (optimistic: measured TBT alone is 238-731 ms)",
+      "  = 1500 ms left for transfer x 184,320 B/s = 276,480 B",
+      "",
+      "Measured critical path is 533,605 B, which is 1.93x this target and",
+      "2,895 ms of download on its own — before a single byte is executed. So",
+      "the 2.5 s LCP objective is not reachable by tuning; 257,125 B has to",
+      "leave the critical path. Measured LCP is 7,824 ms.",
+      "STATUS: FAIL. Recorded as a gap, deliberately not gated."
+    ],
+    "lcpMs": 2500,
+    "fcpMs": 1800,
+    "clsScore": 0.1,
+    "thresholdSource": "Google Core Web Vitals 'good' thresholds (LCP 2.5 s, FCP 1.8 s, CLS 0.1)."
+  },
+  "baseline": {
+    "$comment": "Evidence, not decision. Rewritten by `PERF_RUNS=5 node tests/performance/lighthouse.mjs --record`. Do not hand-edit.",
+    "recordedAt": "2026-09-06T12:37:12.507Z",
+    "commit": "c15e03a",
+    "runsPerPage": 5,
+    "benchmarkIndex": 1408.5,
+    "benchmarkIndexBand": {
+      "min": 986,
+      "max": 2254
+    },
+    "benchmarkIndexDerivation": "Lighthouse's own CPU calibration score, read from lhr.environment.benchmarkIndex. The band is 0.7x to 1.6x of the recorded value. Within-session spread measured 1309.5-1440.5 (6 runs, +/-5%), so 0.7x cannot be reached by same-machine variation — it only trips on genuinely different hardware. Outside the band the timing budgets are reported UNKNOWN rather than FAIL or PASS, because a baseline recorded on one machine is not evidence about another. Byte budgets and route isolation gate regardless, since they are hardware-independent.",
+    "bundle": {
+      "document": {
+        "raw": 369259,
+        "gzip6": 106167,
+        "prod": 137210
+      },
+      "entryJs": {
+        "raw": 956685,
+        "gzip6": 262601,
+        "prod": 364514
+      },
+      "entryCss": {
+        "raw": 148832,
+        "gzip6": 23748,
+        "prod": 31881
+      },
+      "criticalPath": {
+        "raw": 1474776,
+        "gzip6": 392516,
+        "prod": 533605
+      }
+    },
+    "pages": {
+      "Home": {
+        "path": "/",
+        "metrics": {
+          "fcp": 3854,
+          "lcp": 7832,
+          "si": 3854,
+          "tbt": 381,
+          "cls": 0
+        },
+        "spread": {
+          "fcp": {
+            "min": 3848,
+            "max": 4612
+          },
+          "lcp": {
+            "min": 7818,
+            "max": 7842
+          },
+          "si": {
+            "min": 3848,
+            "max": 4612
+          },
+          "tbt": {
+            "min": 234,
+            "max": 510
+          },
+          "cls": {
+            "min": 0,
+            "max": 0
+          }
+        },
+        "scores": {
+          "performance": 58,
+          "accessibility": 88,
+          "best-practices": 81,
+          "seo": 85
+        },
+        "transferTotal": 1125838
+      },
+      "Products": {
+        "path": "/products",
+        "metrics": {
+          "fcp": 3849,
+          "lcp": 7302,
+          "si": 3849,
+          "tbt": 565,
+          "cls": 0
+        },
+        "spread": {
+          "fcp": {
+            "min": 3836,
+            "max": 4744
+          },
+          "lcp": {
+            "min": 7290,
+            "max": 7307
+          },
+          "si": {
+            "min": 3836,
+            "max": 4744
+          },
+          "tbt": {
+            "min": 510,
+            "max": 1141
+          },
+          "cls": {
+            "min": 0,
+            "max": 0
+          }
+        },
+        "scores": {
+          "performance": 52,
+          "accessibility": 86,
+          "best-practices": 81,
+          "seo": 92
+        },
+        "transferTotal": 1125838
+      },
+      "About": {
+        "path": "/about",
+        "metrics": {
+          "fcp": 4462,
+          "lcp": 7304,
+          "si": 4462,
+          "tbt": 162,
+          "cls": 0.0151
+        },
+        "spread": {
+          "fcp": {
+            "min": 3840,
+            "max": 4601
+          },
+          "lcp": {
+            "min": 7293,
+            "max": 7756
+          },
+          "si": {
+            "min": 3840,
+            "max": 4601
+          },
+          "tbt": {
+            "min": 138,
+            "max": 190
+          },
+          "cls": {
+            "min": 0.0151,
+            "max": 0.0163
+          }
+        },
+        "scores": {
+          "performance": 63,
+          "accessibility": 85,
+          "best-practices": 81,
+          "seo": 85
+        },
+        "transferTotal": 1125838
+      }
+    }
+  }
+}

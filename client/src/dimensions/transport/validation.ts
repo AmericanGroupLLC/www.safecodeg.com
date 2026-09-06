@@ -12,7 +12,18 @@
  * A rejected message is dropped and counted, never applied. Every
  * transport implementation (`supabaseTransport.ts`, `loopbackTransport.ts`)
  * must run every inbound peer payload through `parseSceneOp` /
- * `parseActorPresence` before invoking an `onOp` / `onPresence` listener.
+ * `parseActorPresence` before invoking an `onOp` / `onPresence` listener, and
+ * every loaded digital-twin row through `parseSceneSnapshot` before
+ * `loadSnapshot` resolves (T-016 finding S-2). Before `parseSceneSnapshot`
+ * existed, both transports cast the raw row straight to `SceneSnapshot` with
+ * a bare TypeScript `as` — no runtime check — even though the row is
+ * anon-writable (`supabase/migrations/0001_dimensions_room_state.sql` grants
+ * anon INSERT/UPDATE `WITH CHECK (true)`, capped only at 60 KiB of
+ * arbitrarily-shaped JSON) and `loadSnapshot` runs once after `join`,
+ * *before any op is applied* — so hostile stored JSON reached
+ * `render/projector.ts` ahead of every bound `SceneOpPatchSchema` enforces,
+ * and a degenerate transform could blank the scene for every visitor,
+ * persistently, because it lives in the database.
  *
  * The numeric bounds below are not given by the architecture document and
  * are chosen here, documented so they can be revisited:
@@ -33,9 +44,43 @@
  *    in a display name.
  *  - `colorHex`: a strict `#rrggbb` string — anything else is rejected
  *    rather than passed through to a `style` attribute unchanged.
+ *  - `objectId` (when no model set is supplied — see `buildSceneOpSchema`):
+ *    1-100 characters. T-016 finding S-4 measured a 1,000,000-character
+ *    `objectId` accepted with no cap, each becoming a new key in the
+ *    store's `objects` record (unbounded memory growth) and, via
+ *    `saveSnapshot`, eventually failing the twin row's 60 KiB CHECK and
+ *    silently breaking persistence for the whole room. `opId` (100) and
+ *    `actorId` (64, below) already had caps; this brings `objectId` in line.
+ *  - `label` (`SceneObject.label`, digital-twin objects only — the live
+ *    wire's `SceneOp` has no `label` field): 1-200 characters, same
+ *    control-character filter as `displayName`. T-016 finding S-2:
+ *    `state/types.ts`'s `label` field has no cap, unlike `displayName`'s
+ *    1-40 + regex, and it reaches the DOM as every scene object's
+ *    accessible name (`a11y/SceneOutline.tsx`) — React escapes it, so this
+ *    is unbounded attacker-controlled text in the accessible-name tree, not
+ *    XSS. 200 is generous against every authored label (longest today is
+ *    "Toy car — at the loading dock", 30 characters — verified,
+ *    `model/process.ts`) while bounding a hostile row's contribution.
+ *  - Snapshot object count: capped at 128. The authored model has 6 objects
+ *    today (verified, `model/process.ts`); 128 leaves over 20x headroom for
+ *    physics- and interaction-owned entries while keeping an anon-writable
+ *    row from growing the store without bound (§3.3's "bounded blast
+ *    radius", applied to the twin the same way `objectId` membership
+ *    applies to it on the live wire).
+ *  - `revision` / `savedAt`: coerced to a number, then required finite,
+ *    integer, non-negative, and at most `Number.MAX_SAFE_INTEGER`. T-016
+ *    finding S-2: both are `Number(...)`-cast from an anon-writable Postgres
+ *    `bigint` column with no bound before this schema existed.
  */
 import { z } from "zod";
-import type { ActorId, ActorPresence, ObjectId, SceneOp } from "./types";
+import type {
+  ActorId,
+  ActorPresence,
+  ObjectId,
+  SceneObject,
+  SceneOp,
+  SceneSnapshot,
+} from "./types";
 
 export type ValidationResult<T> =
   | { ok: true; value: T }
@@ -47,6 +92,9 @@ const QUAT_EPSILON = 1.0001;
 export const MAX_DISPLAY_NAME_LENGTH = 40;
 const MAX_OP_ID_LENGTH = 100;
 const MAX_ROOM_ID_LENGTH = 64;
+const MAX_OBJECT_ID_LENGTH = 100;
+export const MAX_LABEL_LENGTH = 200;
+export const MAX_SNAPSHOT_OBJECT_COUNT = 128;
 
 const finite = z.number().finite();
 
@@ -131,7 +179,7 @@ function buildSceneOpSchema(validObjectIds?: ReadonlySet<string>) {
         ? z.string().refine(id => validObjectIds.has(id), {
             message: "objectId is not part of the authored model",
           })
-        : z.string().min(1),
+        : z.string().min(1).max(MAX_OBJECT_ID_LENGTH),
       actorId: z.string().min(1).max(MAX_ROOM_ID_LENGTH),
       seq: z.number().int().nonnegative().finite(),
       at: finite,
@@ -210,6 +258,176 @@ export function parseSceneOp(
       seq: parsed.seq,
       at: parsed.at,
       patch: parsed.patch,
+    },
+  };
+}
+
+/** No control characters — same rationale as `displayName`'s. */
+const LabelSchema = z
+  .string()
+  .min(1)
+  .max(MAX_LABEL_LENGTH)
+  .regex(NO_CONTROL_CHARS, "control characters are not allowed in a label");
+
+const SceneObjectRevSchema = z
+  .object({
+    seq: z.number().int().nonnegative().finite(),
+    actorId: z.union([z.string().min(1).max(MAX_ROOM_ID_LENGTH), z.null()]),
+  })
+  .strict();
+
+/**
+ * The full digital-twin object shape (`state/types.ts`'s `SceneObject`).
+ * Reuses `Vec3Schema` / `QuatSchema` / `ScaleVec3Schema` — the same bounds
+ * `SceneOpPatchSchema` applies to a live op apply here too, per T-016's S-2
+ * finding, since a stored snapshot is exactly as untrusted as a live one and
+ * is loaded *before* any op (and its bounds) can act on it.
+ */
+const SceneObjectSchema = z
+  .object({
+    id: z.string().min(1).max(MAX_OBJECT_ID_LENGTH),
+    kind: z.string().min(1).max(MAX_OBJECT_ID_LENGTH),
+    position: Vec3Schema,
+    rotation: QuatSchema,
+    scale: ScaleVec3Schema,
+    visible: z.boolean(),
+    stage: z.union([z.string().min(1).max(MAX_OBJECT_ID_LENGTH), z.null()]),
+    label: LabelSchema,
+    rev: SceneObjectRevSchema,
+  })
+  .strict();
+
+/**
+ * `revision` / `savedAt` arrive from an anon-writable Postgres `bigint`
+ * column (`supabase/migrations/0001_dimensions_room_state.sql`) by way of
+ * `JSON.parse`, so by the time they reach this module they are already a JS
+ * number (or, depending on the JSON producer, a numeric string) with no
+ * guarantee they are finite or fit in `Number.MAX_SAFE_INTEGER`.
+ * `z.coerce.number()` accepts either representation; the bounds after it are
+ * what actually matter — this replaces the old blind `Number(...)` cast.
+ */
+const SafeNonNegativeIntegerSchema = z.coerce
+  .number()
+  .finite()
+  .int()
+  .nonnegative()
+  .max(Number.MAX_SAFE_INTEGER);
+
+/**
+ * Builds the schema for one inbound `SceneSnapshot` (the digital-twin row,
+ * §6.6). `validObjectIds` is optional for exactly the reason
+ * `buildSceneOpSchema` gives: `supabaseTransport.ts`'s `loadSnapshot` has no
+ * channel to the authored model's id set (the same zero-parameter
+ * `createTransport()` seam), so it can validate shape, numeric bounds, and
+ * object count, but not id membership. `loopbackTransport.ts` already holds
+ * `validObjectIds` as a constructor option and passes it through to close
+ * that gap, the same way it already does for `parseSceneOp`.
+ *
+ * The object count is capped independently of membership — `objects` grows
+ * without bound would be an attack even if every id happened to be one the
+ * model has.
+ */
+function buildSceneSnapshotSchema(validObjectIds?: ReadonlySet<string>) {
+  return z
+    .object({
+      objects: z.record(
+        z.string().min(1).max(MAX_OBJECT_ID_LENGTH),
+        SceneObjectSchema
+      ),
+      revision: SafeNonNegativeIntegerSchema,
+      savedAt: SafeNonNegativeIntegerSchema,
+    })
+    .strict()
+    .superRefine((snapshot, ctx) => {
+      const ids = Object.keys(snapshot.objects);
+      if (ids.length > MAX_SNAPSHOT_OBJECT_COUNT) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["objects"],
+          message: `snapshot has ${ids.length} objects, more than the ${MAX_SNAPSHOT_OBJECT_COUNT}-object cap`,
+        });
+      }
+      if (validObjectIds) {
+        for (const id of ids) {
+          if (!validObjectIds.has(id)) {
+            ctx.addIssue({
+              code: "custom",
+              path: ["objects", id],
+              message: "objectId is not part of the authored model",
+            });
+          }
+        }
+      }
+    });
+}
+
+/**
+ * Parses and validates one inbound `SceneSnapshot` — the digital-twin row
+ * §6.6 loads once after `join()`, **before any op is applied**. This is
+ * T-016 finding S-2's fix: before this function existed, both transports
+ * cast the raw row straight to `SceneSnapshot` with a bare TypeScript `as`,
+ * with no runtime check, even though the row is anon-writable and capped
+ * only at 60 KiB of arbitrarily-shaped JSON. Every object is validated
+ * against the same bounds `SceneOpPatchSchema` uses; the object count and
+ * every label's length are capped; `revision`/`savedAt` are bounded to a
+ * safe non-negative integer. A rejected snapshot must be treated the same
+ * way a rejected op or presence record is — dropped, never applied — which
+ * for a snapshot means the caller falls back to "no snapshot was saved"
+ * rather than crashing or rendering degenerate geometry.
+ *
+ * Pass `validObjectIds` when the caller knows the authored model (e.g.
+ * `loopbackTransport.ts`) to additionally reject an object id the model
+ * does not have. Omit it — as `supabaseTransport.ts` must, per
+ * `buildSceneSnapshotSchema`'s comment — to validate everything else
+ * without that check.
+ *
+ * @example
+ * ```ts
+ * const result = parseSceneSnapshot(rawRow);
+ * if (!result.ok) {
+ *   console.warn("[6D] discarding an invalid stored snapshot:", result.reason);
+ *   return null; // treated the same as "nothing saved yet"
+ * }
+ * return result.value;
+ * ```
+ */
+export function parseSceneSnapshot(
+  raw: unknown,
+  validObjectIds?: ReadonlySet<string>
+): ValidationResult<SceneSnapshot> {
+  const result = buildSceneSnapshotSchema(validObjectIds).safeParse(raw);
+  if (!result.success) {
+    return {
+      ok: false,
+      reason: result.error.issues
+        .map(i => `${i.path.join(".")}: ${i.message}`)
+        .join("; "),
+    };
+  }
+  const parsed = result.data;
+  const objects: Record<string, SceneObject> = {};
+  for (const [id, obj] of Object.entries(parsed.objects)) {
+    objects[id] = {
+      id: obj.id as ObjectId,
+      kind: obj.kind,
+      position: obj.position,
+      rotation: obj.rotation,
+      scale: obj.scale,
+      visible: obj.visible,
+      stage: obj.stage,
+      label: obj.label,
+      rev: {
+        seq: obj.rev.seq,
+        actorId: obj.rev.actorId as ActorId | null,
+      },
+    };
+  }
+  return {
+    ok: true,
+    value: {
+      objects,
+      revision: parsed.revision,
+      savedAt: parsed.savedAt,
     },
   };
 }

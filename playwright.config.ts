@@ -1,9 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Each suite gets its own port so suites can run back-to-back (or at once)
-// without sharing — and therefore without tearing down — one another's server.
-// package.json's test:* scripts set PW_PORT; a bare `playwright test` uses 3000.
-const PORT = Number(process.env.PW_PORT ?? 3000);
+// One fixed port per suite, set by package.json's test:* scripts.
+//
+// Deliberately NOT a unique per-process port. Unique ports let two concurrent
+// runs both start — and then `emptyOutDir: true` has them wipe each other's
+// build mid-run, turning a clear "port already used" error into a dozen
+// mysterious test failures. Measured: two concurrent `test:smoke` runs on
+// distinct ports produced 24 failures apiece. Failing fast on the port is the
+// honest signal, and the fix is to not run two gates at once (or to clean up
+// an orphaned server), not to let them race.
+const PORT = Number(process.env.PW_PORT ?? 3100);
 
 export default defineConfig({
   testDir: './tests',

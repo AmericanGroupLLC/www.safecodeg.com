@@ -7,7 +7,7 @@
  * key: "Payload validation — malformed, hostile, NaN, unknown ids."
  */
 import { describe, it, expect } from 'vitest';
-import { isKnownObjectId, parseActorPresence, parseSceneOp } from '@/dimensions/transport/validation';
+import { isKnownObjectId, parseActorPresence, parseSceneOp, parseSceneSnapshot } from '@/dimensions/transport/validation';
 
 const validObjectIds = new Set(['obj-1', 'obj-2']);
 
@@ -157,6 +157,11 @@ describe('parseSceneOp — malformed shapes are rejected', () => {
     const result = parseSceneOp(validRawOp({ opId: '' }));
     expect(result.ok).toBe(false);
   });
+
+  it('rejects an objectId with no length cap when no model set is supplied (T-016 S-4: measured a 1,000,000-character objectId accepted)', () => {
+    const result = parseSceneOp(validRawOp({ objectId: 'x'.repeat(1_000_000) }));
+    expect(result.ok).toBe(false);
+  });
 });
 
 describe('parseActorPresence — accepts well-formed presence', () => {
@@ -225,5 +230,185 @@ describe('parseActorPresence — hostile and malformed presence is rejected', ()
   it('rejects a completely wrong type', () => {
     expect(parseActorPresence(null).ok).toBe(false);
     expect(parseActorPresence('actor-1').ok).toBe(false);
+  });
+});
+
+/**
+ * T-016 finding S-2: `supabaseTransport.ts` and `loopbackTransport.ts` both
+ * cast the digital-twin row straight to `SceneSnapshot` with a bare `as` —
+ * no runtime check at all — even though the row is anon-writable (§6.6's
+ * migration grants anon INSERT/UPDATE `WITH CHECK (true)`, capped only at
+ * 60 KiB of arbitrarily-shaped JSON) and `loadSnapshot` runs once after
+ * `join`, before any op is applied, so hostile stored JSON reaches
+ * `render/projector.ts` ahead of every other control. `parseSceneSnapshot`
+ * closes that gap the same way `parseSceneOp` closes it for the live wire.
+ */
+function validSceneObject(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'obj-1',
+    kind: 'crate-closed',
+    position: { x: 1, y: 2, z: 3 },
+    rotation: { x: 0, y: 0, z: 0, w: 1 },
+    scale: { x: 1, y: 1, z: 1 },
+    visible: true,
+    stage: 'warehouse',
+    label: 'Closed crate',
+    rev: { seq: 0, actorId: null },
+    ...overrides,
+  };
+}
+
+function validRawSnapshot(overrides: Record<string, unknown> = {}) {
+  return {
+    objects: { 'obj-1': validSceneObject() },
+    revision: 3,
+    savedAt: Date.now(),
+    ...overrides,
+  };
+}
+
+describe('parseSceneSnapshot — accepts a well-formed snapshot', () => {
+  it('accepts a minimal valid snapshot with no model-id check requested', () => {
+    const result = parseSceneSnapshot(validRawSnapshot());
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.objects['obj-1'].label).toBe('Closed crate');
+      expect(result.value.revision).toBe(3);
+    }
+  });
+
+  it('accepts an empty objects map', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({ objects: {} }));
+    expect(result.ok).toBe(true);
+  });
+
+  it('accepts a snapshot whose object ids are all in the supplied model set', () => {
+    const result = parseSceneSnapshot(validRawSnapshot(), new Set(['obj-1']));
+    expect(result.ok).toBe(true);
+  });
+
+  it('a null rev.actorId (never-edited-by-a-peer object) is valid', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ rev: { seq: 0, actorId: null } }) },
+    }));
+    expect(result.ok).toBe(true);
+  });
+});
+
+describe('parseSceneSnapshot — the objectId/model-membership seam, same as parseSceneOp', () => {
+  it('rejects a snapshot object whose id the supplied model set does not have', () => {
+    const result = parseSceneSnapshot(validRawSnapshot(), new Set(['some-other-id']));
+    expect(result.ok).toBe(false);
+  });
+
+  it('without a supplied model set, any object id passes shape validation (documented: the caller must check membership itself)', () => {
+    const result = parseSceneSnapshot(
+      validRawSnapshot({ objects: { 'not-in-any-model': validSceneObject({ id: 'not-in-any-model' }) } }),
+    );
+    expect(result.ok).toBe(true);
+  });
+});
+
+describe('parseSceneSnapshot — degenerate transforms that would blank the scene are rejected', () => {
+  it('rejects NaN in a stored position component', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ position: { x: NaN, y: 0, z: 0 } }) },
+    }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects Infinity in a stored rotation component', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ rotation: { x: 0, y: 0, z: 0, w: Infinity } }) },
+    }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects zero/negative scale', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ scale: { x: 0, y: 1, z: 1 } }) },
+    }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects a position component far outside any plausible scene bound', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ position: { x: 1e12, y: 0, z: 0 } }) },
+    }));
+    expect(result.ok).toBe(false);
+  });
+});
+
+describe('parseSceneSnapshot — the fields §6.5/§6.6 name as previously unchecked', () => {
+  it('rejects a label with no length cap (state/types.ts has none) once it is far beyond any authored label', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ label: 'x'.repeat(100_000) }) },
+    }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects control characters in a label — unbounded attacker text otherwise reaches the a11y tree', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ label: 'crate hidden' }) },
+    }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('caps the total object count — an anon-writable row cannot grow the store without bound', () => {
+    const objects: Record<string, unknown> = {};
+    for (let i = 0; i < 500; i++) {
+      objects[`obj-${i}`] = validSceneObject({ id: `obj-${i}` });
+    }
+    const result = parseSceneSnapshot(validRawSnapshot({ objects }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects a revision beyond Number.MAX_SAFE_INTEGER (anon-writable bigint column)', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({ revision: Number.MAX_SAFE_INTEGER + 1024 }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects a savedAt beyond Number.MAX_SAFE_INTEGER', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({ savedAt: Number.MAX_SAFE_INTEGER * 2 }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects a negative revision', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({ revision: -1 }));
+    expect(result.ok).toBe(false);
+  });
+});
+
+describe('parseSceneSnapshot — malformed shapes are rejected, exactly like the old bare cast would not catch', () => {
+  it('rejects a completely wrong type', () => {
+    expect(parseSceneSnapshot(null).ok).toBe(false);
+    expect(parseSceneSnapshot('a string').ok).toBe(false);
+    expect(parseSceneSnapshot(42).ok).toBe(false);
+    expect(parseSceneSnapshot([]).ok).toBe(false);
+  });
+
+  it('rejects a snapshot missing the objects field entirely', () => {
+    const raw = validRawSnapshot();
+    delete (raw as Record<string, unknown>).objects;
+    expect(parseSceneSnapshot(raw).ok).toBe(false);
+  });
+
+  it('rejects an object missing a required field (e.g. rev)', () => {
+    const object = validSceneObject();
+    delete (object as Record<string, unknown>).rev;
+    const result = parseSceneSnapshot(validRawSnapshot({ objects: { 'obj-1': object } }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects an unexpected extra field on an object (strict schema)', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({
+      objects: { 'obj-1': validSceneObject({ hostileField: 'injected' }) },
+    }));
+    expect(result.ok).toBe(false);
+  });
+
+  it('rejects an unexpected extra top-level field (strict schema)', () => {
+    const result = parseSceneSnapshot(validRawSnapshot({ extraField: 'nope' }));
+    expect(result.ok).toBe(false);
   });
 });

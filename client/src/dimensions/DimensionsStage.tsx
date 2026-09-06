@@ -37,6 +37,16 @@ import { startRenderLoop, type RenderLoopHandle } from "./render/loop";
 import { createDimensionsStore, usePlaying, useStoreValue } from "./state/store";
 import { installTestHook } from "./state/testHook";
 import type { ObjectId } from "./state/types";
+import { probeXR, resolveXrUiState, type XrCapability } from "./xr/detect";
+import { requestXRSession, type XRSessionHandle, type XrSessionMode, type XrSessionPhase } from "./xr/session";
+import XRPanel from "./xr/XRPanel";
+import CollabPanel from "./transport/CollabPanel";
+import RemoteControlPanel from "./transport/RemoteControlPanel";
+import { CONTROL_TARGET_ID, useCollaboration } from "./transport/useCollaboration";
+import { composeScene } from "./state/compose";
+
+/** Runtime path to a real, built `.usdz` asset (§7.4) — see client/public/models/astronaut.LICENSE.txt for provenance. */
+const AR_QUICKLOOK_MODEL_HREF = "/models/astronaut.usdz";
 
 export interface DimensionsStageProps {
   prefersReducedMotion: boolean;
@@ -91,6 +101,12 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
   }
   const store = storeRef.current;
 
+  // 6D — the collaboration wiring hook (`transport/useCollaboration.ts`).
+  // Constructs `createTransport()` once, eagerly (cheap, synchronous, no
+  // network — §6.2), but never calls `.join()` on mount (§6.3): that only
+  // happens from `CollabPanel`'s "Join the shared stage" button, below.
+  const collab = useCollaboration(store);
+
   const registryRef = useRef<Record<string, THREE.Object3D | null> | null>(null);
   if (!registryRef.current) {
     registryRef.current = { ...createPrimitiveTemplates(), toycar: null };
@@ -117,6 +133,33 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
   const [physicsRunningUi, setPhysicsRunningUi] = useState(false);
   const [impulse, setImpulse] = useState(PHYSICS_IMPULSE_DEFAULT);
 
+  // 7D — WebXR capability + session lifecycle (ARCHITECTURE-DIMENSIONS.md
+  // §7, D-7D-DETECT). `xrCapability` is the once-per-mount async probe
+  // result (§7.1's four steps); `xrSessionPhase`/`xrActiveMode`/
+  // `xrRejectReason` are the transient session-lifecycle layer §7.2 stacks
+  // on top of it via `resolveXrUiState`. `rendererRef` and `xrSessionRef`
+  // are refs (not state) because the renderer instance and the live
+  // `XRSession` handle are not themselves rendered — only their effect on
+  // the state above is.
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const xrSessionRef = useRef<XRSessionHandle | null>(null);
+  const [xrCapability, setXrCapability] = useState<XrCapability | null>(null);
+  const [xrSessionPhase, setXrSessionPhase] = useState<XrSessionPhase>("idle");
+  const [xrRejectReason, setXrRejectReason] = useState<string | null>(null);
+  const [xrActiveMode, setXrActiveMode] = useState<XrSessionMode | null>(null);
+  // Mirrors the four pieces above into one ref, read by the test hook
+  // (installed once, in the mount effect) so it always reflects the
+  // current XR state rather than the one captured at install time — same
+  // pattern as `liveDataRef` below.
+  const xrSnapshotInputsRef = useRef({
+    capability: xrCapability,
+    sessionPhase: xrSessionPhase,
+    activeMode: xrActiveMode,
+  });
+  useEffect(() => {
+    xrSnapshotInputsRef.current = { capability: xrCapability, sessionPhase: xrSessionPhase, activeMode: xrActiveMode };
+  }, [xrCapability, xrSessionPhase, xrActiveMode]);
+
   const [modelStatus, setModelStatus] = useState<ModelStatus>("loading");
   const [modelError, setModelError] = useState<string | null>(null);
   const [focused, setFocused] = useState(false);
@@ -138,6 +181,14 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     liveDataRef.current = liveData;
   }, [liveData]);
 
+  // 6D — same pattern: the mount-once effect below installs the test hook
+  // once, so it reads `collab`'s current values through this ref rather
+  // than the ones captured at install time.
+  const collabRef = useRef(collab);
+  useEffect(() => {
+    collabRef.current = collab;
+  });
+
   const prevStageIdRef = useRef<string | null>(null);
   useEffect(() => {
     if (activeStage && activeStage.id !== prevStageIdRef.current) {
@@ -155,6 +206,37 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     const label = objects[selection]?.label ?? selection;
     setAnnouncement(`Selected: ${label}`);
   }, [selection, objects]);
+
+  // 6D — §8.2's `a11y/LiveRegion.tsx` also announces transport status
+  // changes. `prevTransportStatusRef` skips the very first render (the
+  // initial "idle"/"unconfigured" state is already shown as on-screen text
+  // by `CollabPanel`; only a genuine transition is announced here).
+  const prevTransportStatusRef = useRef<string | null>(null);
+  useEffect(() => {
+    const kind = collab.status.kind;
+    if (prevTransportStatusRef.current === null) {
+      prevTransportStatusRef.current = kind;
+      return;
+    }
+    if (prevTransportStatusRef.current === kind) return;
+    prevTransportStatusRef.current = kind;
+    if (kind === "connected") setAnnouncement("Joined the shared stage.");
+    else if (kind === "disconnected") setAnnouncement("Disconnected from the shared stage.");
+    else if (kind === "reconnecting") setAnnouncement("Reconnecting to the shared stage.");
+  }, [collab.status]);
+
+  // 7D — the capability probe (§7.1's four steps) runs once per mount. It is
+  // never re-run on a timer and never assumed to have resolved — `xrCapability`
+  // stays `null`, and `XRPanel` renders a "checking" status, until it does.
+  useEffect(() => {
+    let cancelled = false;
+    probeXR().then((capability) => {
+      if (!cancelled) setXrCapability(capability);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Cosmetic status-text sync for the physics panel, polled every 300ms
   // rather than per animation frame — the sandbox can auto-pause itself
@@ -195,6 +277,7 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     });
     sceneRef.current = scene;
     cameraRef.current = camera;
+    rendererRef.current = renderer;
 
     const cameraController = createCameraController(camera, canvas, {
       reducedMotion: prefersReducedMotion,
@@ -248,6 +331,26 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
           fetchedAt: current.fetchedAt,
           value: current.value,
           error: current.error,
+        };
+      },
+      getTransport: () => {
+        const current = collabRef.current;
+        return {
+          status: current.status,
+          actorCount: current.actors.length,
+          actors: current.actors.map((a) => a.actorId),
+          opsApplied: current.opsApplied,
+          opsRejected: current.opsRejected,
+        };
+      },
+      getXR: () => {
+        const { capability, sessionPhase, activeMode } = xrSnapshotInputsRef.current;
+        if (!capability) return null;
+        return {
+          state: resolveXrUiState(capability.state, sessionPhase),
+          supported: capability.supported,
+          sessionMode: activeMode,
+          xrFrames: loop.getXrFrameCount(),
         };
       },
     });
@@ -324,10 +427,16 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
       projector.dispose();
       cameraController.dispose();
       physicsRef.current?.dispose();
+      // A live XRSession is not tied to this canvas's own lifetime the way
+      // the renderer/controls are — ending it here (rather than leaving it
+      // to the browser) is what keeps navigating away from /dimensions from
+      // leaving a headset stuck presenting a page that no longer exists.
+      void xrSessionRef.current?.end();
       disposeRenderer();
       sceneRef.current = null;
       cameraRef.current = null;
       cameraControllerRef.current = null;
+      rendererRef.current = null;
       loopRef.current = null;
     };
   }, []);
@@ -374,6 +483,63 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
     setPhysicsRunningUi(true);
     loopRef.current?.invalidate();
   }, [impulse, store]);
+
+  // 6D — T-016 S-9: the sandbox notice states plainly that "anyone who
+  // joins can move the shared object below or reset it"; this is what
+  // makes "reset it" a real, exercised control rather than only a
+  // true-but-invisible property of the RLS policy. The baseline is
+  // recomputed with `remote: {}` — i.e. "what this object would show with
+  // no 6D override applied" — rather than a hand-maintained constant, so it
+  // can never drift from what `model/process.ts` + the 4D timeline
+  // actually author for this object at the current `t`.
+  const handleResetStage = useCallback(async () => {
+    const baseline = composeScene({
+      model: PRODUCT_PIPELINE,
+      t: store.getSnapshot().t,
+      physics: null,
+      selection: null,
+      actors: {},
+    });
+    const baselineObject = baseline.objects[CONTROL_TARGET_ID as string];
+    if (!baselineObject) return;
+    await collab.resetTarget(baselineObject.position);
+  }, [store, collab]);
+
+  // 7D session controls. "Enter AR"/"Enter VR" are the explicit user actions
+  // §7.3/§6.3-equivalent honesty rule requires — never requested on mount.
+  // A rejection (permission declined, no headset connected mid-attempt,
+  // etc.) is read from the browser's own error and mapped to
+  // `session-rejected` (§7.2) rather than swallowed or generalised.
+  const handleEnterXR = useCallback(async (mode: XrSessionMode) => {
+    const renderer = rendererRef.current;
+    if (!renderer) return;
+    setXrSessionPhase("requesting");
+    setXrActiveMode(mode);
+    setXrRejectReason(null);
+    try {
+      const handle = await requestXRSession(renderer, mode, {
+        onEnd: () => {
+          xrSessionRef.current = null;
+          setXrSessionPhase("idle");
+          setXrActiveMode(null);
+          setAnnouncement("Immersive session ended.");
+          loopRef.current?.invalidate();
+        },
+      });
+      xrSessionRef.current = handle;
+      setXrSessionPhase("running");
+      setAnnouncement(`Immersive ${mode === "immersive-vr" ? "VR" : "AR"} session started.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "The request was declined.";
+      setXrRejectReason(message);
+      setXrSessionPhase("rejected");
+      setAnnouncement(`Immersive session did not start: ${message}`);
+    }
+  }, []);
+
+  const handleExitXR = useCallback(() => {
+    void xrSessionRef.current?.end();
+  }, []);
 
   const selectableSceneItems = Object.entries(objects)
     .filter(([, object]) => object.visible)
@@ -549,6 +715,48 @@ export default function DimensionsStage({ prefersReducedMotion }: DimensionsStag
           source={liveData.source}
           fetchedAt={liveData.fetchedAt}
           refresh={liveData.refresh}
+        />
+      </div>
+
+      {/* ── 6D: multi-user collaboration, digital twin, remote session control ── */}
+      <div className="p-5 sm:p-6 space-y-6" style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}>
+        <CollabPanel
+          status={collab.status}
+          actors={collab.actors}
+          selfActorId={collab.selfActorId}
+          joined={collab.joined}
+          lastErrorMessage={collab.lastErrorMessage}
+          opsApplied={collab.opsApplied}
+          opsRejected={collab.opsRejected}
+          lastSavedAt={collab.lastSavedAt}
+          onJoin={collab.join}
+          onLeave={collab.leave}
+          onMoveTarget={collab.moveTarget}
+          onResetTarget={handleResetStage}
+        />
+        <RemoteControlPanel
+          status={collab.status}
+          joined={collab.joined}
+          actors={collab.actors}
+          selfActorId={collab.selfActorId}
+          role={collab.remoteControlRole}
+          onSetRole={collab.setRemoteControlRole}
+          lastCommand={collab.lastCommand}
+          onSendCommand={collab.sendRemoteCommand}
+          lastReceivedCommand={collab.lastReceivedCommand}
+        />
+      </div>
+
+      {/* ── 7D: WebXR, honestly degraded ─────────────────────────────────── */}
+      <div className="p-5 sm:p-6" style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}>
+        <XRPanel
+          capability={xrCapability}
+          sessionPhase={xrSessionPhase}
+          rejectReason={xrRejectReason}
+          activeMode={xrActiveMode}
+          quickLookHref={AR_QUICKLOOK_MODEL_HREF}
+          onEnter={handleEnterXR}
+          onExit={handleExitXR}
         />
       </div>
     </div>

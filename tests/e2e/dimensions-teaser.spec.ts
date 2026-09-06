@@ -5,9 +5,19 @@
  *  - the Home teaser names all five levels and its CTA reaches /dimensions
  *  - the teaser never pulls the 3D chunk on `/` (re-asserts T-004's boundary
  *    after the teaser landed, per D-SPLIT)
- *  - honesty: only the levels this build actually ships (3D, 4D) render as
- *    "Live"; 5D/6D/7D render as not-yet-available, sourced from
- *    client/src/lib/dimensionsAvailability.ts + client/src/dimensions/contract.ts
+ *  - honesty: a three-way status (live / partial / not-built), sourced from
+ *    the single `DIMENSION_AVAILABILITY` contract in
+ *    client/src/dimensions/contract.ts (read through
+ *    client/src/lib/dimensionsAvailability.ts) — 3D and 4D are fully live;
+ *    5D, 6D and 7D are genuinely partial (real, verified capability
+ *    alongside a named gap) and their caveat renders verbatim. A plain
+ *    live/not-live boolean previously rounded 5D and 7D two different ways
+ *    on two different pages — this suite now asserts the exact three-way
+ *    status and the caveat text, not just a binary label. (T-010/T-011: 6D
+ *    moved from "not-built" to "partial" — multi-user sync, the digital
+ *    twin and remote session control are real, proven across two pages in
+ *    one browser context; genuine cross-browser sync is unverified for want
+ *    of a Supabase anon key, which is exactly what its caveat names.)
  *  - the AGL "Spatial & Industry SaaS" vertical's own CTA reaches /dimensions
  *  - keyboard reachability and accessible names for both new CTAs
  *  - no horizontal scroll at 640/768/1024px on either page
@@ -16,7 +26,8 @@ import { test, expect } from '@playwright/test';
 
 const ALL_LEVELS = ['3D', '4D', '5D', '6D', '7D'] as const;
 const LIVE_LEVELS = ['3D', '4D'];
-const NOT_YET_LEVELS = ALL_LEVELS.filter((l) => !LIVE_LEVELS.includes(l));
+const PARTIAL_LEVELS = ['5D', '6D', '7D'];
+const NOT_BUILT_LEVELS: string[] = [];
 
 test.describe('T-013 — Home page dimensional stack teaser', () => {
   test('names all five levels', async ({ page }) => {
@@ -27,14 +38,33 @@ test.describe('T-013 — Home page dimensional stack teaser', () => {
     }
   });
 
-  test('marks only the genuinely-shipped levels as Live; the rest as not yet available', async ({ page }) => {
+  test('marks each level with its exact status: Live, Partial (with its caveat) or Not yet available', async ({ page }) => {
     await page.goto('/');
     for (const level of LIVE_LEVELS) {
-      await expect(page.getByTestId(`dimension-teaser-card-${level}`)).toContainText('Live');
-      await expect(page.getByTestId(`dimension-teaser-card-${level}`)).not.toContainText('Not yet available');
+      const card = page.getByTestId(`dimension-teaser-card-${level}`);
+      await expect(card).toContainText('Live');
+      await expect(card).not.toContainText('Partial');
+      await expect(card).not.toContainText('Not yet available');
+      // A live level renders no caveat note at all.
+      await expect(page.getByTestId(`dimension-teaser-caveat-${level}`)).toHaveCount(0);
     }
-    for (const level of NOT_YET_LEVELS) {
-      await expect(page.getByTestId(`dimension-teaser-card-${level}`)).toContainText('Not yet available');
+    for (const level of PARTIAL_LEVELS) {
+      const card = page.getByTestId(`dimension-teaser-card-${level}`);
+      await expect(card).toContainText('Partial');
+      await expect(card).not.toContainText('Live');
+      await expect(card).not.toContainText('Not yet available');
+      // The caveat is not just present — it says something, and it is not
+      // itself a disguised "Live"/"Not yet available" claim.
+      const caveat = page.getByTestId(`dimension-teaser-caveat-${level}`);
+      await expect(caveat).toBeVisible();
+      const caveatText = (await caveat.innerText()).trim();
+      expect(caveatText.length).toBeGreaterThan(10);
+    }
+    for (const level of NOT_BUILT_LEVELS) {
+      const card = page.getByTestId(`dimension-teaser-card-${level}`);
+      await expect(card).toContainText('Not yet available');
+      await expect(card).not.toContainText('Live');
+      await expect(card).not.toContainText('Partial');
     }
   });
 
@@ -78,7 +108,7 @@ test.describe('T-013 — Home page dimensional stack teaser', () => {
 });
 
 test.describe('T-013 — AGL Spatial & Industry SaaS vertical', () => {
-  test('references the 3D-7D dimensional stack and marks it honestly', async ({ page }) => {
+  test('references the 3D-7D dimensional stack and marks each level with its exact status', async ({ page }) => {
     await page.goto('/agl');
     const ladder = page.getByTestId('agl-dimensions-ladder');
     await expect(ladder).toBeVisible();
@@ -86,8 +116,36 @@ test.describe('T-013 — AGL Spatial & Industry SaaS vertical', () => {
     for (const level of ALL_LEVELS) {
       expect(ladderText).toContain(level);
     }
-    // Exactly the not-yet-live levels are annotated "soon"; the live ones are not.
-    expect((ladderText.match(/soon/g) ?? []).length).toBe(NOT_YET_LEVELS.length);
+    // Exactly the not-built level is annotated "soon"; exactly the partial
+    // levels are annotated "partial"; the fully-live levels get neither.
+    expect((ladderText.match(/soon/g) ?? []).length).toBe(NOT_BUILT_LEVELS.length);
+    expect((ladderText.match(/partial/gi) ?? []).length).toBeGreaterThanOrEqual(PARTIAL_LEVELS.length);
+
+    for (const level of PARTIAL_LEVELS) {
+      const pill = page.getByTestId(`agl-dimension-pill-${level}`);
+      await expect(pill).toContainText('partial');
+      await expect(pill).not.toContainText('soon');
+    }
+    for (const level of NOT_BUILT_LEVELS) {
+      const pill = page.getByTestId(`agl-dimension-pill-${level}`);
+      await expect(pill).toContainText('soon');
+      await expect(pill).not.toContainText('partial');
+    }
+    for (const level of LIVE_LEVELS) {
+      const pill = page.getByTestId(`agl-dimension-pill-${level}`);
+      await expect(pill).not.toContainText('soon');
+      await expect(pill).not.toContainText('partial');
+    }
+
+    // The caveat for each partial level is spelled out below the pill row,
+    // not just hinted at with a one-word suffix — an honest gap needs to say
+    // what the gap actually is.
+    for (const level of PARTIAL_LEVELS) {
+      const caveat = page.getByTestId(`agl-dimension-caveat-${level}`);
+      await expect(caveat).toBeVisible();
+      const caveatText = (await caveat.innerText()).trim();
+      expect(caveatText.length).toBeGreaterThan(10);
+    }
   });
 
   test('its CTA navigates to /dimensions', async ({ page }) => {

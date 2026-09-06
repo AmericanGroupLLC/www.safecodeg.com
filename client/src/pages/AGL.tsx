@@ -8,7 +8,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { ArrowRight, Brain, Smartphone, Globe, Shield, Code2, Cpu, TrendingUp, Users, CheckCircle, Building2 } from "lucide-react";
 import { DIMENSION_LEVELS, DIMENSION_LEVEL_META } from "@/dimensions/contract";
-import { isDimensionLevelLive } from "@/lib/dimensionsAvailability";
+import { getDimensionAvailability, dimensionStatusPresentation, getDimensionCaveat } from "@/lib/dimensionsAvailability";
 
 const verticals = [
   {
@@ -58,7 +58,7 @@ const verticals = [
     count: 10,
     color: "#A78BFA",
     bg: "rgba(139,92,246,0.12)",
-    desc: "Vertical SaaS for healthcare, real estate, and industrial sectors, built on a dimensional capability stack — 3D spatial models through 7D immersive AR/VR — that runs live on this site, level by level.",
+    desc: "Vertical SaaS for healthcare, real estate, and industrial sectors. This site separately runs its own 3D–7D dimensional capability stack — spatial models through immersive AR/VR — as a live, standalone demo below; it is not a claim about these products' own architecture.",
     products: ["SpaceForge AR", "MedSpatial", "RealityLayer", "IndustrialAR", "CasinoOS", "UrbanMesh"],
   },
   {
@@ -245,29 +245,46 @@ export default function AGLPage() {
                   {/* Dimensional Capability Stack — 3D-7D ladder, honestly marked (T-013).
                       Only this vertical carries the stack; the level names and
                       metadata come from client/src/dimensions/contract.ts and the
-                      live/not-yet-available flag from client/src/lib/dimensionsAvailability.ts
-                      — never hand-written per level here. */}
+                      live/partial/not-built status (plus, for a partial level, a
+                      caveat naming exactly what is not yet true) from
+                      client/src/lib/dimensionsAvailability.ts — never hand-written
+                      per level here. */}
                   {v.title === "Spatial & Industry SaaS" && (
                     <div className="mt-4 pt-4 border-t border-white/8" data-testid="agl-dimensions-ladder">
                       <div className="flex flex-wrap gap-1.5 mb-3">
                         {DIMENSION_LEVELS.map((level) => {
-                          const live = isDimensionLevelLive(level);
+                          const availability = getDimensionAvailability(level);
+                          const presentation = dimensionStatusPresentation(availability.status);
+                          const suffix =
+                            availability.status === "live" ? "" : availability.status === "partial" ? " · partial" : " · soon";
+                          const caveat = getDimensionCaveat(level);
+                          const title = caveat
+                            ? `${DIMENSION_LEVEL_META[level].label} — ${caveat}`
+                            : DIMENSION_LEVEL_META[level].label;
                           return (
                             <span
                               key={level}
-                              title={DIMENSION_LEVEL_META[level].label}
+                              data-testid={`agl-dimension-pill-${level}`}
+                              title={title}
                               className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold"
-                              style={{
-                                background: live ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.06)",
-                                color: live ? "#34D399" : "rgba(255,255,255,0.7)",
-                              }}
+                              style={{ background: presentation.badgeBg, color: presentation.badgeText }}
                             >
                               {level}
-                              {!live && " · soon"}
+                              {suffix}
                             </span>
                           );
                         })}
                       </div>
+                      {DIMENSION_LEVELS.filter((level) => getDimensionCaveat(level)).length > 0 && (
+                        <ul className="text-[10px] text-slate-500 leading-snug space-y-0.5 mb-3">
+                          {DIMENSION_LEVELS.filter((level) => getDimensionCaveat(level)).map((level) => (
+                            <li key={level} data-testid={`agl-dimension-caveat-${level}`}>
+                              <span className="font-mono font-semibold text-slate-400">{level}:</span>{" "}
+                              {getDimensionCaveat(level)}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                       <Link
                         href="/dimensions"
                         data-testid="agl-dimensions-cta"

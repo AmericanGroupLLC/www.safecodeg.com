@@ -9,7 +9,17 @@
  *
  * Built on `renderer.setAnimationLoop`, the same call three delegates to
  * `WebXRManager` (§1.1) — so this loop needs no change to also serve an XR
- * session, when T-011/T-012 add one.
+ * session; T-012 only teaches it two things about that path:
+ *
+ *   1. While `renderer.xr.isPresenting`, every frame renders unconditionally
+ *      — the invalidation/settle logic below is a battery optimisation for
+ *      the flat page and does not apply inside a live headset session,
+ *      where skipping a frame shows the device a stale or black frame.
+ *   2. `xrFrames` counts frames actually presented to an `XRSession` — three
+ *      passes the `XRFrame` as this callback's second argument only while
+ *      presenting (undefined otherwise), so counting only when that second
+ *      argument is present is itself proof the count reflects a real
+ *      session, not the ordinary rAF loop.
  *
  * `getStats().frame` is `renderer.info.render.frame`, which three only
  * increments inside an actual `render()` call — never on a skipped frame —
@@ -30,6 +40,8 @@ export interface RenderLoopHandle {
   /** Call on any input or state change that should produce at least one more rendered frame. */
   invalidate(): void;
   getStats(): RenderStats;
+  /** Frames actually rendered to a live `XRSession` (§7 D-HOOK's `getXR().xrFrames`). 0 outside a session. */
+  getXrFrameCount(): number;
   dispose(): void;
 }
 
@@ -49,14 +61,23 @@ export function startRenderLoop(
   onAfterRender?: () => void,
 ): RenderLoopHandle {
   let needsRenderUntilMs = 0;
+  let xrFrameCount = 0;
 
   function invalidate() {
     needsRenderUntilMs = nowMs() + SETTLE_MS;
   }
   invalidate(); // the first frame always renders, so `ready` can flip true
 
-  function frame(timestampMs: number) {
+  function frame(timestampMs: number, xrFrame?: XRFrame) {
     onBeforeFrame(timestampMs);
+    if (renderer.xr.isPresenting) {
+      // A live XRSession's frame loop is not the invalidation-driven one —
+      // it renders every frame the device asks for, unconditionally.
+      if (xrFrame) xrFrameCount += 1;
+      renderer.render(scene, camera);
+      onAfterRender?.();
+      return;
+    }
     if (timestampMs <= needsRenderUntilMs) {
       renderer.render(scene, camera);
       onAfterRender?.();
@@ -75,9 +96,13 @@ export function startRenderLoop(
     };
   }
 
+  function getXrFrameCount(): number {
+    return xrFrameCount;
+  }
+
   function dispose() {
     renderer.setAnimationLoop(null);
   }
 
-  return { invalidate, getStats, dispose };
+  return { invalidate, getStats, getXrFrameCount, dispose };
 }

@@ -1,19 +1,54 @@
 /**
- * Sophia — AGL Customer Success Assistant
+ * Sophia — AGL's scripted site assistant (not a live person, not AI)
  * Dark enterprise theme, updated product info (77 products, 8 verticals)
+ *
+ * Honesty note (T-018 rejection, F-1 fix): this widget is a hardcoded regex
+ * response engine — there is no network call anywhere in this file. Every
+ * visitor-facing surface below must disclose that by default, without the
+ * visitor having to ask "are you a bot" first. See TASKS.md Decisions row 17.
  */
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Send, Minimize2, ChevronDown } from "lucide-react";
+import { Bot, X, Send, Minimize2, ChevronDown } from "lucide-react";
 import { Link } from "wouter";
 
-const SOPHIA_AVATAR = "/manus-storage/sophia-avatar_9b8b67b1.png";
+/**
+ * A flat, short reply delay. Retained only for UX continuity (a reply
+ * popping in with zero transition reads as broken), not to simulate human
+ * typing cadence — the previous 800–1700ms range scaled with message
+ * "complexity" specifically to feel like a person typing, which is exactly
+ * the illusion this fix removes. `Math.min(returnedDelay, RESPONSE_DELAY_MS)`
+ * below caps every call site at this value regardless of what `sophiaReply`/
+ * `handleForm` return.
+ */
+const RESPONSE_DELAY_MS = 500;
+
+/**
+ * Same Web3Forms *access key* used by the site's primary contact form
+ * (client/src/pages/Contact.tsx:12) and the same public, front-end-safe
+ * value — Web3Forms access keys are designed to be embedded in client code,
+ * like a Stripe publishable key, not a secret. Duplicated here rather than
+ * imported so this widget stays free of a dependency on a page component;
+ * if the key ever needs to change, update both call sites.
+ */
+const WEB3FORMS_KEY = "97f985ce-75d3-47e8-b941-3e85db2e7395";
 
 interface Message {
   id: string;
   role: "sophia" | "user";
   text: string;
   time: string;
+  /**
+   * Explicit quick-reply override for this message. When unset, the render
+   * layer falls back to re-deriving quick replies from `sophiaReply(text)`
+   * (see the `quickReplies` memo below) — that derivation is keyed off
+   * incidental keyword matches in the message text, which is unreliable for
+   * a message built from arbitrary visitor-supplied data (e.g. an email
+   * address that happens to contain "ai"). The contact-form failure message
+   * sets this explicitly so its "Visit contact page" route is never at the
+   * mercy of that coincidence.
+   */
+  quick?: string[];
 }
 
 interface ConvState {
@@ -40,7 +75,7 @@ function sophiaReply(input: string, state: ConvState): { text: string; delay: nu
   if (/^(hi|hello|hey|good\s*(morning|afternoon|evening)|howdy|sup)\b/.test(m)) {
     const g = [
       `Hey${state.userName ? " " + state.userName : ""}! 😊 Great to hear from you. What can I help you with today?`,
-      `Hi there! I'm Sophia from the AGL team. What's on your mind?`,
+      `Hi there! I'm Sophia, AGL's automated site assistant. What's on your mind?`,
       `Hello! Welcome to American Group LLC. How can I help you today?`,
     ];
     return { text: g[Math.floor(Math.random() * g.length)], delay: 800, quick: ["Tell me about your products", "I need support", "Contact info", "Careers"] };
@@ -51,11 +86,11 @@ function sophiaReply(input: string, state: ConvState): { text: string; delay: nu
   }
 
   if (/your name|who are you|what'?s your name|who am i (talking|chatting) (to|with)/.test(m)) {
-    return { text: `I'm Sophia — Customer Success at American Group LLC! I know our products and team really well. Is there something specific I can help you with?`, delay: 1300 };
+    return { text: `I'm Sophia — an automated assistant here on the AGL site, not a person. I answer from a set of preset responses about our products, team, and services, and I'll loop in someone from our actual team for anything else. What can I help you with?`, delay: 1300 };
   }
 
   if (/are you (a )?(bot|robot|ai|real|human|person)|is this (a )?(bot|ai|automated)/.test(m)) {
-    return { text: `Ha, good question! 😄 I'm Sophia, an AI assistant for AGL — so yes, AI-powered, but trained to be genuinely helpful. I know our products, team, and services really well. What can I help you with?`, delay: 1700 };
+    return { text: `Ha, good question! 😄 I'm Sophia — a scripted help assistant here on the AGL site, not AI. I work from a set of preset answers about our products, team, and services, and I'll connect you with a real person on our team for anything I can't handle. What can I help you with?`, delay: 1700 };
   }
 
   if (/product|app|application|software|what do you (make|build|sell|offer)|portfolio/.test(m)) {
@@ -180,19 +215,42 @@ function handleForm(input: string, state: ConvState): { text: string; delay: num
         newState: { stage: "form_done", formData: { ...state.formData, message: input } },
       };
     case "form_done":
-      if (/yes|send|confirm|go ahead|sure|ok/.test(input.toLowerCase())) {
-        return { text: `Done! ✅ Your message has been sent to the AGL team. They'll reach out to you at ${state.formData.email} within 1 business day.\n\nIs there anything else I can help you with?`, delay: 1500, newState: { stage: "main", formData: {} } };
-      }
+      // The confirming ("yes"/"send"/...) branch used to live here and
+      // unconditionally rendered a hardcoded success message — no network
+      // call was ever made anywhere in this file, so every confirmed
+      // inquiry was silently discarded while the visitor was told it had
+      // been delivered. That branch is now handled in `send()` (see
+      // `submitContactForm`), not here, because reporting success honestly
+      // requires awaiting a real Web3Forms response before saying anything.
+      // This function only ever sees the case where that regex did NOT
+      // match, i.e. the decline path.
       return { text: `No worries! Message discarded. Is there anything else I can help you with?`, delay: 900, newState: { stage: "main", formData: {} } };
     default:
       return { text: "", delay: 0, newState: {} };
   }
 }
 
+/**
+ * Renders as a Bot icon on a gradient circle rather than a photo — deliberate:
+ * a robot glyph cannot be mistaken for a human staff photo, and it needs no
+ * externally hosted asset that can 404 (the previous `/manus-storage/
+ * sophia-avatar_9b8b67b1.png` resolved nowhere in this repo's build output).
+ */
+function SophiaAvatar({ className }: { className: string }) {
+  return (
+    <div
+      className={`rounded-full flex items-center justify-center flex-shrink-0 ${className}`}
+      style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)" }}
+    >
+      <Bot className="w-[60%] h-[60%] text-white" aria-hidden="true" />
+    </div>
+  );
+}
+
 function TypingDots() {
   return (
     <div className="flex items-end gap-2 mb-3">
-      <img src={SOPHIA_AVATAR} alt="Sophia" className="w-7 h-7 rounded-full object-cover flex-shrink-0 ring-2 ring-indigo-500/30" />
+      <SophiaAvatar className="w-7 h-7 ring-2 ring-indigo-500/30" />
       <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
         <div className="flex gap-1 items-center h-4">
           {[0, 150, 300].map((d) => (
@@ -214,6 +272,10 @@ export default function AIChatWidget() {
   const [greeted, setGreeted] = useState(false);
   const [pulse, setPulse] = useState(true);
   const [conv, setConv] = useState<ConvState>({ stage: "main", formData: {}, count: 0 });
+  // True only while the real Web3Forms submission (see submitContactForm)
+  // is in flight — drives the disabled input/placeholder and blocks a
+  // second confirmation from firing a second request.
+  const [submitting, setSubmitting] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -227,8 +289,8 @@ export default function AIChatWidget() {
       setTyping(true);
       setTimeout(() => {
         setTyping(false);
-        setMessages([{ id: "g0", role: "sophia", text: `Hi! 👋 I'm Sophia from the AGL team. I'm here to help with anything — products, support, partnerships, or general questions.\n\nWhat can I help you with today?`, time: getTime() }]);
-      }, 1600);
+        setMessages([{ id: "g0", role: "sophia", text: `Hi! 👋 I'm Sophia, an automated assistant for the AGL site — not a live person. I can help with products, support, partnerships, or general questions, and I'll connect you with our team for anything else.\n\nWhat can I help you with today?`, time: getTime() }]);
+      }, RESPONSE_DELAY_MS);
     }
   }, [isOpen, greeted]);
 
@@ -238,15 +300,85 @@ export default function AIChatWidget() {
       setTyping(false);
       setMessages((p) => [...p, { id: Date.now().toString(), role: "sophia", text, time: getTime() }]);
       if (!isOpen || minimized) setUnread((c) => c + 1);
-    }, delay);
+    }, Math.min(delay, RESPONSE_DELAY_MS));
   }, [isOpen, minimized]);
+
+  /**
+   * Actually delivers the reviewed inquiry — the fix for the fabricated
+   * "Done! ✅ ... has been sent" confirmation this widget used to render
+   * unconditionally. Reuses Contact.tsx's own working pattern exactly: POST
+   * to https://api.web3forms.com/submit with the same WEB3FORMS_KEY, a
+   * `botcheck` honeypot, and the same field shape; read `data.success`; only
+   * report success once that is confirmed; otherwise throw and show an
+   * honest failure with a route that still works.
+   */
+  const submitContactForm = useCallback(async (formData: ConvState["formData"]) => {
+    setSubmitting(true);
+    setTyping(true);
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `New Contact: Chat Widget Inquiry — from ${formData.name ?? "a website visitor"}`,
+          from_name: "safecodeg.com Chat Widget (Sophia)",
+          name: formData.name ?? "",
+          email: formData.email ?? "",
+          company: formData.company || "Not provided",
+          message: formData.message ?? "",
+          botcheck: "",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || "Submission failed");
+      setMessages((p) => [
+        ...p,
+        {
+          id: Date.now().toString(),
+          role: "sophia",
+          // "1–2 business days" matches Contact.tsx's own success wording
+          // (and server/contactRouter.ts's) rather than inventing a tighter
+          // SLA this widget has no basis to promise.
+          text: `Done! ✅ Your message has been sent to the AGL team. They'll respond to you at ${formData.email} within 1–2 business days.\n\nIs there anything else I can help you with?`,
+          time: getTime(),
+        },
+      ]);
+    } catch (err) {
+      console.error("[AIChatWidget] Web3Forms submission failed:", err);
+      setMessages((p) => [
+        ...p,
+        {
+          id: Date.now().toString(),
+          role: "sophia",
+          text: `I'm sorry — that didn't go through, so nothing was sent. Please email us directly at 📧 contact@safecodeg.com, or use the option below, and our team will get back to you within 1–2 business days.`,
+          time: getTime(),
+          quick: ["Visit contact page"],
+        },
+      ]);
+    } finally {
+      setTyping(false);
+      setSubmitting(false);
+      setConv((p) => ({ ...p, stage: "main", formData: {} }));
+    }
+  }, []);
 
   const send = useCallback((text?: string) => {
     const t = (text || inputVal).trim();
     if (!t) return;
+    if (submitting) return; // a real submission is already in flight
     setInputVal("");
     setMessages((p) => [...p, { id: Date.now().toString(), role: "user", text: t, time: getTime() }]);
     const newCount = conv.count + 1;
+
+    // Confirming the reviewed message is handled here, not by handleForm —
+    // it performs the real network call above and must await the response
+    // before saying anything happened.
+    if (conv.stage === "form_done" && /yes|send|confirm|go ahead|sure|ok/.test(t.toLowerCase())) {
+      setConv((p) => ({ ...p, count: newCount }));
+      void submitContactForm(conv.formData);
+      return;
+    }
 
     if (["form_name", "form_email", "form_company", "form_message", "form_done"].includes(conv.stage)) {
       const { text: rt, delay, newState } = handleForm(t, conv);
@@ -266,14 +398,16 @@ export default function AIChatWidget() {
     setTimeout(() => {
       setTyping(false);
       setMessages((p) => [...p, { id: Date.now().toString(), role: "sophia", text: rt, time: getTime() }]);
-    }, delay);
-  }, [inputVal, conv, addSophia]);
+    }, Math.min(delay, RESPONSE_DELAY_MS));
+  }, [inputVal, conv, addSophia, submitting, submitContactForm]);
 
   const open = () => { setIsOpen(true); setMinimized(false); setUnread(0); };
 
-  // Get quick replies from last sophia message
+  // Get quick replies from last sophia message. `msg.quick`, when set, is an
+  // explicit override (see the Message interface) — otherwise fall back to
+  // the original re-derivation from the message text.
   const lastSophia = [...messages].reverse().find((m) => m.role === "sophia");
-  const quickReplies = lastSophia && !typing ? sophiaReply(lastSophia.text, conv).quick : undefined;
+  const quickReplies = lastSophia && !typing ? lastSophia.quick ?? sophiaReply(lastSophia.text, conv).quick : undefined;
 
   const fmt = (text: string) =>
     text.split("\n").map((line, i, arr) => (
@@ -299,14 +433,14 @@ export default function AIChatWidget() {
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 flex-shrink-0" style={{ background: "rgba(99,102,241,0.15)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             <div className="relative">
-              <img src={SOPHIA_AVATAR} alt="Sophia" className="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-500/40" />
-              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0A0F1E] bg-emerald-400" />
+              <SophiaAvatar className="w-10 h-10 ring-2 ring-indigo-500/40" />
+              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0A0F1E] bg-indigo-400" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-white text-sm">Sophia</div>
-              <div className="text-xs flex items-center gap-1 text-emerald-400">
+              <div className="text-xs flex items-center gap-1 text-indigo-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-current inline-block" />
-                Online · Customer Success, AGL
+                Automated assistant · AGL
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -326,7 +460,7 @@ export default function AIChatWidget() {
                 {messages.map((msg) => (
                   <div key={msg.id} className={`flex items-end gap-2 mb-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                     {msg.role === "sophia" && (
-                      <img src={SOPHIA_AVATAR} alt="Sophia" className="w-7 h-7 rounded-full object-cover flex-shrink-0 ring-2 ring-indigo-500/30" />
+                      <SophiaAvatar className="w-7 h-7 ring-2 ring-indigo-500/30" />
                     )}
                     <div className={`flex flex-col gap-1 max-w-[78%] ${msg.role === "user" ? "items-end" : "items-start"}`}>
                       <div
@@ -378,17 +512,19 @@ export default function AIChatWidget() {
                     value={inputVal}
                     onChange={(e) => setInputVal(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-                    placeholder="Message Sophia..."
-                    className="flex-1 text-sm px-4 py-2.5 rounded-xl outline-none transition-all text-white placeholder-slate-600"
+                    placeholder={submitting ? "Sending your message…" : "Message Sophia..."}
+                    disabled={submitting}
+                    aria-busy={submitting}
+                    className="flex-1 text-sm px-4 py-2.5 rounded-xl outline-none transition-all text-white placeholder-slate-600 disabled:opacity-60"
                     style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
                     onFocus={(e) => { e.target.style.borderColor = "rgba(99,102,241,0.5)"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.1)"; }}
                     onBlur={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.1)"; e.target.style.boxShadow = "none"; }}
                   />
                   <button
                     onClick={() => send()}
-                    disabled={!inputVal.trim()}
+                    disabled={!inputVal.trim() || submitting}
                     className="p-2.5 rounded-xl transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={{ background: inputVal.trim() ? "linear-gradient(135deg, #6366F1, #4F46E5)" : "rgba(255,255,255,0.08)", color: "white" }}
+                    style={{ background: inputVal.trim() && !submitting ? "linear-gradient(135deg, #6366F1, #4F46E5)" : "rgba(255,255,255,0.08)", color: "white" }}
                     aria-label="Send"
                   >
                     <Send className="h-4 w-4" />
@@ -396,7 +532,7 @@ export default function AIChatWidget() {
                 </div>
                 <div className="text-center mt-2">
                   <span className="text-xs text-slate-600">
-                    Sophia · Customer Success at{" "}
+                    Sophia · Automated assistant for{" "}
                     <span className="text-indigo-400 font-medium">American Group LLC</span>
                   </span>
                 </div>
@@ -420,10 +556,10 @@ export default function AIChatWidget() {
         aria-label="Chat with Sophia"
       >
         <div className="relative">
-          <img src={SOPHIA_AVATAR} alt="Sophia" className="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-500/40" />
+          <SophiaAvatar className="w-9 h-9 ring-2 ring-indigo-500/40" />
           {!isOpen && (
             <span
-              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#070B14] bg-emerald-400 ${pulse ? "animate-pulse" : ""}`}
+              className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#070B14] bg-indigo-400 ${pulse ? "animate-pulse" : ""}`}
             />
           )}
           {unread > 0 && !isOpen && (

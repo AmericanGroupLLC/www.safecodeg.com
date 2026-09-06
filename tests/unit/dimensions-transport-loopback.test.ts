@@ -248,6 +248,20 @@ describe('createLoopbackTransport — ops relay through the real validation pipe
   });
 });
 
+function validSceneObject(id: string) {
+  return {
+    id: id as ObjectId,
+    kind: 'crate-closed',
+    position: { x: 9, y: 9, z: 9 },
+    rotation: { x: 0, y: 0, z: 0, w: 1 },
+    scale: { x: 1, y: 1, z: 1 },
+    visible: true,
+    stage: null,
+    label: 'Closed crate',
+    rev: { seq: 0, actorId: null },
+  };
+}
+
 describe('createLoopbackTransport — digital twin via injected storage', () => {
   it('a value saved by one instance is loaded by a fresh instance sharing the same storage', async () => {
     const storage = fakeStorage();
@@ -255,10 +269,7 @@ describe('createLoopbackTransport — digital twin via injected storage', () => 
     const writer = tracked({ validObjectIds, storage });
 
     const snapshot = {
-      objects: { 'obj-1': { position: { x: 9, y: 9, z: 9 } } as unknown as Record<string, unknown> } as unknown as Record<
-        string,
-        never
-      >,
+      objects: { 'obj-1': validSceneObject('obj-1') },
       revision: 3,
       savedAt: 123456,
     };
@@ -281,5 +292,75 @@ describe('createLoopbackTransport — digital twin via injected storage', () => 
     await transport.saveSnapshot('room-x', { objects: {}, revision: 0, savedAt: 0 });
     const loaded = await transport.loadSnapshot('room-x');
     expect(loaded).toBeNull();
+  });
+
+  /**
+   * T-016 finding S-2: the row this table holds is anon-writable by design
+   * (`supabase/migrations/0001_dimensions_room_state.sql` grants anon
+   * INSERT/UPDATE `WITH CHECK (true)`), so a stored snapshot must be treated
+   * as hostile as any live peer payload. Before `parseSceneSnapshot` was
+   * wired into `loadSnapshot`, `JSON.parse(raw) as SceneSnapshot` handed a
+   * degenerate transform straight to the caller with no check at all — these
+   * write directly to the injected `storage` (bypassing this transport's own
+   * `saveSnapshot`) to simulate exactly that: a hostile row planted by
+   * another anon caller, not one this instance wrote.
+   */
+  it('discards a stored snapshot with a NaN transform rather than returning it', async () => {
+    const storage = fakeStorage();
+    const roomId = uniqueRoomId('hostile-twin');
+    storage.setItem(
+      `dimensions:loopback:snapshot:${roomId}`,
+      JSON.stringify({
+        objects: {
+          'obj-1': { ...validSceneObject('obj-1'), position: { x: NaN, y: 0, z: 0 } },
+        },
+        revision: 1,
+        savedAt: 1,
+      }),
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const transport = tracked({ validObjectIds, storage });
+    const loaded = await transport.loadSnapshot(roomId);
+
+    expect(loaded).toBeNull();
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  it('discards a stored snapshot whose objectId is not part of the authored model', async () => {
+    const storage = fakeStorage();
+    const roomId = uniqueRoomId('hostile-twin-id');
+    storage.setItem(
+      `dimensions:loopback:snapshot:${roomId}`,
+      JSON.stringify({
+        objects: { 'phys:injected-9999': validSceneObject('phys:injected-9999') },
+        revision: 1,
+        savedAt: 1,
+      }),
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const transport = tracked({ validObjectIds, storage });
+    const loaded = await transport.loadSnapshot(roomId);
+
+    expect(loaded).toBeNull();
+    warnSpy.mockRestore();
+  });
+
+  it('discards a stored snapshot whose revision exceeds Number.MAX_SAFE_INTEGER', async () => {
+    const storage = fakeStorage();
+    const roomId = uniqueRoomId('hostile-twin-revision');
+    storage.setItem(
+      `dimensions:loopback:snapshot:${roomId}`,
+      JSON.stringify({ objects: {}, revision: Number.MAX_SAFE_INTEGER * 4, savedAt: 1 }),
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const transport = tracked({ validObjectIds, storage });
+    const loaded = await transport.loadSnapshot(roomId);
+
+    expect(loaded).toBeNull();
+    warnSpy.mockRestore();
   });
 });

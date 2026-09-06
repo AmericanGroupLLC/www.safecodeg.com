@@ -23,7 +23,10 @@
  * `onOp()` into the store must use to close that gap. Every other part of
  * §6.5 — finite numeric bounds, `displayName`/`colorHex` shape, `opId`/
  * `actorId` shape, and the per-actor rate cap — IS enforced here, before any
- * `onOp` / `onPresence` listener is invoked.
+ * `onOp` / `onPresence` listener is invoked. `loadSnapshot`'s row is run
+ * through `parseSceneSnapshot` on the same terms — object-id membership
+ * omitted for the identical structural reason, everything else (numeric
+ * bounds, label shape, object count, revision/savedAt range) enforced.
  */
 import { PostgrestClient } from "@supabase/postgrest-js";
 import {
@@ -34,12 +37,11 @@ import {
 import type {
   ActorPresence,
   CollaborationTransport,
-  SceneObject,
   SceneOp,
   SceneSnapshot,
   TransportStatus,
 } from "./types";
-import { parseActorPresence, parseSceneOp } from "./validation";
+import { parseActorPresence, parseSceneOp, parseSceneSnapshot } from "./validation";
 import { createRateLimiter } from "./rateLimiter";
 
 /** Must match `supabase/migrations/0001_dimensions_room_state.sql`. */
@@ -264,11 +266,29 @@ export function createSupabaseTransport(
       // No row yet for this room is an honest "nothing saved" — not an error.
       if (!data) return null;
 
-      return {
-        objects: data.objects as Record<string, SceneObject>,
-        revision: Number(data.revision),
-        savedAt: Number(data.saved_at),
-      };
+      // §6.5/§6.6, T-016 finding S-2: this row is anon-writable (the
+      // migration grants anon INSERT/UPDATE `WITH CHECK (true)`) and
+      // `loadSnapshot` runs once after `join`, before any op is applied, so
+      // it is validated exactly as a live peer payload is — never cast
+      // straight to `SceneSnapshot`. `validObjectIds` is intentionally
+      // omitted: see `validation.ts`'s `buildSceneSnapshotSchema` comment
+      // for why this transport has no channel to the authored model's id
+      // set. An invalid stored row is treated the same as "nothing saved".
+      const result = parseSceneSnapshot({
+        objects: data.objects,
+        revision: data.revision,
+        savedAt: data.saved_at,
+      });
+      if (!result.ok) {
+        console.warn(
+          "[6D supabase] discarding an invalid stored snapshot for room",
+          roomId,
+          ":",
+          result.reason
+        );
+        return null;
+      }
+      return result.value;
     },
 
     async saveSnapshot(roomId: string, snapshot: SceneSnapshot): Promise<void> {

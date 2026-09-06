@@ -30,12 +30,23 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { DIMENSION_LEVELS, DIMENSION_LEVEL_META, type DimensionLevel } from "@/dimensions/contract";
+import { DIMENSION_LEVELS, DIMENSION_LEVEL_META } from "@/dimensions/contract";
+import { getDimensionAvailability, dimensionStatusPresentation, getDimensionCaveat } from "@/lib/dimensionsAvailability";
 
 const DimensionsStage = lazy(() => import("@/dimensions/DimensionsStage"));
 
-/** The levels this build actually renders. Every other level in `DIMENSION_LEVELS` is named, honestly, as not yet available — never faked. */
-const LIVE_LEVELS: readonly DimensionLevel[] = ["3D", "4D", "5D"];
+/**
+ * Availability (live / partial / not-built, plus for "partial" a caveat
+ * naming exactly what is not yet true) is read from
+ * `@/lib/dimensionsAvailability`, which itself reads `DIMENSION_AVAILABILITY`
+ * in `@/dimensions/contract` — the single source of truth also read by the
+ * Home teaser and the AGL "Spatial & Industry SaaS" vertical. This page used
+ * to hand-type its own `LIVE_LEVELS` here, which is exactly how it drifted
+ * from `dimensionsAvailability.ts`'s separate list (one said 7D was live,
+ * the other said it wasn't, on the same site). There is now exactly one
+ * place to update when a level's own acceptance criteria change, and this
+ * page, the Home teaser and the AGL vertical all read it.
+ */
 
 type WebglState = "checking" | "available" | "unavailable";
 
@@ -91,7 +102,7 @@ export default function DimensionsPage() {
                 backgroundClip: "text",
               }}
             >
-              Genuinely working.
+              Built level by level.
             </span>
           </h1>
 
@@ -118,14 +129,16 @@ export default function DimensionsPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-14">
             {DIMENSION_LEVELS.map((level) => {
               const meta = DIMENSION_LEVEL_META[level];
-              const live = LIVE_LEVELS.includes(level);
+              const availability = getDimensionAvailability(level);
+              const presentation = dimensionStatusPresentation(availability.status);
               return (
                 <div
                   key={level}
+                  data-testid={`dimension-matrix-card-${level}`}
                   className="rounded-xl p-4"
                   style={{
                     background: "rgba(17,19,39,0.6)",
-                    border: live ? "1px solid rgba(124,58,237,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                    border: `1px solid ${presentation.borderColor}`,
                   }}
                 >
                   <div className="flex items-center justify-between mb-2 gap-2">
@@ -134,15 +147,21 @@ export default function DimensionsPage() {
                     </span>
                     <span
                       className="text-[9px] uppercase tracking-widest font-mono px-2 py-0.5 rounded-full whitespace-nowrap"
-                      style={{
-                        background: live ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.06)",
-                        color: live ? "#34D399" : "rgba(255,255,255,0.6)",
-                      }}
+                      style={{ background: presentation.badgeBg, color: presentation.badgeText }}
                     >
-                      {live ? "Live" : "Not yet available"}
+                      {presentation.badgeLabel}
                     </span>
                   </div>
                   <div className="text-xs text-slate-400">{meta.short}</div>
+                  {getDimensionCaveat(level) && (
+                    <div
+                      data-testid={`dimension-matrix-caveat-${level}`}
+                      className="text-[11px] leading-snug mt-2"
+                      style={{ color: "rgba(252,211,77,0.75)" }}
+                    >
+                      {getDimensionCaveat(level)}
+                    </div>
+                  )}
                 </div>
               );
             })}

@@ -49,6 +49,25 @@ interface LiveDataSnapshot {
   error: string | null;
 }
 
+type XrUiState =
+  | 'no-webgl'
+  | 'no-webxr'
+  | 'quicklook-only'
+  | 'no-device'
+  | 'blocked-by-policy'
+  | 'ar-only'
+  | 'vr-only'
+  | 'ar-and-vr'
+  | 'session-rejected'
+  | 'session-running';
+
+interface XrSnapshot {
+  state: XrUiState;
+  supported: { vr: boolean; ar: boolean } | null;
+  sessionMode: 'immersive-ar' | 'immersive-vr' | null;
+  xrFrames: number;
+}
+
 declare global {
   interface Window {
     __AGL_DIMENSIONS__?: {
@@ -58,8 +77,27 @@ declare global {
       getCamera(): CameraSnapshot;
       getPhysics(): PhysicsSnapshot | null;
       getLiveData(): LiveDataSnapshot;
+      getXR(): XrSnapshot | null;
     };
   }
+}
+
+/**
+ * Waits for the async capability probe (`xr/detect.ts`'s `probeXR()`) to
+ * resolve at least once. Deliberately checks the hook exists at all, not
+ * just `?.getXR() !== null` — optional chaining on a missing hook evaluates
+ * to `undefined`, and `undefined !== null` is `true`, so that check alone
+ * would resolve immediately even before the hook is installed. Every actual
+ * test in this file calls `waitForHookReady` first anyway (which makes that
+ * race moot here), but a helper that is only correct when called in a
+ * specific order is a latent bug in whoever calls it next.
+ */
+async function waitForXrProbe(page: Page) {
+  await page.waitForFunction(
+    () => window.__AGL_DIMENSIONS__ !== undefined && window.__AGL_DIMENSIONS__.getXR() !== null,
+    undefined,
+    { timeout: 15_000 },
+  );
 }
 
 async function waitForHookReady(page: Page) {
@@ -674,5 +712,241 @@ test.describe('T-007 — 5D live data: a real external endpoint over HTTPS', () 
     await page.getByTestId('live-data-refresh').click();
     await expect(page.getByTestId('live-data-error')).toBeVisible({ timeout: 10_000 });
     await expect(page.getByTestId('live-data-value')).toHaveCount(0);
+  });
+});
+
+// ── T-012 — 7D: AR/VR/MR with honest capability degradation ────────────────
+//
+// The four affirmative strings the whole honesty contract turns on — see
+// ARCHITECTURE-DIMENSIONS.md §7.2's closing paragraph, quoted verbatim in
+// this project's dispatch for T-012. Checked against the WHOLE page body,
+// not just [data-testid="xr-status"], because a stray mention anywhere else
+// on the page would be exactly as dishonest.
+const XR_FORBIDDEN_STRINGS = /in VR|XR active|immersive session running|connected/i;
+
+test.describe('T-012 — 7D: WebXR capability probe and honest degradation', () => {
+  test('the real, unstubbed browser genuinely has no XR device — the hook reports "no-device" and the page says so, naming the actual reason', async ({
+    page,
+  }) => {
+    // No addInitScript stub here at all: this Chromium build does expose a
+    // real `navigator.xr` (Verified — the probe below is not simulated), and
+    // reports both session types unsupported because this CI/dev machine
+    // genuinely has no XR runtime. This is the majority real-world case
+    // T-012's Notes describe, caught without faking anything.
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    const hasNavigatorXr = await page.evaluate(() => typeof navigator.xr !== 'undefined');
+    expect(hasNavigatorXr).toBe(true);
+
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state).toBe('no-device');
+    expect(xr?.supported).toEqual({ vr: false, ar: false });
+
+    await expect(page.getByTestId('xr-status')).toHaveText(/no immersive vr or ar device was detected/i);
+    await expect(page.getByTestId('xr-enter-ar')).toHaveCount(0);
+    await expect(page.getByTestId('xr-enter-vr')).toHaveCount(0);
+    const bodyText = (await page.locator('body').innerText()) ?? '';
+    expect(bodyText).not.toMatch(XR_FORBIDDEN_STRINGS);
+  });
+
+  test('with navigator.xr deleted, the page renders the unavailable state and no affirmative session string appears anywhere in the DOM', async ({
+    page,
+  }) => {
+    const pageErrors: Error[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err));
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: undefined, configurable: true });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    await expect(page.getByTestId('xr-status')).toHaveText(/not available|not supported/i);
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state === 'no-webxr' || xr?.state === 'quicklook-only').toBe(true); // this Chromium has no Quick Look, so "no-webxr" in practice
+    expect(xr?.sessionMode).toBeNull();
+
+    const bodyText = (await page.locator('body').innerText()) ?? '';
+    expect(bodyText).not.toMatch(XR_FORBIDDEN_STRINGS);
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('with navigator.xr both session types stubbed unsupported, the hook and the DOM both report "no-device"', async ({ page }) => {
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: { isSessionSupported: () => Promise.resolve(false) }, configurable: true });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr).toEqual({ state: 'no-device', supported: { vr: false, ar: false }, sessionMode: null, xrFrames: 0 });
+    await expect(page.getByTestId('xr-status')).toHaveText(/no immersive vr or ar device was detected/i);
+  });
+
+  test('with only immersive-ar reported supported, "ar-only" renders: Enter AR is offered, Enter VR is not', async ({ page }) => {
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: {
+        isSessionSupported: (mode: string) => Promise.resolve(mode === 'immersive-ar'),
+      }, configurable: true });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state).toBe('ar-only');
+    await expect(page.getByTestId('xr-status')).toHaveText(/immersive ar is available/i);
+    await expect(page.getByTestId('xr-enter-ar')).toBeVisible();
+    await expect(page.getByTestId('xr-enter-vr')).toHaveCount(0);
+  });
+
+  test('with only immersive-vr reported supported, "vr-only" renders: Enter VR is offered, Enter AR is not', async ({ page }) => {
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: {
+        isSessionSupported: (mode: string) => Promise.resolve(mode === 'immersive-vr'),
+      }, configurable: true });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state).toBe('vr-only');
+    await expect(page.getByTestId('xr-status')).toHaveText(/immersive vr is available/i);
+    await expect(page.getByTestId('xr-enter-vr')).toBeVisible();
+    await expect(page.getByTestId('xr-enter-ar')).toHaveCount(0);
+  });
+
+  test('with both session types reported supported, "ar-and-vr" renders both controls, both keyboard-reachable with accessible names', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: { isSessionSupported: () => Promise.resolve(true) }, configurable: true });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state).toBe('ar-and-vr');
+    await expect(page.getByTestId('xr-status')).toHaveText(/immersive ar and vr are available/i);
+    await expect(page.getByTestId('xr-enter-ar')).toBeVisible();
+    await expect(page.getByTestId('xr-enter-vr')).toBeVisible();
+
+    // Accessible names, not just presence.
+    await expect(page.getByTestId('xr-enter-ar')).toHaveAccessibleName(/enter immersive ar/i);
+    await expect(page.getByTestId('xr-enter-vr')).toHaveAccessibleName(/enter immersive vr/i);
+  });
+
+  test('a REJECTED isSessionSupported maps to "blocked-by-policy", never "no-device" — the rule this decision exists for', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: {
+        isSessionSupported: () => Promise.reject(new DOMException('blocked', 'SecurityError')),
+      }, configurable: true });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state).toBe('blocked-by-policy');
+    await expect(page.getByTestId('xr-status')).toHaveText(/blocked by this page's permissions policy/i);
+    await expect(page.getByTestId('xr-enter-ar')).toHaveCount(0);
+    await expect(page.getByTestId('xr-enter-vr')).toHaveCount(0);
+    const bodyText = (await page.locator('body').innerText()) ?? '';
+    expect(bodyText).not.toMatch(XR_FORBIDDEN_STRINGS);
+  });
+
+  test('session start rejected by the browser: the status names the actual rejection reason, and the control is re-enabled, not stuck', async ({
+    page,
+  }) => {
+    const rejectionMessage = 'Session request was denied by the user.';
+    await page.addInitScript((message) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: {
+        isSessionSupported: () => Promise.resolve(true),
+        requestSession: () => Promise.reject(new Error(message)),
+      }, configurable: true });
+    }, rejectionMessage);
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    await expect(page.getByTestId('xr-enter-ar')).toBeVisible();
+    await page.getByTestId('xr-enter-ar').click();
+
+    await expect(page.getByTestId('xr-status')).toContainText(rejectionMessage, { timeout: 10_000 });
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state).toBe('session-rejected');
+
+    // "control re-enabled" (§7.2's table) — not hidden, not permanently disabled.
+    await expect(page.getByTestId('xr-enter-ar')).toBeVisible();
+    await expect(page.getByTestId('xr-enter-ar')).toBeEnabled();
+
+    const bodyText = (await page.locator('body').innerText()) ?? '';
+    expect(bodyText).not.toMatch(XR_FORBIDDEN_STRINGS);
+  });
+
+  test('the 3D scene remains fully usable while XR is unavailable — XR is additive, never a gate', async ({ page }) => {
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: undefined, configurable: true });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    // The 4D timeline scrubber (a proxy for "the 3D+4D stage is fully
+    // interactive") is enabled and usable exactly as it is with XR available.
+    const scrubber = page.locator('#dimensions-scrubber');
+    await expect(scrubber).toBeEnabled();
+    await setRangeValue(page, '#dimensions-scrubber', 5);
+    await expect(page.getByTestId('dimensions-time')).toContainText('5.00s');
+  });
+
+  test('AR Quick Look: with no navigator.xr but relList reporting AR support (Safari), a real <a rel="ar"> link to a built .usdz is offered', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Object.defineProperty(navigator, 'xr', { value: undefined, configurable: true });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const proto = (window as any).HTMLAnchorElement.prototype;
+      Object.defineProperty(proto, 'relList', {
+        configurable: true,
+        get() {
+          return { supports: (token: string) => token === 'ar' };
+        },
+      });
+    });
+    await page.goto('/dimensions');
+    await waitForHookReady(page);
+    await waitForXrProbe(page);
+
+    const xr = await page.evaluate(() => window.__AGL_DIMENSIONS__!.getXR());
+    expect(xr?.state).toBe('quicklook-only');
+    await expect(page.getByTestId('xr-status')).toHaveText(/apple's ar quick look is available/i);
+
+    const link = page.getByTestId('xr-quicklook-link');
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute('rel', 'ar');
+    const href = await link.getAttribute('href');
+    expect(href).toMatch(/\.usdz$/);
+
+    // The asset is real, not a dead link — fetched through the page's own
+    // origin so this proves the same build the browser just rendered.
+    const response = await page.request.get(href!);
+    expect(response.status()).toBe(200);
   });
 });

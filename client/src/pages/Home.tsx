@@ -15,7 +15,7 @@ import {
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { DIMENSION_LEVELS, DIMENSION_LEVEL_META } from "@/dimensions/contract";
-import { isDimensionLevelLive } from "@/lib/dimensionsAvailability";
+import { getDimensionAvailability, dimensionStatusPresentation, getDimensionCaveat } from "@/lib/dimensionsAvailability";
 
 // ── Animated counter hook ─────────────────────────────────────────────────────
 function useCounter(target: number, duration = 2200, start = false) {
@@ -406,7 +406,10 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
             {DIMENSION_LEVELS.map((level, i) => {
               const meta = DIMENSION_LEVEL_META[level];
-              const live = isDimensionLevelLive(level);
+              const availability = getDimensionAvailability(level);
+              const presentation = dimensionStatusPresentation(availability.status);
+              const live = availability.status === "live";
+              const caveat = getDimensionCaveat(level);
               return (
                 <motion.div
                   key={level}
@@ -419,7 +422,7 @@ export default function Home() {
                   className="relative p-5 rounded-2xl"
                   style={{
                     background: "rgba(17,19,39,0.6)",
-                    border: live ? "1px solid rgba(124,58,237,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                    border: `1px solid ${presentation.borderColor}`,
                   }}
                 >
                   <div className="flex items-center justify-between mb-3 gap-2">
@@ -427,17 +430,24 @@ export default function Home() {
                       {level}
                     </span>
                     <span
+                      data-testid={`dimension-teaser-status-${level}`}
                       className="text-[9px] uppercase tracking-widest font-mono px-2 py-0.5 rounded-full whitespace-nowrap"
-                      style={{
-                        background: live ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.06)",
-                        color: live ? "#34D399" : "rgba(255,255,255,0.6)",
-                      }}
+                      style={{ background: presentation.badgeBg, color: presentation.badgeText }}
                     >
-                      {live ? "Live" : "Not yet available"}
+                      {presentation.badgeLabel}
                     </span>
                   </div>
                   <div className="font-bold text-white text-sm mb-1.5">{meta.short}</div>
                   <p className="text-slate-400 text-xs leading-relaxed">{meta.summary}</p>
+                  {caveat && (
+                    <p
+                      data-testid={`dimension-teaser-caveat-${level}`}
+                      className="text-[11px] leading-snug mt-2 pt-2 border-t border-white/8"
+                      style={{ color: "rgba(252,211,77,0.75)" }}
+                    >
+                      {caveat}
+                    </p>
+                  )}
                 </motion.div>
               );
             })}

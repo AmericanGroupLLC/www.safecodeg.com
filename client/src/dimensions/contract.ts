@@ -63,3 +63,57 @@ export const DIMENSION_LEVEL_META: Readonly<Record<DimensionLevel, DimensionLeve
  * for this type; a product's absence of a level must render as nothing.
  */
 export type ProductDimensionLevel = DimensionLevel | undefined;
+
+/**
+ * Whether this build has actually shipped a level, today — and, where it is
+ * only partly true, precisely what is not yet true about it.
+ *
+ * A plain live/not-live boolean cannot represent a level that is genuinely
+ * partial: 5D's interaction, physics sandbox and live weather feed are real,
+ * but the AI capability the level also names has not been built; 7D's
+ * capability probe, every degradation state and the AR Quick Look path are
+ * real and verified, but an immersive session actually starting has never
+ * been observed on real XR hardware. Rounding either of those to "live"
+ * overstates them; rounding them to "not live" understates the real, tested
+ * work. "partial" is the third option, and its `caveat` is mandatory —
+ * enforced by the discriminated union below, not by convention — so a
+ * partial level can never render with nothing said about what is missing.
+ *
+ * `caveat` is where the honesty lives: every consumer renders it verbatim.
+ * There is deliberately no separate marketing string a component could
+ * choose to show instead.
+ */
+export type DimensionAvailabilityStatus = "live" | "partial" | "not-built";
+
+export type DimensionAvailability =
+  | { readonly status: "live" }
+  | { readonly status: "partial"; readonly caveat: string }
+  | { readonly status: "not-built"; readonly caveat?: string };
+
+/**
+ * THE single source of truth for "which dimensional levels actually work,
+ * and how well" — read (not duplicated) by `client/src/lib/dimensionsAvailability.ts`,
+ * which every UI surface (`pages/Home.tsx`, `pages/AGL.tsx`,
+ * `pages/Dimensions.tsx`) imports from in turn. Update a level's entry here,
+ * once, when its own acceptance criteria genuinely change — never in
+ * advance of that, and never by editing a second copy elsewhere.
+ */
+export const DIMENSION_AVAILABILITY: Readonly<Record<DimensionLevel, DimensionAvailability>> = {
+  "3D": { status: "live" },
+  "4D": { status: "live" },
+  "5D": {
+    status: "partial",
+    caveat:
+      "Object selection, the physics sandbox and the live weather feed are real and working. The AI capability this level also describes has not been built yet.",
+  },
+  "6D": {
+    status: "partial",
+    caveat:
+      "Multi-user sync, presence, the digital twin and remote session control are real and verified across two pages in one browser — against a transport the test itself injects, because no Supabase project key exists in this build and the vendor code is therefore tree-shaken out entirely. Genuine sync across two separate browsers has not been verified — this build has no shared-session configuration, so it runs stand-alone for every visitor today.",
+  },
+  "7D": {
+    status: "partial",
+    caveat:
+      "The capability probe, every degradation state and the AR Quick Look path are real and verified. Actually starting an immersive VR or AR session has not yet been observed on real XR hardware.",
+  },
+} as const;

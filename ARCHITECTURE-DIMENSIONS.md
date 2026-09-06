@@ -1142,7 +1142,11 @@ chunks load — the hook reflects what has actually loaded rather than pretendin
   looking at, transport status shown in the UI, and XR state shown in the UI. It
   contains **no key, no token and no credential** — the anon key lives in the
   transport module and is never surfaced through the hook.
-- It is read-only. Every method is a getter; there is no setter, so it is not a
+- CORRECTED 2026-09-06 (T-018): the original claim here — "it is read-only, every method is a getter" — is
+  **false as implemented**. Only `ready` is a getter (`testHook.ts:99-101`); the seven methods at `:102-108` are
+  plain writable properties, the global itself is writable and configurable, and `getState()` returns live store
+  internals by reference. The property that does hold, and that justifies shipping it, is narrower: it exposes no
+  credential and grants no capability beyond what same-origin script execution already confers. It is not a
   new input surface.
 - Cost is roughly 1 kB, in the lazy chunk, not the entry chunk.
 

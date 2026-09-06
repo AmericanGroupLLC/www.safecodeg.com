@@ -30,7 +30,7 @@ import type {
   SceneSnapshot,
   TransportStatus,
 } from "./types";
-import { parseActorPresence, parseSceneOp } from "./validation";
+import { parseActorPresence, parseSceneOp, parseSceneSnapshot } from "./validation";
 import { createRateLimiter, type RateLimiter } from "./rateLimiter";
 
 type WireMessage =
@@ -232,8 +232,9 @@ export function createLoopbackTransport(
       if (!storage) return null;
       const raw = storage.getItem(snapshotStorageKey(roomId));
       if (!raw) return null;
+      let parsedJson: unknown;
       try {
-        return JSON.parse(raw) as SceneSnapshot;
+        parsedJson = JSON.parse(raw);
       } catch {
         console.warn(
           "[6D loopback] discarding an unparsable stored snapshot for room",
@@ -241,6 +242,24 @@ export function createLoopbackTransport(
         );
         return null;
       }
+      // §6.5/§6.6, T-016 finding S-2: a stored snapshot is exactly as
+      // untrusted as a live peer payload — run it through the same zod
+      // validation before it can reach the store. `validObjectIds` is
+      // passed (unlike `supabaseTransport.ts`, which structurally cannot —
+      // see `validation.ts`'s `buildSceneSnapshotSchema` comment), closing
+      // the objectId-membership gap here since this transport already has
+      // the authored model's id set as a constructor option.
+      const result = parseSceneSnapshot(parsedJson, validObjectIds);
+      if (!result.ok) {
+        console.warn(
+          "[6D loopback] discarding an invalid stored snapshot for room",
+          roomId,
+          ":",
+          result.reason
+        );
+        return null;
+      }
+      return result.value;
     },
 
     async saveSnapshot(roomId: string, snapshot: SceneSnapshot): Promise<void> {

@@ -21,10 +21,12 @@
  */
 
 import { useRef, useSyncExternalStore } from "react";
-import type { ActorPresence, ObjectId, SceneState } from "./types";
+import type { ActorId, ActorPresence, ObjectId, SceneObject, SceneState } from "./types";
 import type { ProcessModel } from "../model/process";
-import { composeScene } from "./compose";
+import { composeScene, type RemoteObjectOverride } from "./compose";
 import type { PhysicsSnapshot } from "../physics/sandbox";
+import { opWins } from "../transport/merge";
+import type { SceneOp } from "../transport/types";
 
 const STEP = 1 / 120;
 
@@ -47,6 +49,62 @@ export interface DimensionsStore {
   select(id: ObjectId | null): void;
   /** 5D — the physics sandbox's snapshot for this frame, or `null` before it has loaded/run. Composed into `objects` under `phys:` ids (§5.3 step 3). */
   setPhysicsSnapshot(snapshot: PhysicsSnapshot | null): void;
+
+  /** 6D — replaces the presence dict wholesale. Called from `transport.onPresence()`'s callback. */
+  setActors(actors: Readonly<Record<string, ActorPresence>>): void;
+  /**
+   * 6D — the single entry point for applying a `SceneOp`, whether it arrived
+   * from a peer (`transport.onOp()`) or originated locally (`publishLocalOp`
+   * routes through this too, so a local move and a remote move are subject
+   * to the exact same rules and can never diverge).
+   *
+   * T-016 finding S-5: `objectId` is checked against a set built from
+   * `model.objects` — the *authored* model this store was created with —
+   * never from `getSnapshot().objects`. The composed snapshot additionally
+   * contains `phys:`-prefixed ids injected by `compose.ts`'s step 3 from the
+   * *local* physics simulation (`compose.ts`, the "Step 3 (5D physics)"
+   * block); deriving the allowlist from the composed state instead would let
+   * a peer's op carrying `objectId: "phys:ball"` win the LWW comparison and
+   * overwrite the locally-simulated ball's transform on every other screen,
+   * even though no other peer runs that simulation. Building the allowlist
+   * from `model.objects` once, at store creation, makes that impossible:
+   * `phys:ball` is never a member of it, so `applyOp` rejects it before
+   * anything else runs.
+   *
+   * Returns `true` iff the op passed the allowlist check and won the LWW
+   * comparison (`transport/merge.ts`'s `opWins`) and was applied; `false`
+   * otherwise. Every call increments exactly one of the `opsApplied` /
+   * `opsRejected` counters `getOpCounters()` reports (surfaced by
+   * `state/testHook.ts`'s `getTransport()`).
+   */
+  applyOp(op: SceneOp): boolean;
+  /**
+   * 6D — the local half of a move: computes the next `seq` from this
+   * object's current register (so it competes fairly against a concurrent
+   * remote op on the same object), builds a `SceneOp`, and routes it through
+   * the same `applyOp` a peer's op would go through. Returns the op — for
+   * the caller to `transport.publish()` — or `null` if `objectId` is not a
+   * member of the authored model (the same allowlist `applyOp` enforces).
+   */
+  publishLocalOp(
+    objectId: ObjectId,
+    actorId: ActorId,
+    patch: SceneOp["patch"]
+  ): SceneOp | null;
+  /**
+   * 6D digital twin (§6.6) — hydrates the store from a loaded snapshot's
+   * objects, once, before any live op is applied. Every entry not already a
+   * member of the authored model's id set is silently skipped (T-016 S-5,
+   * applied identically to a stored row as to a live op) — the caller
+   * (`transport/useCollaboration.ts`) is additionally expected to have
+   * already filtered against `getValidObjectIds()` before calling this, per
+   * the security review's "pass `validObjectIds` to `loadSnapshot`"
+   * instruction; this is the second, defensive layer, not the only one.
+   */
+  hydrateFromSnapshot(objects: Readonly<Record<string, SceneObject>>): void;
+  /** The authored model's object-id allowlist (T-016 S-5) — read-only, for a caller that needs to filter a snapshot or a UI's target-object list against the same set `applyOp` enforces. */
+  getValidObjectIds(): ReadonlySet<string>;
+  getOpCounters(): { applied: number; rejected: number };
 }
 
 /**
@@ -78,10 +136,24 @@ export function createDimensionsStore(
   let wallClockAtPlayMs = 0;
   let selection: ObjectId | null = null;
   let physicsSnapshot: PhysicsSnapshot | null = null;
-  const actors: Readonly<Record<string, ActorPresence>> = {};
+  let actors: Readonly<Record<string, ActorPresence>> = {};
+  // 6D — the per-object LWW register + its currently-winning patch (§6.4).
+  // Keyed only by ids this store will ever recognise (`validObjectIds`
+  // below); `applyOpInternal` is the only writer.
+  let remoteOverrides: Record<string, RemoteObjectOverride> = {};
+  let opsApplied = 0;
+  let opsRejected = 0;
+  let localOpCounter = 0;
+
+  // T-016 finding S-5: built ONCE from the authored model this store was
+  // constructed with, never from `getSnapshot().objects` (which also
+  // contains `phys:`-prefixed ids `compose.ts`'s step 3 injects from the
+  // *local* physics snapshot — see `DimensionsStore.applyOp`'s doc comment
+  // for the exploit this prevents).
+  const validObjectIds = new Set(Object.keys(model.objects));
 
   let cachedSnapshot: SceneState = {
-    ...composeScene({ model, t, physics: physicsSnapshot, selection, actors }),
+    ...composeScene({ model, t, physics: physicsSnapshot, selection, actors, remote: remoteOverrides }),
     revision,
   };
   const listeners = new Set<() => void>();
@@ -95,10 +167,41 @@ export function createDimensionsStore(
   function commit() {
     revision += 1;
     cachedSnapshot = {
-      ...composeScene({ model, t, physics: physicsSnapshot, selection, actors }),
+      ...composeScene({ model, t, physics: physicsSnapshot, selection, actors, remote: remoteOverrides }),
       revision,
     };
     notify();
+  }
+
+  /**
+   * The single arbiter for every `SceneOp`, local or remote (T-016 S-5). See
+   * `DimensionsStore.applyOp`'s doc comment for the allowlist rationale.
+   */
+  function applyOpInternal(op: SceneOp): boolean {
+    const objectId = op.objectId as string;
+    if (!validObjectIds.has(objectId)) {
+      opsRejected += 1;
+      return false;
+    }
+    const current = remoteOverrides[objectId]?.rev ?? { seq: 0, actorId: null };
+    if (!opWins(op, current)) {
+      opsRejected += 1;
+      return false;
+    }
+    const previousPatch = remoteOverrides[objectId]?.patch ?? {};
+    remoteOverrides = {
+      ...remoteOverrides,
+      [objectId]: {
+        // A later op that sets only `position` must not erase a field an
+        // earlier winning op set (e.g. `rotation`) — merge onto the
+        // previous winning patch rather than replacing it wholesale.
+        patch: { ...previousPatch, ...op.patch },
+        rev: { seq: op.seq, actorId: op.actorId },
+      },
+    };
+    opsApplied += 1;
+    commit();
+    return true;
   }
 
   function setT(next: number) {
@@ -152,6 +255,54 @@ export function createDimensionsStore(
     setPhysicsSnapshot(snapshot) {
       physicsSnapshot = snapshot;
       commit();
+    },
+    setActors(next) {
+      actors = next;
+      commit();
+    },
+    applyOp(op) {
+      return applyOpInternal(op);
+    },
+    publishLocalOp(objectId, actorId, patch) {
+      const id = objectId as string;
+      if (!validObjectIds.has(id)) return null;
+      const current = remoteOverrides[id]?.rev ?? { seq: 0, actorId: null };
+      localOpCounter += 1;
+      const op: SceneOp = {
+        opId: `local:${actorId}:${id}:${localOpCounter}`,
+        objectId,
+        actorId,
+        seq: current.seq + 1,
+        at: now(),
+        patch,
+      };
+      return applyOpInternal(op) ? op : null;
+    },
+    hydrateFromSnapshot(objects) {
+      let changed = false;
+      const next = { ...remoteOverrides };
+      for (const [id, obj] of Object.entries(objects)) {
+        // Defence in depth — the caller (`transport/useCollaboration.ts`)
+        // must already have filtered against `getValidObjectIds()` per
+        // T-016 S-5's "pass validObjectIds to loadSnapshot" instruction;
+        // this check is what makes that non-optional even if a future
+        // caller forgets.
+        if (!validObjectIds.has(id)) continue;
+        next[id] = {
+          patch: { position: obj.position, rotation: obj.rotation, scale: obj.scale, visible: obj.visible },
+          rev: obj.rev,
+        };
+        changed = true;
+      }
+      if (!changed) return;
+      remoteOverrides = next;
+      commit();
+    },
+    getValidObjectIds() {
+      return validObjectIds;
+    },
+    getOpCounters() {
+      return { applied: opsApplied, rejected: opsRejected };
     },
   };
 }
