@@ -114,10 +114,14 @@ client/public/__manus__/version.json
 .project-config.json
 
 # ── Stray artifacts ─────────────────────────────────────────────────────────
-# Lighthouse/Chrome writes its user-data dir to $LOCALAPPDATA; under WSL that
-# expands to a literal "C:\Users\...\lighthouse.<pid>" directory here. Cache
-# junk, safe to delete.
+# Lighthouse/Chrome writes its user-data dir to a Windows path; under WSL that
+# lands here as a literal directory whose *name* contains backslashes, e.g.
+# "C:\Users\...\lighthouse.<pid>" or "\\wsl.localhost\Ubuntu-26.04\tmp\
+# agl-lighthouse-<id>". Chrome profile cache, safe to delete.
 C:*
+*wsl.localhost*
+*agl-lighthouse-*
+*lighthouse.[0-9]*
 
 # Playwright run output
 test-results/
