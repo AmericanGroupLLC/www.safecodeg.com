@@ -5,9 +5,19 @@
  */
 import lighthouse from 'lighthouse';
 import { launch } from 'chrome-launcher';
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const BASE_URL = 'https://3000-i753378jthktwfw3nn2q0-fd1d198d.us1.manus.computer';
+// Results land inside the repo. The previous absolute /home/ubuntu path does
+// not exist on any machine but the original sandbox, so this write threw
+// ENOENT and the error was swallowed by main().catch(console.error).
+const OUT_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '../../test-results');
+
+// Target defaults to the locally served production build. The previous value
+// was a Manus sandbox URL that returns 502 — this script audited that error
+// page and reported a clean result, which is worse than not running at all.
+const BASE_URL = process.env.AUDIT_BASE_URL ?? 'http://localhost:3000';
 
 const PAGES = [
   { path: '/', name: 'Home' },
@@ -23,7 +33,14 @@ const THRESHOLDS = {
 };
 
 async function runLighthouse(url, name) {
-  const chrome = await launch({ chromeFlags: ['--headless', '--no-sandbox', '--disable-gpu'] });
+  // chromePath is pinned to the Chromium Playwright already installs.
+  // Left to its own discovery under WSL, chrome-launcher finds the Windows
+  // chrome.exe over interop, which starts but is unreachable on the Linux
+  // side — every page then failed with ECONNREFUSED on its debug port.
+  const chrome = await launch({
+    chromePath: process.env.CHROME_PATH,
+    chromeFlags: ['--headless', '--no-sandbox', '--disable-gpu'],
+  });
 
   try {
     const result = await lighthouse(url, {
@@ -95,12 +112,39 @@ async function main() {
   }
 
   // Save results
-  writeFileSync('/home/ubuntu/test-results/lighthouse-results.json', JSON.stringify(results, null, 2));
+  writeFileSync((mkdirSync(OUT_DIR, { recursive: true }), resolve(OUT_DIR, 'lighthouse-results.json')), JSON.stringify(results, null, 2));
   console.log('\n✅ Lighthouse results saved to test-results/lighthouse-results.json\n');
 
   const allPassed = results.every(r => r.passed);
   console.log(`\nOverall: ${results.filter(r => r.passed).length}/${results.length} pages meet thresholds`);
+
+  // This run gates on measurability, not on the score thresholds.
+  //
+  // A page that could not be measured at all is a failure of this check and
+  // must not report success — that is what happened for months while BASE_URL
+  // pointed at a dead host and every page errored out under a 0 exit code.
+  //
+  // The score thresholds are deliberately NOT gated here. They are measured
+  // against the local Node server, which serves uncompressed, while production
+  // is Apache with mod_deflate — so these numbers are pessimistic and not
+  // representative of the deployed site. Owning a defensible budget and
+  // enforcing it is T-015's task; inventing a pass/fail line here would put a
+  // number nobody has justified in the way of every future build.
+  const unmeasured = results.filter(r => r.error);
+  if (unmeasured.length > 0) {
+    console.error(
+      `\n❌ Performance run FAILED: ${unmeasured.length}/${results.length} page(s) could not be measured — ` +
+        unmeasured.map(r => `${r.name}: ${r.error}`).join("; ") +
+        "\n"
+    );
+    process.exit(1);
+  }
   process.exit(allPassed ? 0 : 0); // Don't fail CI on perf (dev server penalty)
 }
 
-main().catch(console.error);
+main().catch(err => {
+  // Exit non-zero: a thrown audit is a failed audit. Swallowing this
+  // made the script report success after crashing.
+  console.error(err);
+  process.exit(1);
+});

@@ -1,0 +1,19 @@
+Asset: toycar.glb ("Toy Car")
+Source: Khronos Group glTF-Sample-Assets repository
+        https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ToyCar
+Downloaded from: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/ToyCar/glTF-Binary/ToyCar.glb
+Retrieved: 2026-09-05
+
+License: CC0 1.0 Universal (Public Domain Dedication)
+         https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Contributors (per the source repository's metadata.json, both CC0-1.0):
+  - Guido Odendahl, 2020 — initial car model
+  - Eric Chadwick, 2020 — extensions and scene composition
+
+No attribution is legally required under CC0-1.0; this file records
+provenance per ARCHITECTURE-DIMENSIONS.md §5.7 / TASKS.md T-005's
+requirement that the model asset's source and licence be recorded.
+
+Used in this project as the 3D model rendered by the /dimensions route's
+3D + 4D stage (client/src/dimensions/DimensionsStage.tsx).

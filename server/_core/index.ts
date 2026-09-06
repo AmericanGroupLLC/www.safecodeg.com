@@ -51,11 +51,32 @@ async function startServer() {
     serveStatic(app);
   }
 
-  const preferredPort = parseInt(process.env.PORT || "3000");
-  const port = await findAvailablePort(preferredPort);
+  // An explicitly requested PORT is honoured exactly, or the server fails
+  // loudly. Silently drifting to another port makes the process unreachable
+  // at the address the caller was told to use — which is how concurrent
+  // Playwright suites ended up killing each other's server (each spawned one,
+  // the later ones drifted to 3001+, and every suite polled 3000).
+  // With PORT unset, the original scan is kept as a local-dev convenience.
+  const requestedPort = process.env.PORT;
+  let port: number;
 
-  if (port !== preferredPort) {
-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+  if (requestedPort) {
+    port = parseInt(requestedPort, 10);
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      throw new Error(`PORT is set to "${requestedPort}", which is not a valid port number.`);
+    }
+    if (!(await isPortAvailable(port))) {
+      throw new Error(
+        `PORT=${port} was requested but is already in use. ` +
+          `Refusing to start on a different port — free it, or set a different PORT.`
+      );
+    }
+  } else {
+    const preferredPort = 3000;
+    port = await findAvailablePort(preferredPort);
+    if (port !== preferredPort) {
+      console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+    }
   }
 
   server.listen(port, () => {
@@ -63,4 +84,9 @@ async function startServer() {
   });
 }
 
-startServer().catch(console.error);
+startServer().catch(err => {
+  // Exit non-zero so a failed start is a visible failure rather than a
+  // process that logs and then lingers with nothing listening.
+  console.error(err);
+  process.exit(1);
+});

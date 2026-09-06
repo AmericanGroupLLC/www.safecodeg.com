@@ -16,6 +16,7 @@ import SupportPage from "./pages/Support";
 import TermsPage from "./pages/Terms";
 import AIChatWidget from "./components/AIChatWidget";
 import ProductDetailPage from "./pages/ProductDetail";
+import DimensionsPage from "./pages/Dimensions";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/scg" component={SCGPage} />
       <Route path="/products/:slug" component={ProductDetailPage} />
       <Route path="/products" component={ProductsPage} />
+      <Route path="/dimensions" component={DimensionsPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/careers" component={CareersPage} />
       <Route path="/contact" component={ContactPage} />

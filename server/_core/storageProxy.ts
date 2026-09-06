@@ -10,7 +10,11 @@ export function registerStorageProxy(app: Express) {
     }
 
     if (!ENV.forgeApiUrl || !ENV.forgeApiKey) {
-      res.status(500).send("Storage proxy not configured");
+      // 404, not 500: an intentionally unconfigured optional proxy is a
+      // resource that isn't here, not a server fault. Returning 500 reported a
+      // deliberate configuration state as a crash on every page that requests
+      // a proxied asset.
+      res.status(404).send("Storage proxy not configured");
       return;
     }
 

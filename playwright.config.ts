@@ -1,5 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Each suite gets its own port so suites can run back-to-back (or at once)
+// without sharing — and therefore without tearing down — one another's server.
+// package.json's test:* scripts set PW_PORT; a bare `playwright test` uses 3000.
+const PORT = Number(process.env.PW_PORT ?? 3000);
+
 export default defineConfig({
   testDir: './tests',
   testMatch: ['**/e2e/**/*.spec.ts', '**/smoke/**/*.spec.ts', '**/regression/**/*.spec.ts', '**/acceptance/**/*.spec.ts'],
@@ -12,7 +17,7 @@ export default defineConfig({
     ['html', { outputFolder: '../test-results/playwright-report', open: 'never' }],
   ],
   use: {
-    baseURL: 'https://3000-i753378jthktwfw3nn2q0-fd1d198d.us1.manus.computer',
+    baseURL: `http://localhost:${PORT}`,
     headless: true,
     screenshot: 'only-on-failure',
     video: 'off',
@@ -28,4 +33,19 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  // Builds the production bundle and serves it with the real Express server
+  // (not the Vite dev server) so the suite is self-contained: no network
+  // dependency, no manually started process, and no dev-only HMR/overlay
+  // noise that would pollute the pageerror/console assertions the specs make.
+  // The server binds PORT (default 3000) via server/_core/index.ts.
+  webServer: {
+    command: 'npm run build && npm run start',
+    url: `http://localhost:${PORT}`,
+    // Never reuse: each suite owns its own server on its own port. Reuse plus
+    // a shared port is what let one suite's teardown kill the server another
+    // suite was still driving (ERR_CONNECTION_REFUSED mid-run).
+    reuseExistingServer: false,
+    timeout: 120_000,
+    env: { PORT: String(PORT) },
+  },
 });

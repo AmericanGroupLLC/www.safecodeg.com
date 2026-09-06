@@ -9,6 +9,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, ArrowRight, Smartphone, Globe, Monitor, Watch, Star, Zap, Shield, TrendingUp, Cpu } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+// T-014: value import of DIMENSION_LEVELS/DIMENSION_LEVEL_META is safe here —
+// `@/dimensions/contract` has zero imports of its own (see its header
+// comment), so this does not pull the three.js runtime into this route's
+// chunk. Never import a value from anywhere else under `@/dimensions`.
+import { DIMENSION_LEVELS, DIMENSION_LEVEL_META, type DimensionLevel } from '@/dimensions/contract';
 
 type ProductCategory =
   | 'Enterprise AI & DevTools'
@@ -32,9 +37,17 @@ interface Product {
   icon: string;
   status: 'Live' | 'Beta' | 'Coming Soon';
   highlight?: boolean;
+  /**
+   * T-014 / OQ-3 (TASKS.md Decisions, 2026-09-05): assigned ONLY where
+   * evidence of the specific capability in `DIMENSION_LEVEL_META` already
+   * exists in this repository. No product below sets this field today — see
+   * this task's Notes for the per-product grep review of why. Optional,
+   * with no default: absence must render no badge, never a guess.
+   */
+  dimensionLevel?: DimensionLevel;
 }
 
-const products: Product[] = [
+export const products: Product[] = [
   // Enterprise AI & DevTools
   { slug: 'cognicore', name: 'CogniCore AI Platform', tagline: 'Umbrella cognitive AI services platform', description: 'Consolidates cognitive AI services including reasoning, tool-augmented agents, and multi-modal intelligence pipelines for enterprise deployments.', category: 'Enterprise AI & DevTools', platforms: ['Web'], tags: ['Python', 'LLM', 'RAG', 'Agents'], color: '#6366F1', icon: '🧠', status: 'Beta', highlight: true },
   { slug: 'verba', name: 'Verba', tagline: 'Multilingual conversational AI', description: 'Multilingual conversational AI with real-time translation, context-aware responses, and cross-platform Flutter delivery.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android', 'Web'], tags: ['Flutter', 'NLP', 'Chat', 'AI'], color: '#8B5CF6', icon: '💬', status: 'Beta', highlight: true },
@@ -106,6 +119,34 @@ const products: Product[] = [
   { slug: 'agvending', name: 'AGVending', tagline: 'AI-powered vending machine platform', description: 'C++20 multi-archetype vending machine platform with AI forecasting, anomaly detection, and Flutter mobile control app.', category: 'Enterprise AI & DevTools', platforms: ['iOS', 'Android', 'Web'], tags: ['IoT', 'AI', 'Enterprise'], color: '#6366F1', icon: '🏪', status: 'Beta' },
 ];
 
+// T-014: derived from data, never hardcoded — a level with zero products
+// behind it renders no filter chip at all, rather than offering a filter for
+// a capability nothing in the catalog currently carries.
+export const availableDimensionLevels: DimensionLevel[] = DIMENSION_LEVELS.filter(level =>
+  products.some(p => p.dimensionLevel === level)
+);
+
+/** Exported so the filtering rule itself — not a re-implementation of it — is unit-tested. */
+export function matchesDimensionLevel(product: Pick<Product, 'dimensionLevel'>, activeLevel: 'All' | DimensionLevel): boolean {
+  return activeLevel === 'All' || product.dimensionLevel === activeLevel;
+}
+
+/** T-014: renders only when a product carries a verified level — see contract.ts. Exported for direct component testing. */
+export function DimensionBadge({ level }: { level: DimensionLevel }) {
+  const meta = DIMENSION_LEVEL_META[level];
+  return (
+    <span
+      data-testid="dimension-badge"
+      className="inline-flex items-center text-xs px-2 py-0.5 rounded-full border font-medium whitespace-nowrap"
+      style={{ background: 'rgba(99,102,241,0.16)', borderColor: 'rgba(129,140,248,0.6)', color: '#C7D2FE' }}
+      title={meta.summary}
+      aria-label={`Dimensional capability: ${meta.label}`}
+    >
+      {meta.short}
+    </span>
+  );
+}
+
 const allCategories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
 const categoryColors: Record<string, string> = {
@@ -138,15 +179,17 @@ export default function Products() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [activePlatform, setActivePlatform] = useState('All');
+  const [activeLevel, setActiveLevel] = useState<'All' | DimensionLevel>('All');
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
       const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.tagline.toLowerCase().includes(search.toLowerCase()) || p.tags.some(t => t.toLowerCase().includes(search.toLowerCase()));
       const matchCat = activeCategory === 'All' || p.category === activeCategory;
       const matchPlatform = activePlatform === 'All' || p.platforms.includes(activePlatform);
-      return matchSearch && matchCat && matchPlatform;
+      const matchLevel = matchesDimensionLevel(p, activeLevel);
+      return matchSearch && matchCat && matchPlatform && matchLevel;
     });
-  }, [search, activeCategory, activePlatform]);
+  }, [search, activeCategory, activePlatform, activeLevel]);
 
   const highlights = products.filter(p => p.highlight);
 
@@ -213,7 +256,10 @@ export default function Products() {
                       <h3 className="font-semibold text-white text-sm mb-1">{p.name}</h3>
                       <p className="text-slate-400 text-xs leading-relaxed mb-3">{p.tagline}</p>
                       <div className="flex items-center justify-between">
-                        <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColors[p.status]}`}>{p.status}</span>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColors[p.status]}`}>{p.status}</span>
+                          {p.dimensionLevel && <DimensionBadge level={p.dimensionLevel} />}
+                        </div>
                         <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-white group-hover:translate-x-1 transition-all" />
                       </div>
                     </div>
@@ -240,6 +286,32 @@ export default function Products() {
               ))}
             </div>
           </div>
+          {availableDimensionLevels.length > 0 && (
+            <div className="flex items-center gap-2 mt-3 flex-wrap" role="group" aria-label="Filter by dimensional capability">
+              <span className="text-xs text-slate-500">Capability:</span>
+              <button
+                onClick={() => setActiveLevel('All')}
+                aria-pressed={activeLevel === 'All'}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#030408]"
+                style={activeLevel === 'All' ? { background: "linear-gradient(135deg, #7C3AED, #5B21B6)", color: "white" } : { background: "rgba(124,58,237,0.06)", color: "rgba(167,139,250,0.6)", border: "1px solid rgba(124,58,237,0.15)" }}
+              >
+                All
+              </button>
+              {availableDimensionLevels.map(level => (
+                <button
+                  key={level}
+                  onClick={() => setActiveLevel(level)}
+                  aria-pressed={activeLevel === level}
+                  aria-label={`Filter by capability ${DIMENSION_LEVEL_META[level].label}`}
+                  title={DIMENSION_LEVEL_META[level].summary}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#030408]"
+                  style={activeLevel === level ? { background: "rgba(99,102,241,0.9)", color: "white" } : { background: "rgba(99,102,241,0.10)", color: "#C7D2FE", border: "1px solid rgba(129,140,248,0.35)" }}
+                >
+                  {DIMENSION_LEVEL_META[level].short}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
             {allCategories.map(cat => {
               const count = cat === 'All' ? products.length : products.filter(p => p.category === cat).length;
@@ -277,7 +349,10 @@ export default function Products() {
                         <div className="relative z-10">
                           <div className="flex items-start justify-between mb-4">
                             <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style={{ background: `${p.color}15`, border: `1px solid ${p.color}25` }}>{p.icon}</div>
-                            <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${statusColors[p.status]}`}>{p.status}</span>
+                            <div className="flex flex-col items-end gap-1.5">
+                              <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${statusColors[p.status]}`}>{p.status}</span>
+                              {p.dimensionLevel && <DimensionBadge level={p.dimensionLevel} />}
+                            </div>
                           </div>
                           <h3 className="font-bold text-white text-lg mb-1 group-hover:text-indigo-200 transition-colors">{p.name}</h3>
                           <p className="text-sm font-medium mb-3" style={{ color: p.color }}>{p.tagline}</p>

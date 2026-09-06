@@ -7,6 +7,11 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Smartphone, Globe, Monitor, Watch, CheckCircle, Download, Star, ArrowRight, Shield, Zap, Users, TrendingUp } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+// T-014: value import of DIMENSION_LEVEL_META is safe here — `@/dimensions/contract`
+// has zero imports of its own (see its header comment), so this does not pull
+// the three.js runtime into this route's chunk. Never import a value from
+// anywhere else under `@/dimensions`.
+import { DIMENSION_LEVEL_META, type DimensionLevel } from '@/dimensions/contract';
 
 type ProductCategory =
   | 'Enterprise AI & DevTools'
@@ -35,9 +40,18 @@ interface ProductData {
   stats?: { value: string; label: string }[];
   appStoreUrl?: string;
   playStoreUrl?: string;
+  /**
+   * T-014 / OQ-3 (TASKS.md Decisions, 2026-09-05): assigned ONLY where
+   * evidence of the specific capability in `DIMENSION_LEVEL_META` already
+   * exists in this repository. None of the 9 entries below set this field
+   * today — see this task's Notes for the per-product grep review.
+   * `generateFallbackProduct` below MUST NEVER set this field — a synthesised
+   * page cannot carry a verified technical capability claim.
+   */
+  dimensionLevel?: DimensionLevel;
 }
 
-const productDatabase: Record<string, ProductData> = {
+export const productDatabase: Record<string, ProductData> = {
   cognicore: {
     slug: 'cognicore', name: 'CogniCore AI Platform', tagline: 'Umbrella cognitive AI services platform', description: 'Consolidates cognitive AI services for enterprise deployments.', longDescription: 'CogniCore AI Platform is the flagship enterprise AI infrastructure powering the entire AGL product portfolio. It consolidates cognitive reasoning, tool-augmented agents, and multi-modal intelligence pipelines into a single, scalable platform that enterprise teams can deploy in hours, not months.', category: 'Enterprise AI & DevTools', platforms: ['Web'], tags: ['Python', 'LLM', 'RAG', 'Agents'], color: '#6366F1', icon: '🧠', status: 'Beta',
     features: [
@@ -167,8 +181,12 @@ const productDatabase: Record<string, ProductData> = {
   },
 };
 
-// Fallback for products not in the database
-function generateFallbackProduct(slug: string): ProductData {
+// Fallback for products not in the database.
+// T-014 hard constraint: this function invents feature copy for products with
+// no real detail page (49 of 58 listed products) — it MUST NOT set
+// `dimensionLevel`. The returned object below has no such field, so it is
+// `undefined` by the type's own contract; do not add one here.
+export function generateFallbackProduct(slug: string): ProductData {
   const name = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   return {
     slug, name, tagline: 'Enterprise-grade mobile application', description: 'A powerful application built by American Group LLC.', longDescription: `${name} is one of the many enterprise-grade applications in the American Group LLC portfolio. Built with cutting-edge technology and designed for real-world impact, this application delivers exceptional value to its users.`, category: 'Consumer Mobile', platforms: ['iOS', 'Android'], tags: ['Mobile', 'Enterprise'], color: '#6366F1', icon: '📱', status: 'Live',
@@ -197,6 +215,22 @@ const statusColors: Record<string, string> = {
   'Coming Soon': 'bg-slate-500/20 text-slate-400 border-slate-500/30',
 };
 
+/** T-014: renders only when a product carries a verified level — see contract.ts. Exported for direct component testing. */
+export function DimensionBadge({ level }: { level: DimensionLevel }) {
+  const meta = DIMENSION_LEVEL_META[level];
+  return (
+    <span
+      data-testid="dimension-badge"
+      className="inline-flex items-center text-xs px-3 py-1 rounded-full border font-medium whitespace-nowrap"
+      style={{ background: 'rgba(99,102,241,0.16)', borderColor: 'rgba(129,140,248,0.6)', color: '#C7D2FE' }}
+      title={meta.summary}
+      aria-label={`Dimensional capability: ${meta.label}`}
+    >
+      {meta.short}
+    </span>
+  );
+}
+
 export default function ProductDetail() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug || '';
@@ -222,9 +256,10 @@ export default function ProductDetail() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-3 mb-6 flex-wrap">
                 <span className={`text-xs px-3 py-1 rounded-full border font-medium ${statusColors[product.status]}`}>{product.status}</span>
                 <span className="text-xs text-slate-500">{product.category}</span>
+                {product.dimensionLevel && <DimensionBadge level={product.dimensionLevel} />}
               </div>
               <div className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mb-6" style={{ background: `${product.color}20`, border: `1px solid ${product.color}40` }}>
                 {product.icon}

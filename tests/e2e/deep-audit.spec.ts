@@ -5,7 +5,11 @@
  */
 import { test, expect } from '@playwright/test';
 
-const BASE = 'http://localhost:3000';
+// Empty so every `page.goto(BASE + path)` resolves against playwright.config's
+// baseURL. Hardcoding port 3000 meant this suite only passed when some other
+// suite's server happened to still be holding that port — it passed by
+// accident and failed the moment the run was actually isolated.
+const BASE = '';
 
 // ─── 1. Product Detail Pages ──────────────────────────────────────────────────
 test.describe('Product Detail Pages', () => {

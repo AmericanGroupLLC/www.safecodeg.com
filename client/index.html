@@ -23,9 +23,13 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    <!--
+      The analytics tag is injected from src/main.tsx, and only when
+      VITE_ANALYTICS_ENDPOINT is actually configured. As a static tag here it
+      had no working configuration: unset, Vite leaves the literal
+      "%VITE_ANALYTICS_ENDPOINT%" in the src and the browser requests that path
+      (400, plus a URIError thrown by Express's serve-static); set to "" — which
+      is what .github/workflows/deploy.yml passes — it requested "/umami" (404).
+    -->
   </body>
 </html>

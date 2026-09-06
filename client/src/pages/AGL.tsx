@@ -7,6 +7,8 @@ import { Link } from "wouter";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { ArrowRight, Brain, Smartphone, Globe, Shield, Code2, Cpu, TrendingUp, Users, CheckCircle, Building2 } from "lucide-react";
+import { DIMENSION_LEVELS, DIMENSION_LEVEL_META } from "@/dimensions/contract";
+import { isDimensionLevelLive } from "@/lib/dimensionsAvailability";
 
 const verticals = [
   {
@@ -56,7 +58,7 @@ const verticals = [
     count: 10,
     color: "#A78BFA",
     bg: "rgba(139,92,246,0.12)",
-    desc: "AR/VR applications, spatial computing platforms, and vertical SaaS for healthcare, real estate, and industrial sectors.",
+    desc: "Vertical SaaS for healthcare, real estate, and industrial sectors, built on a dimensional capability stack — 3D spatial models through 7D immersive AR/VR — that runs live on this site, level by level.",
     products: ["SpaceForge AR", "MedSpatial", "RealityLayer", "IndustrialAR", "CasinoOS", "UrbanMesh"],
   },
   {
@@ -141,7 +143,7 @@ export default function AGLPage() {
       </section>
 
       {/* ── About ─────────────────────────────────────────────────────────── */}
-      <section className="py-28">
+      <section className="py-28 overflow-x-clip">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
@@ -239,6 +241,43 @@ export default function AGLPage() {
                       <span className="px-2 py-0.5 rounded text-xs font-mono text-slate-500 border border-white/8 bg-white/[0.03]">+{v.products.length - 4} more</span>
                     )}
                   </div>
+
+                  {/* Dimensional Capability Stack — 3D-7D ladder, honestly marked (T-013).
+                      Only this vertical carries the stack; the level names and
+                      metadata come from client/src/dimensions/contract.ts and the
+                      live/not-yet-available flag from client/src/lib/dimensionsAvailability.ts
+                      — never hand-written per level here. */}
+                  {v.title === "Spatial & Industry SaaS" && (
+                    <div className="mt-4 pt-4 border-t border-white/8" data-testid="agl-dimensions-ladder">
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {DIMENSION_LEVELS.map((level) => {
+                          const live = isDimensionLevelLive(level);
+                          return (
+                            <span
+                              key={level}
+                              title={DIMENSION_LEVEL_META[level].label}
+                              className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold"
+                              style={{
+                                background: live ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.06)",
+                                color: live ? "#34D399" : "rgba(255,255,255,0.7)",
+                              }}
+                            >
+                              {level}
+                              {!live && " · soon"}
+                            </span>
+                          );
+                        })}
+                      </div>
+                      <Link
+                        href="/dimensions"
+                        data-testid="agl-dimensions-cta"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold hover:gap-2.5 transition-all duration-200 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#030408]"
+                        style={{ color: "#C4B5FD" }}
+                      >
+                        Enter the 3D–7D stage <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  )}
                 </motion.div>
               );
             })}

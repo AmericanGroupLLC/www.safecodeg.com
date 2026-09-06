@@ -7,10 +7,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
-
-const SUPABASE_URL = "https://smvvjivvlprjhzhoizym.supabase.co";
-const SUPABASE_SERVICE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtdnZqaXZ2bHByamh6aG9penltIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDIwMjEwMywiZXhwIjoyMDk1Nzc4MTAzfQ.wep1EPhBYfj7WJxugH69OUr8rQ5ebdMH2Us4Z6bxGGg";
+import { ENV } from "./_core/env";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
@@ -30,14 +27,21 @@ async function saveToSupabase(data: {
   subject: string;
   message: string;
 }) {
+  if (!ENV.supabaseUrl || !ENV.supabaseServiceKey) {
+    throw new Error(
+      "Missing required environment variable(s): SUPABASE_URL and/or SUPABASE_SERVICE_KEY. " +
+        "Set both (see .env.example) before contact submissions can be saved to Supabase."
+    );
+  }
+
   const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/contact_submissions`,
+    `${ENV.supabaseUrl}/rest/v1/contact_submissions`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        apikey: SUPABASE_SERVICE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+        apikey: ENV.supabaseServiceKey,
+        Authorization: `Bearer ${ENV.supabaseServiceKey}`,
         Prefer: "return=representation",
       },
       body: JSON.stringify({

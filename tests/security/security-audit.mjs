@@ -4,9 +4,19 @@
  * Tests: Security headers, XSS vectors, sensitive data exposure,
  *        mixed content, external link safety, CSP audit
  */
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const BASE_URL = 'https://3000-i753378jthktwfw3nn2q0-fd1d198d.us1.manus.computer';
+// Results land inside the repo. The previous absolute /home/ubuntu path does
+// not exist on any machine but the original sandbox, so this write threw
+// ENOENT and the error was swallowed by main().catch(console.error).
+const OUT_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '../../test-results');
+
+// Target defaults to the locally served production build. The previous value
+// was a Manus sandbox URL that returns 502 — this script audited that error
+// page and reported a clean result, which is worse than not running at all.
+const BASE_URL = process.env.AUDIT_BASE_URL ?? 'http://localhost:3000';
 
 const PAGES_TO_TEST = ['/', '/products', '/about', '/contact', '/privacy-policy'];
 
@@ -217,8 +227,53 @@ async function main() {
   console.log(`\n  Overall Security Status: ${results.summary.overall_status}`);
   console.log(`  Note: ${results.summary.note}`);
 
-  writeFileSync('/home/ubuntu/test-results/security-results.json', JSON.stringify(results, null, 2));
+  // Exit code reflects only what this run can actually validate.
+  //
+  // Header checks against the local Node server are NOT evidence about the
+  // deployed site: .htaccess (lines 36-51) sets X-Frame-Options,
+  // X-Content-Type-Options, X-XSS-Protection, Strict-Transport-Security,
+  // Referrer-Policy and Permissions-Policy, and a live request to
+  // https://safecodeg.com returns all of them. Express never reads .htaccess,
+  // so "MISSING" here is an artefact of the harness, not a finding — gating on
+  // it would fail the build forever for a condition that is not true in
+  // production.
+  //
+  // Content issues and unsafe external links ARE properties of the bundle this
+  // run served, so those gate. Content-Security-Policy is absent from
+  // .htaccess and from the live response alike — a genuine gap, reported here
+  // and owned by the Security review (T-016) rather than silently passed.
+  const gatingFailures = [];
+  const contentIssues = results.content.filter(r => !r.passed);
+  if (contentIssues.length > 0) {
+    gatingFailures.push(`${contentIssues.length} page(s) with content security issues`);
+  }
+  if (!linkResult.passed) {
+    gatingFailures.push(`${linkResult.unsafeLinks.length} unsafe external link(s)`);
+  }
+
+  console.log(
+    `  CSP: absent from .htaccess and from the live response — real gap, owned by T-016.`
+  );
+  console.log(
+    `  Headers not gated here: enforced by .htaccess at the host, not exercised by this local run.`
+  );
+
+  if (gatingFailures.length > 0) {
+    console.error(`\n❌ Security audit FAILED: ${gatingFailures.join("; ")}\n`);
+    writeFileSync(
+      (mkdirSync(OUT_DIR, { recursive: true }), resolve(OUT_DIR, "security-results.json")),
+      JSON.stringify(results, null, 2)
+    );
+    process.exit(1);
+  }
+
+  writeFileSync((mkdirSync(OUT_DIR, { recursive: true }), resolve(OUT_DIR, 'security-results.json')), JSON.stringify(results, null, 2));
   console.log('\n✅ Security results saved to test-results/security-results.json\n');
 }
 
-main().catch(console.error);
+main().catch(err => {
+  // Exit non-zero: a thrown audit is a failed audit. Swallowing this
+  // made the script report success after crashing.
+  console.error(err);
+  process.exit(1);
+});

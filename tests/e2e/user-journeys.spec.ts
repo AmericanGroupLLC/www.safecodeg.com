@@ -153,14 +153,22 @@ test.describe('E2E — Contact Form Journey', () => {
 });
 
 test.describe('E2E — Careers & Internship Journey', () => {
-  test('careers page shows all 4 internship positions', async ({ page }) => {
+  test('careers page shows all 8 internship positions', async ({ page }) => {
     await page.goto('/careers');
     await page.waitForLoadState('domcontentloaded');
     const body = await page.textContent('body');
+    // Titles are the source of truth in client/src/pages/Careers.tsx:207-284.
+    // "Cybersecurity & Blockchain Audit Intern" was renamed from
+    // "Blockchain Security & Audit Intern" in commit 6fe7771; this spec
+    // asserted the pre-rename string until it was corrected here.
     expect(body).toContain('AI / LLM Mobile App Intern');
     expect(body).toContain('LLM & Generative AI Research Intern');
     expect(body).toContain('Blockchain & Web3 Developer Intern');
-    expect(body).toContain('Blockchain Security & Audit Intern');
+    expect(body).toContain('Cybersecurity & Blockchain Audit Intern');
+    expect(body).toContain('Health Tech Mobile Intern');
+    expect(body).toContain('FinTech & Data Engineering Intern');
+    expect(body).toContain('Travel & Aviation App Intern');
+    expect(body).toContain('Flutter Developer Intern (Mobile App Development)');
   });
 
   test('careers page shows full-time and internship sections', async ({ page }) => {

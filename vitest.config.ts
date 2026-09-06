@@ -7,6 +7,13 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // Test-only placeholders so server/contactRouter.ts's env check passes
+    // and its mocked-fetch tests exercise the real request-building path.
+    // Not real credentials — never a live Supabase project.
+    env: {
+      SUPABASE_URL: 'https://test-project.supabase.co',
+      SUPABASE_SERVICE_KEY: 'test-placeholder-service-key',
+    },
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
     reporter: ['verbose', 'json'],

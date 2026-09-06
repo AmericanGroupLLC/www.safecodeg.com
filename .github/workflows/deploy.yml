@@ -57,6 +57,16 @@ jobs:
           VITE_FRONTEND_FORGE_API_KEY: ""
           VITE_FRONTEND_FORGE_API_URL: ""
           VITE_OAUTH_PORTAL_URL: ""
+          # 6D shared-stage transport (ARCHITECTURE-DIMENSIONS.md §6, §13).
+          # The anon key is public-by-design once bundled, but is still
+          # sourced from a GitHub Actions secret rather than hardcoded here —
+          # same reasoning as the SSH secrets below: keeps it out of this
+          # file's git history and lets it be rotated without a code change.
+          # Unset secrets resolve to "", which is exactly the safe default:
+          # createTransport() returns the null transport and the UI reports
+          # "unconfigured" rather than breaking the build.
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       # ── 7. Show build output ─────────────────────────────────────────────
       - name: Show build output

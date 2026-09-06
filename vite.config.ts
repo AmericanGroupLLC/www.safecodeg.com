@@ -167,6 +167,40 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        // ARCHITECTURE-DIMENSIONS.md §9.5 (D-SPLIT). Names the /dimensions
+        // route's three.js chunk so request-filter assertions (T-004,
+        // T-013, T-015) can match on a stable "vendor-three-" prefix
+        // instead of a hashed, module-path-derived name.
+        //
+        // Do NOT add a catch-all `if (id.includes("node_modules")) return
+        // "vendor"` here — that creates one shared vendor chunk the entry
+        // imports, which every route then loads: the opposite of the goal.
+        // Only chunks reachable solely from `@/dimensions/DimensionsStage`'s
+        // lazy import may be named this way.
+        manualChunks(id) {
+          if (id.includes("node_modules/three")) return "vendor-three";
+          // ARCHITECTURE-DIMENSIONS.md §2, §9.5 / T-007. Reachable only via
+          // the dynamic `import("./physics/sandbox")` inside
+          // `client/src/dimensions/DimensionsStage.tsx`, fired the first
+          // time the user clicks "Run simulation" in the 5D physics panel —
+          // never on route entry, never on mount. Measured (this repo's own
+          // build, §"Bundle" in TASKS.md/T-007's Notes): cannon-es alone is
+          // 25.16 kB gzip versus rapier's 1083.72 kB (43x) — see
+          // ARCHITECTURE-DIMENSIONS.md §2.1.
+          if (id.includes("node_modules/cannon-es")) return "vendor-physics";
+          // ARCHITECTURE-DIMENSIONS.md §9.5 / T-009. Reachable only via the
+          // dynamic `import("./supabaseTransport")` inside
+          // `client/src/dimensions/transport/index.ts`'s `createTransport()`
+          // — i.e. only after the user clicks "Join the shared stage" (§6.3).
+          // Not reachable from the entry chunk or from route entry: nothing
+          // outside `client/src/dimensions/transport/**` imports `@supabase/*`
+          // (enforced by `grep -rn "@supabase" client/src`).
+          if (id.includes("node_modules/@supabase")) return "vendor-collab";
+        },
+      },
+    },
   },
   server: {
     host: true,

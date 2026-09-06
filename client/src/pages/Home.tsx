@@ -10,10 +10,12 @@ import {
   ArrowRight, Brain, Smartphone, Globe, Shield, Code2, Cpu,
   TrendingUp, Users, Zap, Star, CheckCircle, ChevronRight,
   BarChart3, Lock, Cloud, Layers, Play, Award, Building2,
-  MapPin, Phone, Mail, ExternalLink
+  MapPin, Phone, Mail, ExternalLink, Box
 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { DIMENSION_LEVELS, DIMENSION_LEVEL_META } from "@/dimensions/contract";
+import { isDimensionLevelLive } from "@/lib/dimensionsAvailability";
 
 // ── Animated counter hook ─────────────────────────────────────────────────────
 function useCounter(target: number, duration = 2200, start = false) {
@@ -351,6 +353,112 @@ export default function Home() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════════
+          DIMENSIONAL STACK TEASER — 3D–7D, honestly marked (T-013)
+          Static markup only: CSS-transform (framer-motion) cards + one inline
+          SVG. No canvas, no WebGL, no reference into client/src/dimensions/
+          beyond the zero-import contract module. ARCHITECTURE-DIMENSIONS.md §9.7.
+      ══════════════════════════════════════════════════════════════════════ */}
+      <section
+        className="py-28 overflow-hidden"
+        data-testid="dimensions-teaser"
+        style={{ borderTop: "1px solid rgba(124,58,237,0.1)", background: "linear-gradient(180deg, transparent 0%, rgba(124,58,237,0.05) 50%, transparent 100%)" }}
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="mb-16 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8"
+          >
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-widest mb-6" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", color: "rgba(196,181,253,0.9)" }}>
+                <Box className="w-3.5 h-3.5" /> Dimensional Capability Stack
+              </div>
+              <h2 className="font-black text-white mb-5 tracking-tight" style={{ fontFamily: "Sora, sans-serif", fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)" }}>
+                Five levels.<br />
+                <span style={{ background: "linear-gradient(135deg, #A78BFA 0%, #7C3AED 40%, #F59E0B 80%, #FCD34D 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                  One evolving stage.
+                </span>
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed">
+                From a real 3D model you can orbit, to a shared session two people edit together
+                live. Each level below is marked exactly as it stands today — nothing here is shown
+                as running before it genuinely is.
+              </p>
+            </div>
+
+            {/* Decorative isometric wireframe — static inline SVG, part of the HTML, no canvas */}
+            <svg aria-hidden="true" focusable="false" width="96" height="96" viewBox="0 0 100 100" className="hidden sm:block flex-shrink-0 opacity-70">
+              <polygon points="50,8 83,29 83,71 50,92 17,71 17,29" fill="none" stroke="#A78BFA" strokeWidth="2" />
+              <line x1="50" y1="50" x2="50" y2="8" stroke="#A78BFA" strokeWidth="1.5" opacity="0.6" />
+              <line x1="50" y1="50" x2="83" y2="71" stroke="#A78BFA" strokeWidth="1.5" opacity="0.6" />
+              <line x1="50" y1="50" x2="17" y2="71" stroke="#A78BFA" strokeWidth="1.5" opacity="0.6" />
+              <line x1="50" y1="50" x2="83" y2="29" stroke="#F59E0B" strokeWidth="1.5" opacity="0.5" />
+              <line x1="50" y1="50" x2="17" y2="29" stroke="#F59E0B" strokeWidth="1.5" opacity="0.5" />
+            </svg>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
+            {DIMENSION_LEVELS.map((level, i) => {
+              const meta = DIMENSION_LEVEL_META[level];
+              const live = isDimensionLevelLive(level);
+              return (
+                <motion.div
+                  key={level}
+                  data-testid={`dimension-teaser-card-${level}`}
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: i * 4 }}
+                  whileHover={{ y: i * 4 - 6 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+                  className="relative p-5 rounded-2xl"
+                  style={{
+                    background: "rgba(17,19,39,0.6)",
+                    border: live ? "1px solid rgba(124,58,237,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-3 gap-2">
+                    <span className="text-xl font-black" style={{ fontFamily: "Sora, sans-serif", color: live ? "#C4B5FD" : "rgba(255,255,255,0.7)" }}>
+                      {level}
+                    </span>
+                    <span
+                      className="text-[9px] uppercase tracking-widest font-mono px-2 py-0.5 rounded-full whitespace-nowrap"
+                      style={{
+                        background: live ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.06)",
+                        color: live ? "#34D399" : "rgba(255,255,255,0.6)",
+                      }}
+                    >
+                      {live ? "Live" : "Not yet available"}
+                    </span>
+                  </div>
+                  <div className="font-bold text-white text-sm mb-1.5">{meta.short}</div>
+                  <p className="text-slate-400 text-xs leading-relaxed">{meta.summary}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <Link
+              href="/dimensions"
+              data-testid="dimensions-teaser-cta"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-white text-base transition-all duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#030408]"
+              style={{ background: "linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)", boxShadow: "0 0 40px rgba(124,58,237,0.35)" }}
+            >
+              Open the live 3D–7D stage
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
         </div>
       </section>
 

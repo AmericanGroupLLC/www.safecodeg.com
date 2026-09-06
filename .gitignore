@@ -112,3 +112,14 @@ temp/
 # Manus version file (auto-generated, not part of source)
 client/public/__manus__/version.json
 .project-config.json
+
+# ── Stray artifacts ─────────────────────────────────────────────────────────
+# Lighthouse/Chrome writes its user-data dir to $LOCALAPPDATA; under WSL that
+# expands to a literal "C:\Users\...\lighthouse.<pid>" directory here. Cache
+# junk, safe to delete.
+C:*
+
+# Playwright run output
+test-results/
+playwright-report/
+blob-report/

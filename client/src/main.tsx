@@ -8,6 +8,31 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
+/**
+ * Load the analytics script only when an endpoint is actually configured.
+ *
+ * Previously this was a static tag in index.html whose src interpolated
+ * VITE_ANALYTICS_ENDPOINT. That had no working configuration — see the comment
+ * in client/index.html. Injecting it here means an unconfigured build simply
+ * ships no analytics tag instead of a broken request on every page load.
+ *
+ * This deliberately does not decide *whether* analytics should be enabled;
+ * it only stops emitting a tag that cannot work.
+ */
+function installAnalytics() {
+  const endpoint = import.meta.env.VITE_ANALYTICS_ENDPOINT;
+  const websiteId = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
+  if (!endpoint || !websiteId) return;
+
+  const script = document.createElement("script");
+  script.defer = true;
+  script.src = `${endpoint.replace(/\/+$/, "")}/umami`;
+  script.dataset.websiteId = websiteId;
+  document.head.appendChild(script);
+}
+
+installAnalytics();
+
 const queryClient = new QueryClient();
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
