@@ -1,0 +1,17 @@
+{
+  "name": "americangroupllc-marketing",
+  "private": true,
+  "version": "0.0.0",
+  "description": "AmericanGroupLLC marketing static site (GitHub Pages).",
+  "scripts": {
+    "lint": "html-validate **/*.html && stylelint **/*.css",
+    "lint:html": "html-validate **/*.html",
+    "lint:css": "stylelint **/*.css",
+    "serve": "http-server -p 8080 -c-1 ."
+  },
+  "devDependencies": {
+    "html-validate": "^9.0.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
+  }
+}

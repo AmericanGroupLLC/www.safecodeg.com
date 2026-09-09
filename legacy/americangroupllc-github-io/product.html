@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Product Details — American Group LLC</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              cyan: '#06b6d4',
+              indigo: '#6366f1',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#f43f5e',
+              violet: '#8b5cf6',
+              dark: '#030712',
+              card: '#0b0f19',
+              border: '#1f2937',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030712;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f2937;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6366f1;
+    }
+    .gradient-bg {
+      background: radial-gradient(circle at top, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
+    }
+    /* Mobile Phone Shell styling */
+    .phone-shell {
+      position: relative;
+      width: 320px;
+      height: 620px;
+      background: #000;
+      border: 12px solid #1f2937;
+      border-radius: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 22px;
+      background: #1f2937;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      z-index: 50;
+    }
+    /* Web Browser Shell styling */
+    .browser-shell {
+      background: #0b0f19;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+      overflow: hidden;
+      width: 100%;
+      height: 620px;
+      display: flex;
+      flex-col: true;
+    }
+    /* Radar Sweep Animation */
+    @keyframes radar-sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .radar-line {
+      transform-origin: center;
+      animation: radar-sweep 4s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-brand-dark text-gray-100 font-sans min-h-screen flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+
+  <!-- Background Ambient Glow -->
+  <div class="fixed inset-0 z-0 pointer-events-none gradient-bg"></div>
+
+  <!-- Header -->
+  <header class="relative z-10 border-b border-brand-border bg-brand-dark/90 backdrop-blur-md sticky top-0 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <a href="index.html" class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span id="header-badge" class="text-[10px] font-bold tracking-widest text-indigo-400 uppercase bg-indigo-950/50 px-2 py-0.5 rounded border border-indigo-800/30">PRODUCT</span>
+          <span class="text-xs text-gray-400">&bull; Interactive Prototype</span>
+        </div>
+        <h1 id="header-title" class="text-lg font-bold text-white tracking-tight">American Group LLC</h1>
+      </div>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a id="github-link" href="#" target="_blank" rel="noopener" class="bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all flex items-center space-x-1.5 border border-brand-border">
+        <span>View Repository</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="relative z-10 flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Left Column: Product Info & Tesla Specs (5 Cols) -->
+    <div class="lg:col-span-5 flex flex-col space-y-6">
+      
+      <!-- Product Header Card -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border p-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
+        <div id="product-icon-container" class="w-12 h-12 rounded-xl bg-indigo-950/50 border border-indigo-800/30 flex items-center justify-center text-2xl mb-4">
+          📦
+        </div>
+        <h2 id="product-title" class="text-3xl font-serif font-bold text-white mb-2">Product Name</h2>
+        <p id="product-meta" class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-4">Category &bull; Stack</p>
+        <p id="product-desc" class="text-sm text-gray-300 leading-relaxed mb-6">Detailed product description goes here.</p>
+        
+        <!-- Detailed Product Features -->
+        <div class="border-t border-brand-border pt-4">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Key Product Features</h4>
+          <ul id="product-features" class="space-y-2.5 text-xs text-gray-300">
+            <!-- Dynamically populated -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tesla-Style Specifications Dashboard -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border p-6">
+        <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-400 mb-4">Technical Specifications</h3>
+        <div id="spec-grid" class="grid grid-cols-2 gap-4">
+          <!-- Dynamically populated spec cards -->
+        </div>
+      </div>
+
+      <!-- Key Tech Stack Badges -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border p-6">
+        <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-400 mb-3">Technology Stack</h3>
+        <div id="tech-tags-container" class="flex flex-wrap gap-2">
+          <!-- Tags go here -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Interactive Screen Simulator (7 Cols) -->
+    <div class="lg:col-span-7 flex flex-col items-center justify-center space-y-4">
+      
+      <!-- Screen Simulator Shell -->
+      <div id="simulator-container" class="w-full flex justify-center items-center">
+        <!-- Dynamically injected browser-shell or phone-shell -->
+      </div>
+
+      <!-- Terminal Output / Event Logs -->
+      <div class="w-full bg-brand-card rounded-2xl border border-brand-border p-4 flex flex-col space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Device Log & API Telemetry</span>
+          <button onclick="clearTerminal()" class="text-[9px] text-gray-500 hover:text-indigo-400 font-mono uppercase tracking-wider">Clear</button>
+        </div>
+        <div id="terminal-log" class="bg-black/50 p-3 rounded-xl border border-brand-border font-mono text-[11px] text-indigo-400/90 space-y-1 h-[100px] overflow-y-auto">
+          <div>[00:00:01] Booting isolated prototype sandbox environment...</div>
+          <div>[00:00:02] Sandbox operational. Ready for interaction.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-brand-border bg-brand-dark py-6 px-6 text-center text-xs text-gray-500 relative z-10">
+    <p>&copy; 2026 American Group LLC. All rights reserved. All product screens, health metrics, financial transactions, and radar sweeps are fully mock-simulated in the browser sandbox.</p>
+  </footer>
+
+  <!-- Simulation & Interactive Logic -->
+  <script>
+    let productsDb = {};
+    let currentProductId = '';
+    let simInterval = null;
+    let themeColor = '#6366f1';
+
+    // Load Product Data
+    async function initProductPage() {
+      try {
+        const response = await fetch('products_db.json');
+        productsDb = await response.json();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        currentProductId = urlParams.get('id') || 'myhealth';
+        
+        const product = productsDb[currentProductId];
+        if (!product) {
+          renderNotFound();
+          return;
+        }
+
+        renderProduct(product);
+      } catch (error) {
+        console.error("Failed to load products database:", error);
+        renderNotFound();
+      }
+    }
+
+    function renderNotFound() {
+      document.getElementById('product-title').innerText = "Product Not Found";
+      document.getElementById('product-desc').innerText = "The requested product could not be found in our portfolio.";
+      document.getElementById('simulator-container').innerHTML = `
+        <div class="bg-brand-card border border-brand-border rounded-2xl p-8 text-center space-y-4 max-w-md">
+          <span class="text-5xl">🔍</span>
+          <h3 class="text-lg font-bold text-white">Unknown Product ID</h3>
+          <p class="text-xs text-gray-400">Please verify the URL or return to the main portfolio directory.</p>
+          <a href="index.html" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all inline-block">Back to Directory</a>
+        </div>
+      `;
+    }
+
+    function renderProduct(product) {
+      themeColor = product.theme_color;
+
+      // Document Title & Headers
+      document.title = `${product.title} — American Group LLC`;
+      document.getElementById('page-title').innerText = `${product.title} — American Group LLC`;
+      document.getElementById('header-title').innerText = product.title;
+      document.getElementById('product-title').innerText = product.title;
+      document.getElementById('product-desc').innerText = product.description;
+      document.getElementById('product-meta').innerText = `${product.badge || 'Product'} • ${product.meta}`;
+      
+      // Header Badge
+      const headerBadge = document.getElementById('header-badge');
+      headerBadge.innerText = product.badge || 'PRODUCT';
+      headerBadge.style.color = themeColor;
+      headerBadge.style.borderColor = themeColor + '40';
+      headerBadge.style.backgroundColor = themeColor + '15';
+
+      // Set Product Icon
+      document.getElementById('product-icon-container').innerText = product.icon;
+
+      // View Repository Link
+      const ghLink = document.getElementById('github-link');
+      if (product.links && product.links.github) {
+        ghLink.href = product.links.github;
+      } else {
+        ghLink.href = `https://github.com/AmericanGroupLLC/${product.id}`;
+      }
+
+      // Populate Key Features
+      const featuresUl = document.getElementById('product-features');
+      featuresUl.innerHTML = '';
+      product.features.forEach(feat => {
+        const li = document.createElement('li');
+        li.className = "flex items-start space-x-2";
+        
+        // Highlight first part of feature
+        const parts = feat.split(':');
+        if (parts.length > 1) {
+          li.innerHTML = `
+            <span class="text-gray-400 mt-0.5" style="color: ${themeColor}">&bull;</span>
+            <span><strong class="text-white">${parts[0]}:</strong>${parts.slice(1).join(':')}</span>
+          `;
+        } else {
+          li.innerHTML = `<span class="text-gray-400 mt-0.5" style="color: ${themeColor}">&bull;</span><span>${feat}</span>`;
+        }
+        featuresUl.appendChild(li);
+      });
+
+      // Populate Specifications Dashboard
+      const specGrid = document.getElementById('spec-grid');
+      specGrid.innerHTML = '';
+      for (const [key, value] of Object.entries(product.specs)) {
+        const card = document.createElement('div');
+        card.className = "bg-black/30 p-4 rounded-xl border border-brand-border";
+        card.innerHTML = `
+          <span class="text-[9px] text-gray-400 uppercase tracking-wider font-semibold">${key}</span>
+          <div class="text-sm font-bold text-white mt-1 leading-snug">${value}</div>
+        `;
+        specGrid.appendChild(card);
+      }
+
+      // Populate Tech Tags
+      const tagsContainer = document.getElementById('tech-tags-container');
+      tagsContainer.innerHTML = '';
+      product.tags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = "text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-gray-800 border border-brand-border text-gray-300";
+        span.innerText = tag;
+        tagsContainer.appendChild(span);
+      });
+
+      // Inject Simulator Screen Shell
+      renderSimulatorShell(product);
+    }
+
+    function addLog(text) {
+      const log = document.getElementById('terminal-log');
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.innerHTML = `<span class="text-gray-500">[${time}]</span> ${text}`;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function clearTerminal() {
+      document.getElementById('terminal-log').innerHTML = '';
+      addLog('Terminal output cleared.');
+    }
+
+    // Render the outer device shell and inject specific app screens
+    function renderSimulatorShell(product) {
+      if (simInterval) clearInterval(simInterval);
+      const container = document.getElementById('simulator-container');
+      container.innerHTML = '';
+
+      if (product.sim_type === 'mobile') {
+        // Create Mobile Phone Frame
+        const shell = document.createElement('div');
+        shell.className = "phone-shell";
+        shell.innerHTML = `
+          <div class="phone-notch"></div>
+          <!-- Status Bar -->
+          <div class="px-6 pt-7 pb-2 flex justify-between items-center text-[10px] font-bold text-gray-400 bg-black/40 relative z-40">
+            <span>9:41</span>
+            <div class="flex items-center space-x-1.5">
+              <span>5G</span>
+              <span class="w-5 h-2.5 border border-gray-400 rounded-sm p-0.5 flex items-center"><span class="bg-gray-400 w-full h-full rounded-xs"></span></span>
+            </div>
+          </div>
+          <!-- App Screen Body -->
+          <div id="phone-app-screen" class="absolute inset-0 pt-12 pb-4 flex flex-col bg-brand-dark overflow-y-auto">
+            <!-- App Screen content dynamically injected -->
+          </div>
+        `;
+        container.appendChild(shell);
+        injectMobileAppScreen(product);
+      } else {
+        // Create Desktop Browser Frame
+        const shell = document.createElement('div');
+        shell.className = "browser-shell flex flex-col";
+        shell.innerHTML = `
+          <!-- Browser Header -->
+          <div class="bg-gray-950 px-4 py-3 flex items-center justify-between border-b border-brand-border relative z-40">
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+            </div>
+            <div class="bg-brand-dark border border-brand-border rounded-lg px-4 py-1 text-xs font-mono text-gray-400 w-2/3 text-center truncate">
+              https://secure.${product.id}.americangroup.io/dashboard
+            </div>
+            <span class="text-xs font-mono text-indigo-400 bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-800/30">SECURE</span>
+          </div>
+          <!-- Browser Body Screen -->
+          <div id="browser-app-screen" class="flex-1 flex flex-col bg-brand-dark relative overflow-hidden">
+            <!-- Web Screen content dynamically injected -->
+          </div>
+        `;
+        container.appendChild(shell);
+        injectWebAppScreen(product);
+      }
+    }
+
+    // --- MOBILE SCREEN INJECTIONS ---
+    function injectMobileAppScreen(product) {
+      const screen = document.getElementById('phone-app-screen');
+      const arch = product.archetype;
+
+      // 1. Health App Mobile Screen
+      if (arch === 'mobile_health') {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-4 space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="text-sm font-bold text-white">${product.title}</h3>
+                <span class="text-[10px] text-emerald-400 font-mono">Sync OK</span>
+              </div>
+              <p class="text-[10px] text-gray-400 leading-tight mb-4">Connected Wearable Device Analytics & Health Tracking</p>
+              
+              <!-- Core Health Metrics -->
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-black/40 p-3 rounded-xl border border-brand-border text-center">
+                  <span class="text-[9px] text-gray-500 font-semibold uppercase">Heart Rate</span>
+                  <div class="text-xl font-mono font-bold text-emerald-400 mt-1"><span id="ph-hr">72</span> <span class="text-[10px] text-gray-500">bpm</span></div>
+                </div>
+                <div class="bg-black/40 p-3 rounded-xl border border-brand-border text-center">
+                  <span class="text-[9px] text-gray-500 font-semibold uppercase">HRV</span>
+                  <div class="text-xl font-mono font-bold text-white mt-1"><span id="ph-hrv">64</span> <span class="text-[10px] text-gray-500">ms</span></div>
+                </div>
+                <div class="bg-black/40 p-3 rounded-xl border border-brand-border text-center">
+                  <span class="text-[9px] text-gray-500 font-semibold uppercase">Sleep Score</span>
+                  <div class="text-xl font-mono font-bold text-cyan-400 mt-1">88<span class="text-[10px] text-gray-500">/100</span></div>
+                </div>
+                <div class="bg-black/40 p-3 rounded-xl border border-brand-border text-center">
+                  <span class="text-[9px] text-gray-500 font-semibold uppercase">Daily Steps</span>
+                  <div class="text-xl font-mono font-bold text-amber-400 mt-1">10,420</div>
+                </div>
+              </div>
+
+              <!-- Live Heart Rate Graph simulation -->
+              <div class="bg-black/60 p-3 rounded-xl border border-brand-border h-24 flex items-end justify-between space-x-1">
+                <div class="bg-emerald-500/20 w-full h-[40%] rounded-t-sm transition-all duration-500" id="g-1"></div>
+                <div class="bg-emerald-500/30 w-full h-[55%] rounded-t-sm transition-all duration-500" id="g-2"></div>
+                <div class="bg-emerald-500/40 w-full h-[50%] rounded-t-sm transition-all duration-500" id="g-3"></div>
+                <div class="bg-emerald-500/50 w-full h-[65%] rounded-t-sm transition-all duration-500" id="g-4"></div>
+                <div class="bg-emerald-500/60 w-full h-[60%] rounded-t-sm transition-all duration-500" id="g-5"></div>
+                <div class="bg-emerald-500/70 w-full h-[75%] rounded-t-sm transition-all duration-500" id="g-6"></div>
+                <div class="bg-emerald-500/80 w-full h-[70%] rounded-t-sm transition-all duration-500" id="g-7"></div>
+                <div class="bg-emerald-500/90 w-full h-[85%] rounded-t-sm transition-all duration-500" id="g-8"></div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-2">
+              <button onclick="mobileTriggerSync()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all">Force Device Sync</button>
+              <button onclick="mobileTriggerHaptic()" class="w-full py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-[11px] font-semibold border border-brand-border">Test Smart Alert</button>
+            </div>
+          </div>
+        `;
+
+        simInterval = setInterval(() => {
+          const hr = 65 + Math.floor(Math.random() * 15);
+          const hrv = 60 + Math.floor(Math.random() * 10);
+          if (document.getElementById('ph-hr')) document.getElementById('ph-hr').innerText = hr;
+          if (document.getElementById('ph-hrv')) document.getElementById('ph-hrv').innerText = hrv;
+          
+          // Randomize graph heights
+          for(let i=1; i<=8; i++) {
+            const el = document.getElementById(`g-${i}`);
+            if (el) el.style.height = `${30 + Math.floor(Math.random() * 60)}%`;
+          }
+          addLog(`[HealthKit] Synced HR: ${hr} bpm, HRV: ${hrv} ms.`);
+        }, 2500);
+      }
+      
+      // 2. AI Chatbot / Personal Assistant Mobile Screen
+      else if (arch === 'ai_agent') {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-4 space-y-4">
+            <div class="flex-1 flex flex-col justify-between min-h-0">
+              <div class="flex justify-between items-center border-b border-brand-border pb-2 mb-2">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                  <h3 class="text-xs font-bold text-white">${product.title}</h3>
+                </div>
+                <span class="text-[9px] text-indigo-400 bg-indigo-950/40 px-1.5 py-0.5 rounded border border-indigo-800/30">Local Model</span>
+              </div>
+
+              <!-- Message History Box -->
+              <div class="flex-1 overflow-y-auto space-y-3 pr-1 text-[11px] max-h-[340px]" id="m-chat-box">
+                <div class="text-left text-gray-400">User: How is my privacy protected?</div>
+                <div class="text-left text-indigo-300 font-medium">Assistant: I run a 1.5B model directly on your phone's neural engine. No text ever leaves this device!</div>
+                <div id="m-chat-append"></div>
+              </div>
+            </div>
+
+            <!-- Input Box -->
+            <div class="flex space-x-2">
+              <input id="m-chat-input" type="text" placeholder="Ask on-device AI..." class="flex-1 bg-black border border-brand-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+              <button onclick="sendMobileChat()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 rounded-xl text-xs font-bold transition-all">Send</button>
+            </div>
+          </div>
+        `;
+      }
+
+
+      // 3. Personal Safety / Guardian Network Mobile Screen
+      else if (arch === 'personal_safety') {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-4 space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="text-sm font-bold text-white">${product.title}</h3>
+                <span class="text-[10px] font-mono" style="color: ${themeColor}">Guardians online</span>
+              </div>
+              <p class="text-[10px] text-gray-400 leading-tight mb-4">Vetted guardians nearby \u00b7 voice or video \u00b7 no time limit</p>
+
+              <div class="bg-black/40 p-4 rounded-2xl border border-brand-border space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Guardians nearby</span>
+                  <span class="text-white font-semibold font-mono">6 within 10 mi</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Nearest guardian</span>
+                  <span class="text-white font-mono">0.4 mi</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Live location</span>
+                  <span class="text-emerald-400 font-semibold">SHARED DURING CALL</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Safety contacts</span>
+                  <span class="text-white font-mono">3 alerted on start</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <button onclick="mobileTriggerSafeCall()" class="w-full py-2.5 rounded-xl text-white text-xs font-bold transition-all" style="background-color: ${themeColor}">Start a Safe Call</button>
+              <button onclick="mobileTriggerEmergency()" class="w-full py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-[11px] font-semibold border border-brand-border">Emergency \u2014 confirm and dial</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // 4. Other Mobile Apps (FinTech, Productivity, Security)
+      else {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-4 space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="text-sm font-bold text-white">${product.title}</h3>
+                <span class="text-[10px] font-mono" style="color: ${themeColor}">Secure</span>
+              </div>
+              <p class="text-[10px] text-gray-400 leading-tight mb-4">Enterprise Mobile Companion & Operational Controller</p>
+              
+              <div class="bg-black/40 p-4 rounded-2xl border border-brand-border space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Security Shield</span>
+                  <span class="text-emerald-400 font-semibold">ACTIVE</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Data Pipeline</span>
+                  <span class="text-white font-mono">142.4 kbps</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Encryption Level</span>
+                  <span class="text-indigo-400 font-semibold font-mono">AES-256</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <button onclick="mobileTriggerPing()" class="w-full py-2.5 rounded-xl text-white text-xs font-bold transition-all" style="background-color: ${themeColor}">Ping Remote Server</button>
+              <button onclick="mobileTriggerAction()" class="w-full py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-[11px] font-semibold border border-brand-border">Run Diagnostics</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // --- WEB SCREEN INJECTIONS ---
+    function injectWebAppScreen(product) {
+      const screen = document.getElementById('browser-app-screen');
+      const arch = product.archetype;
+
+      // 1. FinTech / Smart Order Router Trading Web Dashboard
+      if (arch === 'fintech') {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-6 space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-base font-bold text-white">${product.title}</h3>
+                <p class="text-xs text-gray-400">Smart Order Routing (SOR) Multi-Venue Execution</p>
+              </div>
+              <span class="text-xs font-mono text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/30">Live Quotes</span>
+            </div>
+
+            <!-- Order Book Visualizer -->
+            <div class="bg-black/50 p-4 rounded-xl border border-brand-border space-y-3 flex-1 flex flex-col justify-between">
+              <div class="flex justify-between items-center text-xs text-gray-500 font-mono border-b border-brand-border pb-2">
+                <span>LIQUIDITY VENUE</span>
+                <span>BID/ASK PRICE</span>
+                <span>SPREAD</span>
+              </div>
+              <div class="space-y-2 font-mono text-xs">
+                <div class="flex justify-between">
+                  <span class="text-gray-300">NASDAQ (Direct)</span>
+                  <span class="text-emerald-400 font-semibold" id="nasdaq-quote">182.45 / 182.46</span>
+                  <span class="text-white">$0.01</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-300">NYSE (Direct)</span>
+                  <span class="text-emerald-400 font-semibold" id="nyse-quote">182.44 / 182.47</span>
+                  <span class="text-white">$0.03</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-300">BATS (Edge Router)</span>
+                  <span class="text-emerald-400 font-semibold" id="bats-quote">182.45 / 182.48</span>
+                  <span class="text-white">$0.03</span>
+                </div>
+              </div>
+              <div class="border-t border-brand-border pt-2 flex justify-between items-center text-xs">
+                <span class="text-gray-400">Best Available Execution Venue:</span>
+                <span class="font-bold text-amber-400 font-mono">NASDAQ (SOR Optimized)</span>
+              </div>
+            </div>
+
+            <!-- Execution Panel -->
+            <div class="flex space-x-3">
+              <button onclick="webTriggerTrade('BUY')" class="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider transition-all">Execute Buy Order</button>
+              <button onclick="webTriggerTrade('SELL')" class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider transition-all">Execute Sell Order</button>
+            </div>
+          </div>
+        `;
+
+        simInterval = setInterval(() => {
+          const base = 182.40 + Math.random() * 0.10;
+          if (document.getElementById('nasdaq-quote')) {
+            document.getElementById('nasdaq-quote').innerText = `${base.toFixed(2)} / ${(base+0.01).toFixed(2)}`;
+            document.getElementById('nyse-quote').innerText = `${(base-0.01).toFixed(2)} / ${(base+0.02).toFixed(2)}`;
+            document.getElementById('bats-quote').innerText = `${base.toFixed(2)} / ${(base+0.03).toFixed(2)}`;
+          }
+          addLog(`[SOR-Engine] Polled venue prices. Spread remains tight at $0.01 on NASDAQ.`);
+        }, 3000);
+      }
+
+      // 2. CyberSecurity SIEM Security Dashboard
+      else if (arch === 'cybersecurity') {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-6 space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-base font-bold text-white">${product.title}</h3>
+                <p class="text-xs text-gray-400">Real-Time Zero-Trust SIEM Threat Stream</p>
+              </div>
+              <span class="text-xs font-mono text-rose-400 bg-rose-950/40 px-2 py-0.5 rounded border border-rose-800/30">Active Shield</span>
+            </div>
+
+            <!-- Active Threat Stream Logs -->
+            <div class="bg-black p-4 rounded-xl border border-brand-border flex-1 font-mono text-xs text-rose-500 space-y-1.5 overflow-y-auto max-h-[260px]" id="web-siem-box">
+              <div>[SHIELD-OK] Port scan blocked from 184.22.91.4</div>
+              <div>[SHIELD-OK] Rate limiter active: 14 req/sec from 92.11.44.2</div>
+              <div>[SHIELD-INFO] Zero-Trust access token validated for UID: 9402</div>
+              <div>[SHIELD-OK] Network topology secure. 0 active threats.</div>
+            </div>
+
+            <div class="flex space-x-3">
+              <button onclick="webTriggerScan()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold uppercase transition-all">Force Penetration Audit</button>
+              <button onclick="webTriggerResetShield()" class="py-2.5 px-6 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-xs font-semibold border border-brand-border">Flush Firewall Rules</button>
+            </div>
+          </div>
+        `;
+
+        simInterval = setInterval(() => {
+          const scanIps = ['198.51.100.12', '203.0.113.45', '192.0.2.89'];
+          const randomIp = scanIps[Math.floor(Math.random() * scanIps.length)];
+          const box = document.getElementById('web-siem-box');
+          if (box) {
+            const div = document.createElement('div');
+            div.innerText = `[SHIELD-OK] Blocked unauthorized connection request from ${randomIp}`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+          }
+          addLog(`[SIEM-Shield] Packet filtered and rate-limited from ${randomIp}.`);
+        }, 4000);
+      }
+
+      // 3. IoT & Hardware Radar/Robotics Sweep Screen
+      else if (arch === 'iot_robotics') {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-6 space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-base font-bold text-white">${product.title}</h3>
+                <p class="text-xs text-gray-400">AeroOS Embedded Telemetry & RTOS Core</p>
+              </div>
+              <span class="text-xs font-mono text-cyan-400 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/30">Live Connection</span>
+            </div>
+
+            <!-- Radar Sweep Visualizer or Hardware Stats -->
+            <div class="bg-black rounded-xl border border-brand-border flex-1 flex items-center justify-center relative overflow-hidden">
+              <svg width="200" height="200" viewBox="0 0 200 200" class="relative">
+                <circle cx="100" cy="100" r="90" fill="none" stroke="#1f2937" stroke-width="1" />
+                <circle cx="100" cy="100" r="60" fill="none" stroke="#1f2937" stroke-width="1" />
+                <circle cx="100" cy="100" r="30" fill="none" stroke="#1f2937" stroke-width="1" />
+                <line x1="10" y1="100" x2="190" y2="100" stroke="#1f2937" stroke-width="1" />
+                <line x1="100" y1="10" x2="100" y2="190" stroke="#1f2937" stroke-width="1" />
+                <!-- Radar sweep line -->
+                <line x1="100" y1="100" x2="100" y2="10" stroke="#06b6d4" stroke-width="2" class="radar-line" />
+                <!-- Targets -->
+                <circle cx="140" cy="60" r="3" fill="#06b6d4" class="animate-ping" />
+                <circle cx="140" cy="60" r="3" fill="#06b6d4" />
+                <circle cx="60" cy="130" r="3" fill="#06b6d4" class="animate-ping" style="animation-delay: 1.5s;" />
+                <circle cx="60" cy="130" r="3" fill="#06b6d4" />
+              </svg>
+              
+              <!-- Floating Stats -->
+              <div class="absolute bottom-3 left-4 text-[10px] font-mono text-gray-400 space-y-0.5">
+                <div>RTOS: Operational</div>
+                <div>Sensor Loop: 4.2ms</div>
+                <div>Temp: <span id="web-iot-temp">38.4</span>°C</div>
+              </div>
+            </div>
+
+            <div class="flex space-x-3">
+              <button onclick="webTriggerIotPing()" class="flex-1 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold uppercase transition-all">Ping Hardware Subsystem</button>
+              <button onclick="webTriggerIotSelfTest()" class="py-2.5 px-6 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-xs font-semibold border border-brand-border">Run Self-Test</button>
+            </div>
+          </div>
+        `;
+
+        simInterval = setInterval(() => {
+          const temp = (37.5 + Math.random() * 2).toFixed(1);
+          if (document.getElementById('web-iot-temp')) document.getElementById('web-iot-temp').innerText = temp;
+          addLog(`[RTOS-Kernel] Completed hardware sensor loop. Temperature: ${temp}°C.`);
+        }, 3000);
+      }
+
+      // 4. Spatial XR 3D Coordinate Canvas
+      else if (arch === 'spatial_xr') {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-6 space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-base font-bold text-white">${product.title}</h3>
+                <p class="text-xs text-gray-400">Neural PBR 3D Spatial Intelligence Sandbox</p>
+              </div>
+              <span class="text-xs font-mono text-violet-400 bg-violet-950/40 px-2 py-0.5 rounded border border-violet-800/30">3D Active</span>
+            </div>
+
+            <!-- 3D Spatial grid representation -->
+            <div class="bg-black rounded-xl border border-brand-border flex-1 flex flex-col items-center justify-center relative overflow-hidden">
+              <div class="w-full h-full bg-[linear-gradient(rgba(139,92,246,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.1)_1px,transparent_1px)] bg-[size:20px_20px] flex items-center justify-center">
+                <div class="w-32 h-32 border border-violet-500/30 rounded-xl flex items-center justify-center transform rotate-45 skew-x-12 relative animate-pulse">
+                  <span class="text-[10px] font-mono text-violet-400">USDZ MODEL</span>
+                </div>
+              </div>
+              <!-- Coordinates overlay -->
+              <div class="absolute top-3 left-4 text-[10px] font-mono text-gray-400">
+                <div>X: <span id="x-coord">0.42</span></div>
+                <div>Y: <span id="y-coord">-1.12</span></div>
+                <div>Z: <span id="z-coord">3.88</span></div>
+              </div>
+            </div>
+
+            <div class="flex space-x-3">
+              <button onclick="webTriggerXrReset()" class="flex-1 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold uppercase transition-all">Recalibrate 6-DoF SLAM</button>
+              <button onclick="webTriggerXrExport()" class="py-2.5 px-6 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-xs font-semibold border border-brand-border">Export glTF</button>
+            </div>
+          </div>
+        `;
+
+        simInterval = setInterval(() => {
+          const x = (Math.random() - 0.5).toFixed(3);
+          const y = (-1.0 + (Math.random() - 0.5) * 0.2).toFixed(3);
+          const z = (3.5 + (Math.random() - 0.5) * 0.5).toFixed(3);
+          if (document.getElementById('x-coord')) {
+            document.getElementById('x-coord').innerText = x;
+            document.getElementById('y-coord').innerText = y;
+            document.getElementById('z-coord').innerText = z;
+          }
+          addLog(`[SLAM-Engine] Tracking coordinates updated. 6-DoF tracking status: HIGH.`);
+        }, 2000);
+      }
+
+      // 5. Productivity / Utility / SaaS Screen
+      else {
+        screen.innerHTML = `
+          <div class="flex-1 flex flex-col justify-between p-6 space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-base font-bold text-white">${product.title}</h3>
+                <p class="text-xs text-gray-400">Real-Time CRDT State Synchronization</p>
+              </div>
+              <span class="text-xs font-mono text-blue-400 bg-blue-950/40 px-2 py-0.5 rounded border border-blue-800/30">Synced</span>
+            </div>
+
+            <!-- Sync State visualizer -->
+            <div class="bg-black/50 p-4 rounded-xl border border-brand-border flex-1 flex flex-col justify-between">
+              <div class="space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Local Changes Pending:</span>
+                  <span class="text-emerald-400 font-mono">0 (Synced)</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Server Connection Status:</span>
+                  <span class="text-green-400 font-semibold">CONNECTED</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-gray-400">Conflict Resolution:</span>
+                  <span class="text-blue-400 font-mono">LWW-Element-Set (Last-Write-Wins)</span>
+                </div>
+              </div>
+              <div class="border-t border-brand-border pt-2 text-xs text-gray-500 font-mono">
+                [Client] Chained SHA-256 state seal verified.
+              </div>
+            </div>
+
+            <div class="flex space-x-3">
+              <button onclick="webTriggerSyncState()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase transition-all">Force Cloud Sync</button>
+              <button onclick="webTriggerExport()" class="py-2.5 px-6 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-xs font-semibold border border-brand-border">Export PDF</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // --- INTERACTIVE ACTIONS & LOGGERS ---
+
+    // Mobile Actions
+    function mobileTriggerSync() {
+      addLog("<span class='text-green-400'>[HealthSync] Forcing full cryptographic biometric sync with Apple HealthKit and Google Health Connect...</span>");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [HealthSync] Successfully uploaded 142 health metrics to HIPAA secure storage.</span>");
+      }, 800);
+    }
+
+    function mobileTriggerHaptic() {
+      addLog("<span class='text-yellow-400'>[HapticEngine] Sending test alert vibration signal to smartwatch...</span>");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [HapticEngine] Smartwatch haptic feedback verified.</span>");
+      }, 500);
+    }
+
+    function sendMobileChat() {
+      const input = document.getElementById('m-chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const appendBox = document.getElementById('m-chat-append');
+      const userDiv = document.createElement('div');
+      userDiv.className = "text-left text-gray-400 mt-2";
+      userDiv.innerText = `User: ${text}`;
+      appendBox.appendChild(userDiv);
+
+      addLog(`[AI-Core] Tokenizing local prompt stream...`);
+
+      setTimeout(() => {
+        const responses = [
+          "My local neural parameters indicate that request can be processed offline safely.",
+          "Response compiled entirely in local sandbox with zero cloud leakage.",
+          "Processing complete. Memory usage optimized at 140MB RAM."
+        ];
+        const res = responses[Math.floor(Math.random() * responses.length)];
+        const aiDiv = document.createElement('div');
+        aiDiv.className = "text-left text-indigo-300 font-medium mt-1";
+        aiDiv.innerText = `Assistant: ${res}`;
+        appendBox.appendChild(aiDiv);
+        
+        addLog(`<span class='text-green-400'>✔ [AI-Core] Local generation successful. Latency: 180ms.</span>`);
+      }, 700);
+
+      input.value = '';
+    }
+
+    function mobileTriggerPing() {
+      addLog("[Client-Comms] Pinging cloud cluster node...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [Client-Comms] Ping successful. RTT: 14.2ms. Connection secure.</span>");
+      }, 400);
+    }
+
+    function mobileTriggerAction() {
+      addLog("[Client-Core] Running local device hardware diagnostics...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [Client-Core] Diagnostics completed. Status: 100% Operational.</span>");
+      }, 800);
+    }
+
+    // Web Actions
+    function mobileTriggerSafeCall() {
+      addLog("[Safe-Call] Requesting nearest available guardian...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>\u2714 [Safe-Call] Guardian connected (0.4 mi). Live location shared; safety contacts notified.</span>");
+      }, 600);
+    }
+
+    function mobileTriggerEmergency() {
+      addLog("[Emergency] Confirmation required before dialling emergency services...");
+      setTimeout(() => {
+        addLog("<span class='text-amber-400'>\u26a0 [Emergency] Confirmed. Dialling local emergency number and alerting safety contacts.</span>");
+      }, 600);
+    }
+
+    function webTriggerTrade(side) {
+      addLog(`[SOR-Engine] Routing ${side} market order for 100 shares...`);
+      setTimeout(() => {
+        addLog(`<span class='text-green-400'>✔ [SOR-Engine] Executed ${side} market order for 100 shares @ $182.45 via NASDAQ. Price Improvement: $0.02.</span>`);
+      }, 600);
+    }
+
+    function webTriggerScan() {
+      addLog("[SIEM-Shield] Initiating continuous network vulnerability audit scan...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [SIEM-Shield] Audit scan complete. 0 network vulnerabilities found.</span>");
+      }, 1000);
+    }
+
+    function webTriggerResetShield() {
+      addLog("[SIEM-Shield] Flushing active firewall rule-tables and resetting Zero-Trust session tokens...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [SIEM-Shield] Rules flushed. 0 active connections interrupted.</span>");
+      }, 500);
+    }
+
+    function webTriggerIotPing() {
+      addLog("[RTOS-Core] Sending hardware echo ping packet to device controller...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [RTOS-Core] Echo response received. RTT: 4.2ms. System health is normal.</span>");
+      }, 300);
+    }
+
+    function webTriggerIotSelfTest() {
+      addLog("[RTOS-Core] Initiating hardware diagnostic self-test...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [RTOS-Core] Diagnostics completed. Subsystems: MEMORY (OK), SENSORS (OK), ACTUATORS (OK), COMMS (OK).</span>");
+      }, 1000);
+    }
+
+    function webTriggerXrReset() {
+      addLog("[SLAM-Engine] Re-mapping spatial boundary coordinates and locking anchor points...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [SLAM-Engine] Spatial calibration locked. 6-DoF accuracy: High.</span>");
+      }, 800);
+    }
+
+    function webTriggerXrExport() {
+      addLog("[3D-Exporter] Compiling neural PBR meshes into optimized glTF 2.0 file...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [3D-Exporter] glTF export complete. File size: 4.2MB.</span>");
+      }, 1000);
+    }
+
+    function webTriggerSyncState() {
+      addLog("[CRDT-Sync] Pulling latest state vectors from cloud cluster...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [CRDT-Sync] Synced successfully. Chained state SHA-256 seal is valid.</span>");
+      }, 600);
+    }
+
+    function webTriggerExport() {
+      addLog("[Doc-Pipeline] Compiling local state into high-resolution PDF document...");
+      setTimeout(() => {
+        addLog("<span class='text-green-400'>✔ [Doc-Pipeline] PDF successfully compiled and downloaded.</span>");
+      }, 900);
+    }
+
+    // Initialize Page on Load
+    window.addEventListener('DOMContentLoaded', initProductPage);
+  </script>
+</body>
+</html>

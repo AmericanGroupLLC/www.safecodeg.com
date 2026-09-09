@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AeroSwift Control Center — American Group LLC</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              cyan: '#06b6d4',
+              cyanDark: '#0891b2',
+              dark: '#030712',
+              card: '#0b0f19',
+              border: '#1f2937',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030712;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f2937;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #06b6d4;
+    }
+    .glow-cyan {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+    }
+    .glow-pulse {
+      animation: pulse-glow 2s infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
+      50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.5); }
+    }
+  </style>
+</head>
+<body class="bg-brand-dark text-gray-100 font-sans min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- Header / Navigation -->
+  <header class="border-b border-brand-border bg-brand-dark/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <a href="index.html" class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-bold tracking-widest text-cyan-400 uppercase bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/30">Aviation</span>
+          <span class="text-xs text-gray-400">&bull; Tesla-Style Control Center</span>
+        </div>
+        <h1 class="text-lg font-bold text-white tracking-tight">AeroSwift Control Center</h1>
+      </div>
+    </div>
+    <div class="flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-2 text-xs text-gray-400 bg-brand-card px-3 py-1.5 rounded-lg border border-brand-border">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+        <span>Simulated Hardware Link Active</span>
+      </div>
+      <a href="https://github.com/AmericanGroupLLC/AeroSwift" target="_blank" rel="noopener" class="bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all flex items-center space-x-1.5 border border-brand-border">
+        <span>View Monorepo</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Left Column: Vehicle Showcase & Selector (7 Cols) -->
+    <div class="lg:col-span-7 flex flex-col space-y-6">
+      
+      <!-- Vehicle Selector Tabs -->
+      <div class="bg-brand-card p-1.5 rounded-xl border border-brand-border flex space-x-2">
+        <button id="tab-personal" onclick="selectVehicle('personal')" class="flex-1 py-3 px-4 rounded-lg text-sm font-semibold tracking-wide transition-all flex flex-col items-center justify-center space-y-1 bg-cyan-950/40 text-cyan-400 border border-cyan-800/40">
+          <span class="text-base">🛸 AeroSwift Personal</span>
+          <span class="text-[10px] text-cyan-500/80 font-medium uppercase tracking-wider">Aegis One (1-2 Passenger)</span>
+        </button>
+        <button id="tab-transit" onclick="selectVehicle('transit')" class="flex-1 py-3 px-4 rounded-lg text-sm font-semibold tracking-wide transition-all flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-white">
+          <span class="text-base">🚌 AeroSwift Transit</span>
+          <span class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">City Shuttle (10-Passenger)</span>
+        </button>
+      </div>
+
+      <!-- Vehicle Visual Render Container -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border overflow-hidden relative group glow-pulse">
+        <!-- Render Image (Dynamic) -->
+        <img id="vehicle-image" src="https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iUGsM9jiQeWwfgF6pBu2iF/aeroswift_personal_new-KLsgaBFKKY6G8stGzozJBT.webp" alt="AeroSwift Personal" class="w-full aspect-[16/9] object-cover transition-transform duration-700 group-hover:scale-105" />
+        
+        <!-- Live HUD Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent flex flex-col justify-between p-6 pointer-events-none">
+          <!-- Top Row: Compass / Roll / Pitch HUD -->
+          <div class="flex justify-between items-start">
+            <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-[10px] font-mono text-cyan-400 flex space-x-4">
+              <div>HDG: <span id="hud-hdg" class="text-white font-bold">284°</span></div>
+              <div>PITCH: <span id="hud-pitch" class="text-white font-bold">1.2°</span></div>
+              <div>ROLL: <span id="hud-roll" class="text-white font-bold">0.0°</span></div>
+            </div>
+            <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-[10px] font-mono text-cyan-400">
+              GPS: <span class="text-white font-bold">37.7749° N, 122.4194° W</span>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Speed & Altitude Overlay -->
+          <div class="flex justify-between items-end">
+            <div>
+              <div id="vehicle-badge" class="text-xs font-bold tracking-widest text-cyan-400 uppercase mb-1">Aegis One</div>
+              <h2 id="vehicle-title" class="text-2xl font-serif text-white">AeroSwift Personal</h2>
+            </div>
+            <div class="text-right font-mono">
+              <div class="text-[10px] text-gray-400 uppercase tracking-wider">Airspeed</div>
+              <div class="text-3xl font-bold text-cyan-400"><span id="hud-speed">0</span> <span class="text-xs font-medium text-gray-400">km/h</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Flight Navigation Map (Interactive Canvas) -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border p-6 flex flex-col space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-400 flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span>Live Flight Map (San Francisco Bay Area)</span>
+          </h3>
+          <span class="text-xs font-mono text-cyan-400 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/30">Auto GNC Active</span>
+        </div>
+        <div class="relative bg-black rounded-xl overflow-hidden border border-brand-border h-[260px]">
+          <canvas id="flight-map" class="w-full h-full block"></canvas>
+          <!-- Destination Info Box -->
+          <div class="absolute bottom-4 left-4 right-4 bg-brand-dark/90 backdrop-blur-md p-3 rounded-lg border border-brand-border flex justify-between items-center text-xs">
+            <div class="flex items-center space-x-3">
+              <div class="text-cyan-400 font-bold font-mono">ROUTE</div>
+              <div class="text-gray-300">SFO Terminal 3 &rarr; San Jose Downtown</div>
+            </div>
+            <div class="text-right font-mono">
+              <div class="text-gray-400">DIST REMAINING</div>
+              <div class="text-white font-bold"><span id="map-distance">48.2</span> km</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Controls, Telemetry & Diagnostics (5 Cols) -->
+    <div class="lg:col-span-5 flex flex-col space-y-6">
+      
+      <!-- Primary State Controls -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border p-6 flex flex-col space-y-4">
+        <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-400">Primary Flight State Controls</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <button id="btn-arm" onclick="triggerAction('ARM')" class="py-3 rounded-xl border border-green-800/40 bg-green-950/20 text-green-400 hover:bg-green-950/40 transition-all font-semibold text-sm flex items-center justify-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+            <span>ARM SYSTEM</span>
+          </button>
+          <button id="btn-disarm" onclick="triggerAction('DISARM')" class="py-3 rounded-xl border border-gray-800 bg-gray-900 text-gray-400 hover:bg-gray-800 transition-all font-semibold text-sm">
+            DISARM
+          </button>
+          <button id="btn-takeoff" onclick="triggerAction('TAKEOFF')" class="col-span-2 py-3.5 rounded-xl border border-cyan-800/40 bg-cyan-950/20 text-cyan-400 hover:bg-cyan-950/40 transition-all font-bold text-sm tracking-widest uppercase">
+            LAUNCH / TAKEOFF
+          </button>
+          <button id="btn-emergency" onclick="triggerAction('EMERGENCY')" class="col-span-2 py-3 rounded-xl border border-red-800/40 bg-red-950/20 text-red-400 hover:bg-red-950/40 transition-all font-semibold text-xs tracking-wider uppercase">
+            EMERGENCY DESCENT
+          </button>
+        </div>
+      </div>
+
+      <!-- Real-Time Telemetry Stats Grid -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border p-6 flex flex-col space-y-4">
+        <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-400">Real-Time Telemetry</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Battery / Energy -->
+          <div class="bg-black/30 p-4 rounded-xl border border-brand-border flex flex-col justify-between">
+            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Solar-Battery State</span>
+            <div class="flex items-baseline space-x-1 mt-2">
+              <span id="telemetry-battery" class="text-2xl font-mono font-bold text-green-400">94</span>
+              <span class="text-xs text-gray-400">% SOC</span>
+            </div>
+            <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden mt-2">
+              <div id="battery-bar" class="bg-green-500 h-full transition-all duration-500" style="width: 94%"></div>
+            </div>
+          </div>
+
+          <!-- Altitude -->
+          <div class="bg-black/30 p-4 rounded-xl border border-brand-border flex flex-col justify-between">
+            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Altitude (AGL)</span>
+            <div class="flex items-baseline space-x-1 mt-2">
+              <span id="telemetry-altitude" class="text-2xl font-mono font-bold text-white">0</span>
+              <span class="text-xs text-gray-400">meters</span>
+            </div>
+            <span class="text-[10px] text-gray-500 mt-2 font-mono">GPS LOCK: 3D RTK</span>
+          </div>
+
+          <!-- Range Remaining -->
+          <div class="bg-black/30 p-4 rounded-xl border border-brand-border flex flex-col justify-between">
+            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Est. Range</span>
+            <div class="flex items-baseline space-x-1 mt-2">
+              <span id="telemetry-range" class="text-2xl font-mono font-bold text-cyan-400">284</span>
+              <span class="text-xs text-gray-400">km</span>
+            </div>
+            <span class="text-[10px] text-gray-500 mt-2 font-mono">CARSON SPEED: ACTIVE</span>
+          </div>
+
+          <!-- Climate Control -->
+          <div class="bg-black/30 p-4 rounded-xl border border-brand-border flex flex-col justify-between">
+            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Cabin Climate</span>
+            <div class="flex items-center justify-between mt-2">
+              <div class="flex items-baseline space-x-0.5">
+                <span id="telemetry-climate" class="text-2xl font-mono font-bold text-white">21.5</span>
+                <span class="text-xs text-gray-400">°C</span>
+              </div>
+              <div class="flex flex-col space-y-1">
+                <button onclick="adjustClimate(0.5)" class="text-gray-400 hover:text-white text-xs bg-gray-800 p-1 rounded border border-brand-border">&and;</button>
+                <button onclick="adjustClimate(-0.5)" class="text-gray-400 hover:text-white text-xs bg-gray-800 p-1 rounded border border-brand-border">&or;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Diagnostics / Flight Logs -->
+      <div class="bg-brand-card rounded-2xl border border-brand-border p-6 flex flex-col space-y-4 flex-1">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-400">AeroOS System Log</h3>
+          <button onclick="clearLogs()" class="text-[10px] text-gray-500 hover:text-cyan-400 uppercase tracking-wider font-mono">Clear Log</button>
+        </div>
+        <div id="log-container" class="bg-black/50 p-4 rounded-xl border border-brand-border font-mono text-xs text-cyan-500/90 space-y-2 h-[200px] overflow-y-auto">
+          <div>[04:00:01] [AeroOS-Core] Booting real-time flight control kernel...</div>
+          <div>[04:00:02] [AeroOS-Core] RTK GPS acquired 3D lock. Accuracy 0.02m.</div>
+          <div>[04:00:02] [AeroOS-AI] Holt-Winters wind prediction engine online.</div>
+          <div>[04:00:03] [AeroOS-Core] Pre-flight checklist completed. System DISARMED.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-brand-border bg-brand-dark py-6 px-6 text-center text-xs text-gray-500">
+    <p>&copy; 2026 American Group LLC. All rights reserved. AeroSwift, AeroOS, and Aegis One are registered trademarks of American Group LLC.</p>
+  </footer>
+
+  <!-- Simulation Logic Script -->
+  <script>
+    // Vehicle specs
+    const vehicles = {
+      personal: {
+        title: "AeroSwift Personal",
+        badge: "Aegis One (1-2 Passenger)",
+        image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iUGsM9jiQeWwfgF6pBu2iF/aeroswift_personal_new-KLsgaBFKKY6G8stGzozJBT.webp",
+        maxRange: 284,
+        maxSpeed: 160,
+        battery: 94
+      },
+      transit: {
+        title: "AeroSwift Transit",
+        badge: "City Shuttle (10-Passenger)",
+        image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663397835904/iUGsM9jiQeWwfgF6pBu2iF/aeroswift_transit_new-oL5X26QmEYTYok5vRv9fhi.webp",
+        maxRange: 420,
+        maxSpeed: 240,
+        battery: 98
+      }
+    };
+
+    let currentVehicle = 'personal';
+    let isArmed = false;
+    let isFlying = false;
+    let currentSpeed = 0;
+    let currentAltitude = 0;
+    let currentBattery = 94;
+    let currentClimate = 21.5;
+    let mapDistance = 48.2;
+    let logCount = 4;
+
+    // Flight Map Canvas Setup
+    const canvas = document.getElementById('flight-map');
+    const ctx = canvas.getContext('2d');
+
+    // Resize canvas
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+      drawMap();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    // Map coordinates simulation
+    let droneX = 50;
+    let droneY = 150;
+    let targetX = 300;
+    let targetY = 80;
+
+    function drawMap() {
+      if (!canvas.width) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background grid
+      ctx.strokeStyle = '#111827';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < canvas.width; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, canvas.height);
+        ctx.stroke();
+      }
+      for (let i = 0; i < canvas.height; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvas.width, i);
+        ctx.stroke();
+      }
+
+      // Draw San Francisco Bay Area outlines / water mock
+      ctx.fillStyle = '#070b14';
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 100, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw Route Path
+      ctx.strokeStyle = 'rgba(6, 182, 212, 0.2)';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(50, canvas.height - 50);
+      ctx.lineTo(canvas.width - 50, 50);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Start Terminal Point
+      ctx.fillStyle = '#1f2937';
+      ctx.beginPath();
+      ctx.arc(50, canvas.height - 50, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#9ca3af';
+      ctx.font = '10px monospace';
+      ctx.fillText('SFO', 40, canvas.height - 65);
+
+      // Target Destination Point
+      ctx.fillStyle = '#06b6d4';
+      ctx.beginPath();
+      ctx.arc(canvas.width - 50, 50, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillText('SJC', canvas.width - 70, 40);
+
+      // Current Drone Position
+      ctx.fillStyle = isFlying ? '#06b6d4' : '#ef4444';
+      ctx.beginPath();
+      ctx.arc(droneX, droneY, 8, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Drone Outer radar circle
+      ctx.strokeStyle = isFlying ? 'rgba(6, 182, 212, 0.4)' : 'rgba(239, 68, 68, 0.3)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(droneX, droneY, 20 + Math.sin(Date.now() / 200) * 5, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Vehicle Switcher
+    function selectVehicle(type) {
+      currentVehicle = type;
+      const vehicle = vehicles[type];
+
+      // Update Tab UI
+      document.getElementById('tab-personal').className = type === 'personal' 
+        ? "flex-1 py-3 px-4 rounded-lg text-sm font-semibold tracking-wide transition-all flex flex-col items-center justify-center space-y-1 bg-cyan-950/40 text-cyan-400 border border-cyan-800/40"
+        : "flex-1 py-3 px-4 rounded-lg text-sm font-semibold tracking-wide transition-all flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-white";
+      
+      document.getElementById('tab-transit').className = type === 'transit'
+        ? "flex-1 py-3 px-4 rounded-lg text-sm font-semibold tracking-wide transition-all flex flex-col items-center justify-center space-y-1 bg-cyan-950/40 text-cyan-400 border border-cyan-800/40"
+        : "flex-1 py-3 px-4 rounded-lg text-sm font-semibold tracking-wide transition-all flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-white";
+
+      // Update Content
+      document.getElementById('vehicle-image').src = vehicle.image;
+      document.getElementById('vehicle-title').innerText = vehicle.title;
+      document.getElementById('vehicle-badge').innerText = vehicle.badge;
+      
+      currentBattery = vehicle.battery;
+      document.getElementById('telemetry-battery').innerText = currentBattery;
+      document.getElementById('battery-bar').style.width = currentBattery + "%";
+      document.getElementById('telemetry-range').innerText = vehicle.maxRange;
+
+      addLog(`Switched control target to ${vehicle.title}. Loaded vehicle GNC configuration.`);
+    }
+
+    // Add log to terminal
+    function addLog(text) {
+      const container = document.getElementById('log-container');
+      const timeStr = new Date().toLocaleTimeString();
+      const logDiv = document.createElement('div');
+      logDiv.innerHTML = `<span class="text-gray-500">[${timeStr}]</span> ${text}`;
+      container.appendChild(logDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function clearLogs() {
+      document.getElementById('log-container').innerHTML = '';
+      addLog('System log cleared.');
+    }
+
+    // Actions
+    function triggerAction(action) {
+      if (action === 'ARM') {
+        if (isArmed) {
+          addLog('<span class="text-yellow-400">System is already ARMED.</span>');
+          return;
+        }
+        isArmed = true;
+        addLog('<span class="text-green-400">[AeroOS-Core] Propulsion system ARMED. Tilt-rotors locked to VTOL angle.</span>');
+        document.getElementById('btn-arm').className = "py-3 rounded-xl border border-green-500 bg-green-500/20 text-green-300 transition-all font-semibold text-sm flex items-center justify-center space-y-1";
+      } 
+      else if (action === 'DISARM') {
+        if (!isArmed) {
+          addLog('<span class="text-yellow-400">System is already DISARMED.</span>');
+          return;
+        }
+        if (isFlying) {
+          addLog('<span class="text-red-400">✘ SAFETY REJECTED: Cannot DISARM propulsion system while airborne!</span>');
+          return;
+        }
+        isArmed = false;
+        addLog('[AeroOS-Core] Propulsion system DISARMED. Rotors stopped.');
+        document.getElementById('btn-arm').className = "py-3 rounded-xl border border-green-800/40 bg-green-950/20 text-green-400 hover:bg-green-950/40 transition-all font-semibold text-sm flex items-center justify-center space-y-1";
+      } 
+      else if (action === 'TAKEOFF') {
+        if (!isArmed) {
+          addLog('<span class="text-red-400">✘ LAUNCH REJECTED: Propulsion system must be ARMED before takeoff!</span>');
+          return;
+        }
+        if (isFlying) {
+          addLog('<span class="text-yellow-400">Vehicle is already airborne. Cruise mode active.</span>');
+          return;
+        }
+        isFlying = true;
+        addLog('<span class="text-cyan-400">🚀 [AeroOS-Core] Launch sequence initiated. Commencing vertical climb...</span>');
+      } 
+      else if (action === 'EMERGENCY') {
+        if (!isFlying) {
+          addLog('<span class="text-yellow-400">Vehicle is on the ground. Emergency descent unavailable.</span>');
+          return;
+        }
+        addLog('<span class="text-red-400">⚠ [AeroOS-Core] EMERGENCY DESCENT INITIATED. Descending to nearest safe landing site.</span>');
+        isFlying = false;
+        currentSpeed = 0;
+        currentAltitude = 0;
+      }
+    }
+
+    // Climate Control
+    function adjustClimate(val) {
+      currentClimate += val;
+      document.getElementById('telemetry-climate').innerText = currentClimate.toFixed(1);
+      addLog(`Adjusted cabin climate target to ${currentClimate.toFixed(1)}°C`);
+    }
+
+    // Telemetry updates simulation loop
+    setInterval(() => {
+      drawMap();
+
+      if (isFlying) {
+        // Altitude climbs to cruise altitude (e.g., 450m)
+        if (currentAltitude < 450) {
+          currentAltitude += 15;
+          addLog(`[AeroOS-GNC] Climb rate: +15m/s. Altitude: ${currentAltitude}m`);
+        }
+        // Speed climbs to cruise speed
+        const maxSpeed = vehicles[currentVehicle].maxSpeed;
+        if (currentSpeed < maxSpeed) {
+          currentSpeed += 8;
+        }
+
+        // Move drone along route on map
+        const mapWidth = canvas.width;
+        const mapHeight = canvas.height;
+        const startX = 50;
+        const startY = mapHeight - 50;
+        const endX = mapWidth - 50;
+        const endY = 50;
+
+        // Simulate progress
+        if (droneX < endX) {
+          droneX += (endX - startX) / 120; // Complete route in 120 ticks
+          droneY -= (startY - endY) / 120;
+          mapDistance -= 0.4;
+          if (mapDistance < 0) mapDistance = 0;
+        } else {
+          // Arrived!
+          isFlying = false;
+          currentSpeed = 0;
+          currentAltitude = 0;
+          addLog('<span class="text-green-400">✔ [AeroOS-Core] Mission completed. Safe landing confirmed at San Jose.</span>');
+        }
+
+        // Battery drains
+        if (currentBattery > 10) {
+          currentBattery -= 0.1;
+        }
+
+        // Update UI elements
+        document.getElementById('hud-hdg').innerText = "045°";
+        document.getElementById('hud-pitch').innerText = "0.0°";
+        document.getElementById('hud-roll').innerText = "1.5°";
+      } else {
+        // Landed or ground idle
+        if (currentAltitude > 0) {
+          currentAltitude -= 10;
+          if (currentAltitude < 0) currentAltitude = 0;
+        }
+        if (currentSpeed > 0) {
+          currentSpeed -= 15;
+          if (currentSpeed < 0) currentSpeed = 0;
+        }
+        document.getElementById('hud-hdg').innerText = "284°";
+        document.getElementById('hud-pitch').innerText = "1.2°";
+        document.getElementById('hud-roll').innerText = "0.0°";
+      }
+
+      // Update text values
+      document.getElementById('hud-speed').innerText = currentSpeed;
+      document.getElementById('telemetry-altitude').innerText = currentAltitude;
+      document.getElementById('telemetry-battery').innerText = Math.round(currentBattery);
+      document.getElementById('battery-bar').style.width = currentBattery + "%";
+      document.getElementById('map-distance').innerText = mapDistance.toFixed(1);
+
+    }, 1000);
+
+  </script>
+</body>
+</html>

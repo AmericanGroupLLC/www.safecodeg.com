@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — iMaps</title>
+<meta name="description" content="Privacy Policy for the iMaps Android application (com.americangroupllc.imaps): what data is collected, how location is used, advertising, and which third-party services receive data.">
+<meta name="robots" content="index, follow">
+
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d29; --muted:#5a6080; --rule:#e3e6f0;
+    --card:#f7f8fc; --accent:#0052cc; --accent-soft:#e8f0fe;
+    --warn-bg:#fff8e6; --warn-rule:#e0b400;
+    --ok-bg:#eefaf1; --ok-rule:#28a05c;
+    --maxw:52rem;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1220; --fg:#e7e9f2; --muted:#9aa2c0; --rule:#272b40;
+      --card:#171b2c; --accent:#6fa8ff; --accent-soft:#152238;
+      --warn-bg:#2a2410; --warn-rule:#9a7b00;
+      --ok-bg:#10251a; --ok-rule:#2e7d51;
+    }
+  }
+
+  *{box-sizing:border-box}
+
+  html{-webkit-text-size-adjust:100%}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:0 1.25rem 5rem;
+  }
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+  }
+
+  header{
+    padding:3rem 0 1.5rem;
+    border-bottom:2px solid var(--rule);
+    margin-bottom:2rem;
+  }
+
+  h1{
+    font-size:clamp(1.7rem,5vw,2.4rem);
+    line-height:1.2;
+    margin:0 0 .4rem;
+  }
+
+  .sub{
+    color:var(--muted);
+    font-size:.95rem;
+    margin:0;
+  }
+
+  .meta{
+    margin:1.25rem 0 0;
+    padding:.9rem 1.1rem;
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    font-size:.9rem;
+  }
+
+  .meta dl{
+    margin:0;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:.3rem 1rem;
+  }
+
+  .meta dt{
+    color:var(--muted);
+  }
+
+  .meta dd{
+    margin:0;
+    font-weight:600;
+    word-break:break-word;
+  }
+
+  h2{
+    font-size:1.28rem;
+    margin:2.6rem 0 .8rem;
+    padding-top:.4rem;
+    line-height:1.3;
+  }
+
+  h3{
+    font-size:1.03rem;
+    margin:1.7rem 0 .5rem;
+  }
+
+  p,ul,ol{
+    margin:.7rem 0;
+  }
+
+  li{
+    margin:.35rem 0;
+  }
+
+  a{
+    color:var(--accent);
+    text-underline-offset:2px;
+  }
+
+  code{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:.08em .35em;
+    font-size:.88em;
+    word-break:break-word;
+  }
+
+  nav.toc{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:1rem 1.25rem;
+    margin:2rem 0;
+  }
+
+  nav.toc p{
+    margin:0 0 .5rem;
+    font-weight:700;
+    font-size:.9rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  nav.toc ol{
+    margin:0;
+    padding-left:1.3rem;
+    columns:2;
+    column-gap:1.75rem;
+  }
+
+  @media (max-width:34rem){
+    nav.toc ol{columns:1}
+  }
+
+  nav.toc li{
+    margin:.2rem 0;
+    font-size:.93rem;
+  }
+
+  .tw{
+    overflow-x:auto;
+    margin:1rem 0;
+    border:1px solid var(--rule);
+    border-radius:10px;
+  }
+
+  table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:.89rem;
+    min-width:33rem;
+  }
+
+  th,td{
+    text-align:left;
+    padding:.6rem .8rem;
+    border-bottom:1px solid var(--rule);
+    vertical-align:top;
+  }
+
+  th{
+    background:var(--card);
+    font-weight:700;
+  }
+
+  tr:last-child td{
+    border-bottom:none;
+  }
+
+  .note{
+    border-left:4px solid var(--accent);
+    background:var(--accent-soft);
+    padding:.85rem 1.1rem;
+    border-radius:0 8px 8px 0;
+    margin:1.2rem 0;
+    font-size:.94rem;
+  }
+
+  .warn{
+    border-left:4px solid var(--warn-rule);
+    background:var(--warn-bg);
+    padding:.85rem 1.1rem;
+    border-radius:0 8px 8px 0;
+    margin:1.2rem 0;
+    font-size:.94rem;
+  }
+
+  .ok{
+    border-left:4px solid var(--ok-rule);
+    background:var(--ok-bg);
+    padding:.85rem 1.1rem;
+    border-radius:0 8px 8px 0;
+    margin:1.2rem 0;
+    font-size:.94rem;
+  }
+
+  .note p:first-child,
+  .warn p:first-child,
+  .ok p:first-child{
+    margin-top:0;
+  }
+
+  .note p:last-child,
+  .warn p:last-child,
+  .ok p:last-child{
+    margin-bottom:0;
+  }
+
+  footer{
+    margin-top:3.5rem;
+    padding-top:1.5rem;
+    border-top:1px solid var(--rule);
+    color:var(--muted);
+    font-size:.87rem;
+  }
+
+  .back{
+    display:inline-block;
+    margin-top:.6rem;
+    font-size:.87rem;
+  }
+
+  :target{
+    scroll-margin-top:1rem;
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+  <h1>iMaps — Privacy Policy</h1>
+  <p class="sub">How the iMaps mobile application collects, uses, stores, and shares information.</p>
+
+  <div class="meta">
+    <dl>
+      <dt>Application</dt>
+      <dd>iMaps — Navigate. Report. Connect.</dd>
+
+      <dt>Package&nbsp;ID</dt>
+      <dd><code>com.americangroupllc.imaps</code></dd>
+
+      <dt>Version</dt>
+      <dd>1.0.0</dd>
+
+      <dt>Provider</dt>
+      <dd>American Group LLC</dd>
+
+      <dt>Contact</dt>
+      <dd>
+        <a href="mailto:contact@safecodeg.com">
+          contact@safecodeg.com
+        </a>
+      </dd>
+
+      <dt>Effective</dt>
+      <dd>20 August 2026</dd>
+
+      <dt>Last&nbsp;updated</dt>
+      <dd>20 August 2026</dd>
+    </dl>
+  </div>
+</header>
+
+<p>
+  iMaps is a community-powered navigation app. It shows a map, plans driving
+  routes, lets people report road incidents, aggregates public hazard data near
+  you, and lists public-safety radio streams. This policy describes how the
+  application handles information and how third-party services, including
+  Google Mobile Ads, may process information when you use the app.
+</p>
+
+<div class="ok">
+  <p>
+    <strong>The short version.</strong>
+    iMaps works without an account and without requiring a name, phone number,
+    or email for normal guest use. It does not track your location in the
+    background, does not read your contacts, camera, microphone, photos, or
+    files, and does not sell personal information.
+    The app does use your location while you actively use location-based
+    features, and sends relevant coordinates to mapping, routing, and
+    public-safety services.
+  </p>
+
+  <p>
+    iMaps also displays advertisements using
+    <strong>Google Mobile Ads (AdMob)</strong>. Depending on device settings,
+    Google's advertising services may process the Android Advertising ID and
+    other device or advertising-related signals for purposes such as serving,
+    measuring, and improving advertising.
+  </p>
+</div>
+
+<nav class="toc" aria-label="Contents">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#collect">Information we collect</a></li>
+    <li><a href="#notcollect">What we do not collect</a></li>
+    <li><a href="#location">Location</a></li>
+    <li><a href="#background">Background location</a></li>
+    <li><a href="#reports">Incident reports</a></li>
+    <li><a href="#auth">Accounts &amp; sign-in</a></li>
+    <li><a href="#notifications">Notifications</a></li>
+    <li><a href="#storage">Data stored on your device</a></li>
+    <li><a href="#analytics">Analytics</a></li>
+    <li><a href="#crash">Crash reporting</a></li>
+    <li><a href="#ads">Advertising</a></li>
+    <li><a href="#purchases">Purchases</a></li>
+    <li><a href="#network">Network requests &amp; APIs</a></li>
+    <li><a href="#sdks">Third-party SDKs</a></li>
+    <li><a href="#permissions">Android permissions</a></li>
+    <li><a href="#links">External links</a></li>
+    <li><a href="#cookies">Cookies</a></li>
+    <li><a href="#retention">Retention</a></li>
+    <li><a href="#rights">Your rights &amp; choices</a></li>
+    <li><a href="#children">Children</a></li>
+    <li><a href="#security">Security</a></li>
+    <li><a href="#changes">Changes</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</nav>
+
+<h2 id="collect">1. Information we collect</h2>
+
+<p>
+  iMaps has no registration requirement and can be used in guest mode.
+  Depending on which features you use, the following categories of information
+  may be processed.
+</p>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>What it is</th>
+      <th>Where it goes</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td><strong>Location coordinates</strong></td>
+      <td>
+        Your device's latitude and longitude, and the map area you are viewing.
+      </td>
+      <td>
+        Third-party map, routing and public-hazard APIs. Location may also be
+        included in an incident report that you voluntarily submit.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Incident reports</strong></td>
+      <td>
+        Incident type, incident coordinates, optional free-text description,
+        optional street name, timestamp, and the random device identifier
+        described below.
+      </td>
+      <td>
+        The iMaps backend and other users of the app.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Random device identifiers</strong></td>
+      <td>
+        Random UUIDs generated by the app. These are not your Android ID,
+        IMEI, MAC address, or Advertising ID.
+      </td>
+      <td>
+        The iMaps backend alongside reports and analytics events.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Session identifier</strong></td>
+      <td>
+        A random identifier regenerated when the app starts.
+      </td>
+      <td>
+        The iMaps backend with analytics events.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>App-activity events</strong></td>
+      <td>
+        A limited set of interaction events described in section 9.
+      </td>
+      <td>
+        The iMaps backend.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Search text</strong></td>
+      <td>
+        Destination searches and the start/end points of routes you request.
+      </td>
+      <td>
+        OpenStreetMap Nominatim and OSRM.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Email address</strong></td>
+      <td>
+        Only if you voluntarily use an available sign-in feature.
+      </td>
+      <td>
+        Supabase and the device, as applicable.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Purchase validation data</strong></td>
+      <td>
+        Platform name, product ID, and purchase receipt information when you
+        purchase a subscription.
+      </td>
+      <td>
+        The iMaps backend for purchase verification and Google Play for
+        payment processing.
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Advertising and device signals</strong></td>
+      <td>
+        The Google Mobile Ads SDK may access the Android Advertising ID and
+        other device or advertising-related signals used to provide,
+        measure, and improve advertising.
+      </td>
+      <td>
+        Google and its advertising services, subject to Google's policies and
+        applicable device settings.
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="notcollect">2. What we do not collect</h2>
+
+<p>
+  iMaps itself does not intentionally access or transmit the following:
+</p>
+
+<ul>
+  <li>
+    Your name, phone number, postal address, or date of birth as part of
+    ordinary guest use.
+  </li>
+
+  <li>
+    Contacts, call logs, SMS messages, or your calendar.
+  </li>
+
+  <li>
+    Camera, microphone, photos, media, or files on your device.
+  </li>
+
+  <li>
+    Biometric data, health or fitness data, or clipboard contents.
+  </li>
+
+  <li>
+    IMEI, MAC address, or phone number.
+  </li>
+
+  <li>
+    Installed-app inventory or browsing history outside the app.
+  </li>
+
+  <li>
+    Payment card numbers or billing details. These are handled by Google Play
+    and are not provided to iMaps.
+  </li>
+
+  <li>
+    A continuous history of your movements. iMaps does not perform background
+    location tracking.
+  </li>
+</ul>
+
+<p>
+  <strong>Advertising exception:</strong> Google Mobile Ads is integrated into
+  the app. Google may process the Android Advertising ID and other device or
+  advertising-related signals as described in the Advertising section below.
+</p>
+
+<h2 id="location">3. Location</h2>
+
+<p>
+  Location is a core feature of iMaps and is used while you actively use
+  location-based features.
+</p>
+
+<h3>What it is used for</h3>
+
+<ul>
+  <li>Showing your position on the map and centring the view.</li>
+  <li>Planning driving routes and providing navigation information.</li>
+  <li>Finding nearby community incident reports.</li>
+  <li>
+    Fetching public hazard data around you, including earthquakes, weather
+    alerts, wildfires, disasters and municipal reports.
+  </li>
+  <li>
+    Finding nearby EV chargers, fuel stations, parking, transit stops,
+    speed limits and elevation.
+  </li>
+  <li>
+    Showing local weather and selecting relevant public-safety radio streams.
+  </li>
+  <li>
+    Selecting regionally relevant partner offers.
+  </li>
+</ul>
+
+<h3>How location is shared</h3>
+
+<p>
+  To provide these features, relevant coordinates may be sent from your device
+  to third-party services listed in section 13. Requests are made over HTTPS.
+  We do not create a continuous location history or location profile.
+</p>
+
+<div class="warn">
+  <p>
+    <strong>Location is sensitive information.</strong>
+    Several public data services may receive coordinates to answer
+    "what is near me?" requests. These include mapping, routing, weather,
+    earthquake, wildfire, air-quality, public-safety and municipal services.
+    Those services have their own privacy policies and data practices.
+  </p>
+</div>
+
+<h3>Declining location</h3>
+
+<p>
+  Location permission is requested at runtime when required. You may refuse
+  or revoke it at any time. The app can continue to run without location,
+  although features that depend on your position may be limited or unavailable.
+</p>
+
+<h2 id="background">4. Background location</h2>
+
+<div class="ok">
+  <p>
+    <strong>iMaps does not collect location in the background.</strong>
+    The app does not request
+    <code>ACCESS_BACKGROUND_LOCATION</code> and does not use background
+    location tracking. Location access is limited to active use of the app.
+  </p>
+</div>
+
+<h2 id="reports">5. Incident reports</h2>
+
+<p>
+  Reporting is optional and does not require an account. When you submit a
+  report, it is stored locally and transmitted to the iMaps backend so that
+  other users can see the report.
+</p>
+
+<p>
+  A report may contain the incident type, coordinates, an optional description,
+  optional street name, timestamp, and a random device identifier.
+</p>
+
+<div class="warn">
+  <p>
+    <strong>Reports are public.</strong>
+    A report you submit may be visible to other iMaps users. Do not enter
+    names, licence plates, phone numbers, addresses, or other personal
+    information into the description field.
+  </p>
+</div>
+
+<h2 id="auth">6. Accounts and sign-in</h2>
+
+<p>
+  iMaps is designed to be usable without an account. If account functionality
+  is enabled in a particular release, signing in is optional.
+</p>
+
+<p>
+  Where available, authentication may be provided through
+  <strong>Supabase</strong> and supported identity providers. Information
+  processed during sign-in can include your email address and, where an
+  identity provider supplies it, your name.
+</p>
+
+<p>
+  Signing out clears the active session from the device.
+</p>
+
+<h2 id="notifications">7. Notifications</h2>
+
+<div class="ok">
+  <p>
+    <strong>Notifications are generated locally by iMaps.</strong>
+    The application does not use a remote push-notification service for its
+    local incident alerts.
+  </p>
+</div>
+
+<p>
+  When applicable, iMaps may display a local Android notification about a
+  nearby incident. You can control notifications through the app settings
+  and Android notification permissions.
+</p>
+
+<h2 id="storage">8. Data stored on your device</h2>
+
+<p>
+  iMaps stores certain preferences and identifiers locally using Android's
+  standard application storage.
+</p>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th>Stored value</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>Selected language</td>
+      <td>Remembers your language choice.</td>
+    </tr>
+
+    <tr>
+      <td>Onboarding-completed flag</td>
+      <td>Skips the introduction after first use.</td>
+    </tr>
+
+    <tr>
+      <td>Cached incident list</td>
+      <td>Allows previously retrieved incident information to remain available temporarily.</td>
+    </tr>
+
+    <tr>
+      <td>Incident device identifier</td>
+      <td>Random UUID used to attribute reports.</td>
+    </tr>
+
+    <tr>
+      <td>Analytics device identifier</td>
+      <td>Random UUID used for first-party analytics.</td>
+    </tr>
+
+    <tr>
+      <td>Dismissed-alert identifiers</td>
+      <td>Prevents dismissed alerts from repeatedly appearing.</td>
+    </tr>
+
+    <tr>
+      <td>Sign-in state and email</td>
+      <td>Only present when an account is used.</td>
+    </tr>
+
+    <tr>
+      <td>Guest-mode choice</td>
+      <td>Remembers that you prefer to continue without signing in.</td>
+    </tr>
+
+    <tr>
+      <td>Subscription tier and expiry</td>
+      <td>Records premium entitlement on the device.</td>
+    </tr>
+
+    <tr>
+      <td>Alert and display preferences</td>
+      <td>Stores your alert and display choices.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Clearing the app's data or uninstalling the app removes locally stored
+  application data, subject to information that may already have been
+  transmitted to backend or third-party services.
+</p>
+
+<h2 id="analytics">9. Analytics</h2>
+
+<p>
+  iMaps uses first-party analytics for a limited set of product interactions.
+  It does not use Google Analytics, Firebase Analytics, Mixpanel, Amplitude,
+  Segment, AppsFlyer, Adjust, Facebook Analytics, or comparable third-party
+  analytics products.
+</p>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th>Event</th>
+      <th>When it fires</th>
+      <th>Data included</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td><code>ai_suggestion_cta</code></td>
+      <td>You tap an action button on an in-app suggestion.</td>
+      <td>Suggestion ID, suggestion kind, and partner ID where applicable.</td>
+    </tr>
+
+    <tr>
+      <td><code>ai_suggestion_dismissed</code></td>
+      <td>You dismiss a suggestion.</td>
+      <td>Suggestion ID and suggestion kind.</td>
+    </tr>
+
+    <tr>
+      <td><code>affiliate_click</code></td>
+      <td>You open a partner offer.</td>
+      <td>Partner ID and destination URL.</td>
+    </tr>
+
+    <tr>
+      <td><code>subscription_purchase</code></td>
+      <td>A purchase is verified.</td>
+      <td>Product ID, tier name and currency code.</td>
+    </tr>
+
+    <tr>
+      <td><code>subscription_restore</code></td>
+      <td>You restore a previous purchase.</td>
+      <td>Tier name.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Analytics events may include a UTC timestamp, random session identifier,
+  and random analytics device identifier. Analytics events do not intentionally
+  include your GPS coordinates.
+</p>
+
+<h2 id="crash">10. Crash reporting</h2>
+
+<div class="ok">
+  <p>
+    <strong>iMaps does not integrate a dedicated third-party crash-reporting
+    SDK.</strong>
+    The application does not intentionally transmit crash logs, stack traces,
+    or performance traces to its own backend for crash reporting.
+  </p>
+</div>
+
+<p>
+  Google Play and Android may independently provide developer diagnostics or
+  crash information according to Google's services and your device/account
+  settings. Such processing is governed by Google's applicable policies.
+</p>
+
+<h2 id="ads">11. Advertising</h2>
+
+<p>
+  iMaps displays advertisements using
+  <strong>Google Mobile Ads (AdMob)</strong>.
+</p>
+
+<p>
+  The current release uses AdMob for:
+</p>
+
+<ul>
+  <li>
+    <strong>Banner advertisements</strong>, displayed within the application
+    interface.
+  </li>
+
+  <li>
+    <strong>Interstitial advertisements</strong>, displayed at selected
+    natural breaks in the application experience.
+  </li>
+</ul>
+
+<p>
+  The application does not use rewarded advertisements and does not provide a
+  "Watch Ad" or similar rewarded-ad button.
+</p>
+
+<h3>Information used for advertising</h3>
+
+<p>
+  The Google Mobile Ads SDK may collect or access certain information from the
+  device in order to provide, measure, prevent fraud in, and improve
+  advertising. Depending on Google's services, device configuration, and
+  applicable consent or privacy settings, this can include:
+</p>
+
+<ul>
+  <li>Android Advertising ID or other advertising identifiers.</li>
+  <li>Device and network information.</li>
+  <li>IP address or approximate network-derived location.</li>
+  <li>Ad interaction and performance information.</li>
+  <li>Information required to detect invalid traffic and fraud.</li>
+</ul>
+
+<p>
+  The precise information processed by Google may vary depending on the
+  advertising request, device configuration, regional requirements, and
+  Google's current services.
+</p>
+
+<div class="note">
+  <p>
+    <strong>Important:</strong>
+    iMaps does not sell your personal information to advertisers.
+    Advertisements are provided through Google Mobile Ads, and Google may
+    process information under its own privacy policies and applicable
+    advertising technologies.
+  </p>
+</div>
+
+<h3>Advertising identifier controls</h3>
+
+<p>
+  Android provides controls that allow you to reset, delete, or restrict use
+  of the Advertising ID depending on your Android version and device
+  manufacturer. You can review these settings under your device's
+  <em>Privacy</em> or <em>Ads</em> settings.
+</p>
+
+<p>
+  You can learn more about Google's handling of information from apps that use
+  Google services here:
+  <a
+    href="https://policies.google.com/technologies/partner-sites"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Google — How Google uses information from sites or apps that use our services
+  </a>.
+</p>
+
+<p>
+  Where required by applicable law, advertising-related processing and consent
+  choices are handled in accordance with Google's and the app's applicable
+  consent mechanisms.
+</p>
+
+<h2 id="purchases">12. Purchases</h2>
+
+<p>
+  iMaps may offer optional premium subscriptions. Payment processing is
+  performed by <strong>Google Play Billing</strong>.
+</p>
+
+<p>
+  The app does not receive or store your payment card number, billing address,
+  or Google account password.
+</p>
+
+<p>
+  To verify a purchase, the app may send the platform name, product identifier,
+  and signed purchase information to the iMaps backend. The resulting
+  entitlement is stored on the device.
+</p>
+
+<h2 id="network">13. Network requests and APIs</h2>
+
+<p>
+  Network requests are made over HTTPS where supported. The following services
+  may receive information depending on the feature you use.
+</p>
+
+<h3>Operated by us</h3>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th>Purpose</th>
+      <th>Receives location?</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>iMaps backend (<code>api.americangroupllc.com</code>)</td>
+      <td>
+        Incident synchronization, analytics events, and purchase verification.
+      </td>
+      <td>
+        Yes — nearby-report queries and coordinates of reports you submit.
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Third-party services</h3>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th>Purpose</th>
+      <th>Receives location?</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>CARTO basemaps</td>
+      <td>Map tile imagery.</td>
+      <td>Indirectly — requested tiles reveal the map area being viewed.</td>
+    </tr>
+
+    <tr>
+      <td>OSRM</td>
+      <td>Route calculation and navigation steps.</td>
+      <td>Yes — route start and end coordinates.</td>
+    </tr>
+
+    <tr>
+      <td>OpenStreetMap Nominatim</td>
+      <td>Address search and reverse geocoding.</td>
+      <td>Yes — coordinates and search text.</td>
+    </tr>
+
+    <tr>
+      <td>Open-Meteo</td>
+      <td>Weather forecasts.</td>
+      <td>Yes.</td>
+    </tr>
+
+    <tr>
+      <td>USGS Earthquake Hazards</td>
+      <td>Nearby earthquake information.</td>
+      <td>Yes.</td>
+    </tr>
+
+    <tr>
+      <td>NOAA / US National Weather Service</td>
+      <td>Weather alerts and public-safety information.</td>
+      <td>Yes where required by the request.</td>
+    </tr>
+
+    <tr>
+      <td>NASA FIRMS</td>
+      <td>Wildfire information.</td>
+      <td>Yes — through a geographic bounding area.</td>
+    </tr>
+
+    <tr>
+      <td>GDACS</td>
+      <td>Global disaster alerts.</td>
+      <td>No — global feed filtered on the device.</td>
+    </tr>
+
+    <tr>
+      <td>Open311 services</td>
+      <td>Municipal service requests.</td>
+      <td>Yes where the feature requires geographic filtering.</td>
+    </tr>
+
+    <tr>
+      <td>OpenAQ</td>
+      <td>Air-quality information.</td>
+      <td>Yes.</td>
+    </tr>
+
+    <tr>
+      <td>OpenStreetMap Overpass</td>
+      <td>Roadworks, speed cameras, fuel, parking, transit and related map data.</td>
+      <td>Yes.</td>
+    </tr>
+
+    <tr>
+      <td>Open-Elevation</td>
+      <td>Elevation information.</td>
+      <td>Yes.</td>
+    </tr>
+
+    <tr>
+      <td>NREL Alternative Fuel Stations</td>
+      <td>EV charging and alternative fuel stations.</td>
+      <td>Yes.</td>
+    </tr>
+
+    <tr>
+      <td>Open Charge Map</td>
+      <td>EV charging points.</td>
+      <td>Yes.</td>
+    </tr>
+
+    <tr>
+      <td>OpenMHz</td>
+      <td>Public-safety radio systems and streams.</td>
+      <td>Yes where used to select nearby systems.</td>
+    </tr>
+
+    <tr>
+      <td>Broadcastify / LiveATC</td>
+      <td>External public radio stream links.</td>
+      <td>No location is intentionally sent by iMaps.</td>
+    </tr>
+
+    <tr>
+      <td>Supabase</td>
+      <td>Optional authentication.</td>
+      <td>No location is intentionally sent for authentication.</td>
+    </tr>
+
+    <tr>
+      <td>Google Play services</td>
+      <td>
+        Google Play Billing, Google Mobile Ads and optional Google Sign-In.
+      </td>
+      <td>
+        Google services may process information according to their respective
+        functions and policies.
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Third-party services operate under their own privacy policies. iMaps does not
+  control the privacy practices of independent third-party services.
+</p>
+
+<h2 id="sdks">14. Third-party SDKs</h2>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th>SDK / Service</th>
+      <th>Role</th>
+      <th>Potential information handled</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>Google Mobile Ads</td>
+      <td>Advertising</td>
+      <td>
+        Advertising ID and device/advertising signals, ad interactions and
+        related information as determined by Google.
+      </td>
+    </tr>
+
+    <tr>
+      <td>Google Play Billing</td>
+      <td>Subscriptions</td>
+      <td>Purchase information handled by Google Play.</td>
+    </tr>
+
+    <tr>
+      <td>Supabase</td>
+      <td>Optional authentication</td>
+      <td>Email and account information when applicable.</td>
+    </tr>
+
+    <tr>
+      <td>Google Sign-In</td>
+      <td>Optional sign-in</td>
+      <td>Identity information provided through Google Sign-In.</td>
+    </tr>
+
+    <tr>
+      <td>Sign in with Apple</td>
+      <td>Optional sign-in</td>
+      <td>Email and name when provided by Apple.</td>
+    </tr>
+
+    <tr>
+      <td>Geolocator</td>
+      <td>Reads device location</td>
+      <td>Reads location on the device for app features.</td>
+    </tr>
+
+    <tr>
+      <td>Flutter Local Notifications</td>
+      <td>Local notifications</td>
+      <td>Notification scheduling information remains on the device.</td>
+    </tr>
+
+    <tr>
+      <td>flutter_map</td>
+      <td>Map rendering</td>
+      <td>Requests map tiles required for the displayed map area.</td>
+    </tr>
+
+    <tr>
+      <td>url_launcher</td>
+      <td>External links</td>
+      <td>Opens destinations outside the application.</td>
+    </tr>
+
+    <tr>
+      <td>shared_preferences</td>
+      <td>Local storage</td>
+      <td>Stores application preferences and identifiers locally.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="permissions">15. Android permissions</h2>
+
+<p>
+  iMaps uses Android permissions needed for its navigation, networking,
+  notification, and billing functionality.
+</p>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th>Permission</th>
+      <th>Why it is needed</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>
+        <code>ACCESS_FINE_LOCATION</code><br>
+        <code>ACCESS_COARSE_LOCATION</code>
+      </td>
+      <td>
+        Show your position, plan routes, and find nearby hazards and services.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <code>INTERNET</code><br>
+        <code>ACCESS_NETWORK_STATE</code>
+      </td>
+      <td>
+        Fetch maps, routes, public data, incident information and other
+        network-based services.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <code>POST_NOTIFICATIONS</code><br>
+        <code>VIBRATE</code>
+      </td>
+      <td>
+        Provide local incident notifications and vibration where enabled.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <code>com.android.vending.BILLING</code>
+      </td>
+      <td>
+        Provide optional premium subscriptions through Google Play Billing.
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        Google advertising permissions
+      </td>
+      <td>
+        Google Mobile Ads may add advertising-related permissions and services
+        required for the AdMob SDK, including access to advertising identifiers
+        and related Android advertising services.
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  iMaps does not request background location, camera, microphone, contacts,
+  storage, phone, SMS, or calendar permissions for its own features.
+</p>
+
+<h2 id="links">16. External links</h2>
+
+<p>
+  Some actions open a third-party website or application outside iMaps.
+</p>
+
+<ul>
+  <li>
+    <strong>Partner offers</strong> — may open a partner website using a
+    referral tag.
+  </li>
+
+  <li>
+    <strong>Radio streams</strong> — may open OpenMHz, Broadcastify, LiveATC,
+    or another external media destination.
+  </li>
+
+  <li>
+    <strong>Suggestion cards</strong> — may open partner websites.
+  </li>
+</ul>
+
+<p>
+  Once you leave iMaps, the destination site's privacy policy and cookie
+  practices apply. iMaps does not control those external services.
+</p>
+
+<h2 id="cookies">17. Cookies and advertising technologies</h2>
+
+<p>
+  The native Android application does not intentionally use browser cookies
+  for its own application storage.
+</p>
+
+<p>
+  However, third-party advertising services such as Google Mobile Ads may use
+  advertising technologies, identifiers, device signals, or similar
+  technologies to provide and measure advertisements.
+</p>
+
+<p>
+  This privacy policy page is a static page hosted on GitHub Pages. GitHub may
+  process technical request information, including IP addresses, according to
+  its own privacy policy.
+</p>
+
+<p>
+  For more information about Google's advertising technologies and how Google
+  processes information from apps using its services, see:
+  <a
+    href="https://policies.google.com/technologies/partner-sites"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Google Privacy &amp; Terms
+  </a>.
+</p>
+
+<h2 id="retention">18. Retention</h2>
+
+<ul>
+  <li>
+    <strong>On your device</strong> — preferences and identifiers remain until
+    you clear the application's data or uninstall it.
+  </li>
+
+  <li>
+    <strong>Incident reports</strong> — retained on the backend as needed to
+    operate and moderate the community reporting service.
+  </li>
+
+  <li>
+    <strong>Analytics events</strong> — retained as needed for product
+    measurement and service operation.
+  </li>
+
+  <li>
+    <strong>Account data</strong> — if you sign in, account information is
+    retained according to the applicable authentication service and our
+    operational requirements.
+  </li>
+
+  <li>
+    <strong>Advertising data</strong> — information processed by Google Mobile
+    Ads is retained according to Google's policies, systems, and applicable
+    legal requirements.
+  </li>
+</ul>
+
+<h2 id="rights">19. Your rights and choices</h2>
+
+<h3>Controls available immediately</h3>
+
+<ul>
+  <li>
+    <strong>Revoke location</strong> at any time through Android app
+    permissions.
+  </li>
+
+  <li>
+    <strong>Turn off alerts</strong> through the app's settings or Android
+    notification controls.
+  </li>
+
+  <li>
+    <strong>Stay a guest</strong> and avoid providing account information.
+  </li>
+
+  <li>
+    <strong>Reset local identifiers</strong> by clearing application data or
+    uninstalling the application.
+  </li>
+
+  <li>
+    <strong>Reset or delete your Advertising ID</strong> through the advertising
+    or privacy settings provided by your Android device.
+  </li>
+</ul>
+
+<h3>Advertising choices</h3>
+
+<p>
+  Android provides controls for resetting or deleting the Advertising ID and,
+  depending on the Android version and device manufacturer, controls related
+  to personalized advertising.
+</p>
+
+<p>
+  Google's advertising privacy information is available at:
+  <a
+    href="https://policies.google.com/technologies/partner-sites"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    https://policies.google.com/technologies/partner-sites
+  </a>
+</p>
+
+<h3>Legal rights</h3>
+
+<p>
+  Depending on where you live, you may have rights under applicable privacy
+  laws, including rights to access, correct, delete, export, restrict, or
+  object to certain processing of personal information.
+</p>
+
+<p>
+  We do not sell personal information. We also do not intentionally provide
+  your personal information to third parties for their own independent
+  direct-marketing purposes.
+</p>
+
+<p>
+  To submit a privacy request, contact:
+  <a href="mailto:contact@safecodeg.com">
+    contact@safecodeg.com
+  </a>.
+</p>
+
+<p>
+  Where processing depends on an Android permission or other user-controlled
+  setting, you may withdraw or modify that permission through your device
+  settings.
+</p>
+
+<h3>International transfers</h3>
+
+<p>
+  The services described in this policy may operate in multiple countries,
+  including the United States. Using iMaps may therefore involve transferring
+  information to services located outside your country of residence.
+</p>
+
+<h2 id="children">20. Children</h2>
+
+<p>
+  iMaps is a driving and navigation application intended for adults. It is not
+  directed to children under 13, and we do not knowingly collect personal
+  information from children under 13.
+</p>
+
+<p>
+  If you believe a child has provided personal information through the
+  application, contact us at
+  <a href="mailto:contact@safecodeg.com">
+    contact@safecodeg.com
+  </a>.
+</p>
+
+<h2 id="security">21. Security</h2>
+
+<ul>
+  <li>
+    Network traffic between the app and supported services uses HTTPS.
+  </li>
+
+  <li>
+    Android application storage is used for local preferences and identifiers.
+  </li>
+
+  <li>
+    Purchases are verified through the application's purchase-verification
+    process before premium entitlement is granted.
+  </li>
+
+  <li>
+    Advertising processing is performed through Google's Mobile Ads
+    infrastructure and is subject to Google's security and privacy practices.
+  </li>
+</ul>
+
+<p>
+  No method of transmission or storage is completely secure, and we cannot
+  guarantee absolute security.
+</p>
+
+<h2 id="changes">22. Changes to this policy</h2>
+
+<p>
+  We may update this privacy policy when the application's data practices
+  change or when required by law.
+</p>
+
+<p>
+  Material changes — including adding a new category of collected information,
+  changing how location is used, or introducing or materially changing
+  advertising practices — will be reflected on this page and the
+  <strong>Last updated</strong> date will be revised.
+</p>
+
+<h2 id="contact">23. Contact</h2>
+
+<p>
+  For privacy questions, data requests, or concerns about this application:
+</p>
+
+<ul>
+  <li>
+    <strong>Email:</strong>
+    <a href="mailto:contact@safecodeg.com">
+      contact@safecodeg.com
+    </a>
+  </li>
+
+  <li>
+    <strong>Provider:</strong>
+    American Group LLC
+  </li>
+
+  <li>
+    <strong>Application:</strong>
+    iMaps
+    (<code>com.americangroupllc.imaps</code>)
+  </li>
+</ul>
+
+<footer>
+  <p>
+    This policy describes the privacy practices of iMaps version 1.0.0 for
+    Android.
+  </p>
+
+  <p>
+    © 2026 American Group LLC. All rights reserved.
+  </p>
+
+  <a class="back" href="#">
+    Back to top ↑
+  </a>
+</footer>
+
+</div>
+</body>
+</html>

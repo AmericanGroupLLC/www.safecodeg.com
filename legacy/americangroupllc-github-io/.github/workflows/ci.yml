@@ -1,0 +1,24 @@
+name: AmericanGroupLLC.github.io Production CI/CD
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Verify Environment Configuration
+        run: |
+          if [ ! -f .env.example ]; then
+            echo ".env.example is missing!"
+            exit 1
+          fi
+          echo "Environment Verified"

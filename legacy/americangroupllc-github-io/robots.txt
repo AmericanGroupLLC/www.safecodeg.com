@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://americangroupllc.github.io/sitemap.xml

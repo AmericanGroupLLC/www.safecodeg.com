@@ -1,0 +1,29 @@
+name: Lint
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  html-css:
+    name: HTML + CSS lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install --no-audit --no-fund
+      - name: html-validate
+        run: npx --yes html-validate "**/*.html" --formatter codeframe
+      - name: stylelint
+        run: |
+          if ls *.css 1>/dev/null 2>&1; then
+            npx --yes stylelint "**/*.css"
+          else
+            echo "No CSS files at the repo root; skipping."
+          fi
