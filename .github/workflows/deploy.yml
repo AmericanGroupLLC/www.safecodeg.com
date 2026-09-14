@@ -78,15 +78,19 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -p 2222 -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
           # Also add by hostname
-          ssh-keyscan -H ftp.safecodeg.com >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -p 2222 -H ftp.safecodeg.com >> ~/.ssh/known_hosts 2>/dev/null
 
       # ── 9. Deploy via rsync over SSH ─────────────────────────────────────
       - name: Deploy to HostGator via rsync
         run: |
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p 22" \
+          # HostGator shared hosting answers SSH on 2222, not 22 — every run since
+          # 2026-09-06 died with "Connection closed by <host> port 22". No --delete:
+          # the live tree holds policy pages (e.g. policy/*/privacy.html) that older
+          # store listings already point at and that this repo only now mirrors.
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p 2222" \
             dist/public/ \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/public_html/
 
