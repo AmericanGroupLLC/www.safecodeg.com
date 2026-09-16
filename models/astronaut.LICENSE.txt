@@ -1,0 +1,30 @@
+Asset: astronaut.usdz ("Astronaut")
+Source: Google <model-viewer> shared-assets repository
+        https://github.com/google/model-viewer/tree/master/packages/shared-assets/models
+Downloaded from: https://raw.githubusercontent.com/google/model-viewer/master/packages/shared-assets/models/Astronaut.usdz
+Retrieved: 2026-09-06
+
+License: CC-BY 2.0
+         https://creativecommons.org/licenses/by/2.0/
+
+Attribution (per the source repository's ATTRIBUTIONS.md):
+  "Astronaut by Poly (https://poly.google.com/user/4aEd8rQgKu2),
+   licensed under CC-BY (https://creativecommons.org/licenses/by/2.0/)
+   — source: https://poly.google.com/view/dLHpzNdygsg"
+
+Verified this session: `unzip -l astronaut.usdz` lists a `.usdc` root layer
+plus one `.png` texture, stored (uncompressed) per the USDZ spec — a valid
+USDZ package, not a renamed or empty file.
+
+Not the same model as client/src/dimensions/model/process.ts's toy-car
+pipeline scene. No USD authoring/conversion toolchain (usdzconvert,
+usd_from_gltf, Blender's USD exporter) was available in this environment to
+derive a USDZ from the CC0 toycar.glb already used elsewhere on this page,
+so this is a separately-sourced, separately-licensed asset used only to
+exercise the AR Quick Look path (ARCHITECTURE-DIMENSIONS.md §7.4, §7.2's
+`quicklook-only` state). The UI copy states plainly that this is a sample
+AR model, not a rendering of the pipeline scene, so no capability claim is
+overstated.
+
+Used in this project as the `<a rel="ar">` target for the iOS AR Quick Look
+path in client/src/dimensions/DimensionsStage.tsx (T-012).

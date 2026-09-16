@@ -2,26 +2,46 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
     <title>American Group LLC — Enterprise Technology & Mobile Apps</title>
-    <meta name="description" content="American Group LLC is a Santa Clara-based technology company building 77+ enterprise-grade mobile apps, AI platforms, and software solutions. Backed by SafeCodeX Research Center, Hyderabad." />
-    <meta name="keywords" content="American Group LLC, SafeCodeX, mobile apps, enterprise software, AI, React Native, Santa Clara, technology company" />
+    <meta
+      name="description"
+      content="American Group LLC is a Santa Clara-based technology company building 77+ enterprise-grade mobile apps, AI platforms, and software solutions. Backed by SafeCodeX Research Center, Hyderabad."
+    />
+    <meta
+      name="keywords"
+      content="American Group LLC, SafeCodeX, mobile apps, enterprise software, AI, React Native, Santa Clara, technology company"
+    />
     <meta name="author" content="American Group LLC" />
-    <meta property="og:title" content="American Group LLC — Enterprise Technology" />
-    <meta property="og:description" content="Building the future of technology. 77+ mobile apps and enterprise platforms." />
+    <meta
+      property="og:title"
+      content="American Group LLC — Enterprise Technology"
+    />
+    <meta
+      property="og:description"
+      content="Building the future of technology. 77+ mobile apps and enterprise platforms."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://safecodeg.com" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="American Group LLC" />
-    <meta name="twitter:description" content="Enterprise Technology & Mobile Apps" />
+    <meta
+      name="twitter:description"
+      content="Enterprise Technology & Mobile Apps"
+    />
     <link rel="canonical" href="https://safecodeg.com" />
     <!-- Fonts: Sora (display) + Inter (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/assets/index-C6yZOK4E.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DLLIE91u.css">
-    <script src="/__manus__/debug-collector.js" defer></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/assets/index-B5sSrFSH.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-RQghlWU6.css">
   </head>
   <body>
     <script id="manus-runtime">window.__MANUS_HOST_DEV__ = false;
@@ -85,9 +105,13 @@ Error generating stack: `+l.message+`
 </script>
 
     <div id="root"></div>
-    <script
-      defer
-      src="https://manus-analytics.com/umami"
-      data-website-id="deaedab9-4c9e-4993-a2af-0b4421da2a30"></script>
+    <!--
+      The analytics tag is injected from src/main.tsx, and only when
+      VITE_ANALYTICS_ENDPOINT is actually configured. As a static tag here it
+      had no working configuration: unset, Vite leaves the literal
+      "%VITE_ANALYTICS_ENDPOINT%" in the src and the browser requests that path
+      (400, plus a URIError thrown by Express's serve-static); set to "" — which
+      is what .github/workflows/deploy.yml passes — it requested "/umami" (404).
+    -->
   </body>
 </html>

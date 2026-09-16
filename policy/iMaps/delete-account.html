@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delete Your Account — iMaps</title>
+<meta name="description" content="Request deletion of your iMaps account and associated data. iMaps (com.americangroupllc.imaps) by American Group LLC.">
+<meta name="robots" content="index, follow">
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d29; --muted:#5a6080; --rule:#e3e6f0;
+    --card:#f7f8fc; --accent:#0052cc; --accent-soft:#e8f0fe;
+    --warn-bg:#fff8e6; --warn-rule:#e0b400;
+    --ok-bg:#eefaf1; --ok-rule:#28a05c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1220; --fg:#e7e9f2; --muted:#9aa2c0; --rule:#272b40;
+      --card:#171b2c; --accent:#6fa8ff; --accent-soft:#152238;
+      --warn-bg:#2a2410; --warn-rule:#9a7b00;
+      --ok-bg:#10251a; --ok-rule:#2e7d51;
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:0 1.25rem 5rem;
+  }
+  .wrap{max-width:46rem; margin:0 auto}
+  header{padding:3rem 0 1.5rem; border-bottom:2px solid var(--rule); margin-bottom:2rem}
+  h1{font-size:clamp(1.6rem,5vw,2.2rem); line-height:1.2; margin:0 0 .4rem}
+  .sub{color:var(--muted); font-size:.95rem; margin:0}
+  .meta{margin:1.25rem 0 0; padding:.9rem 1.1rem; background:var(--card);
+        border:1px solid var(--rule); border-radius:10px; font-size:.9rem}
+  .meta dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:.3rem 1rem}
+  .meta dt{color:var(--muted)}
+  .meta dd{margin:0; font-weight:600; word-break:break-word}
+  h2{font-size:1.25rem; margin:2.4rem 0 .8rem; line-height:1.3}
+  h3{font-size:1.02rem; margin:1.6rem 0 .5rem}
+  p,ul,ol{margin:.7rem 0}
+  li{margin:.4rem 0}
+  a{color:var(--accent); text-underline-offset:2px}
+  code{background:var(--card); border:1px solid var(--rule); border-radius:4px;
+       padding:.08em .35em; font-size:.88em; word-break:break-word}
+  .cta{display:block; background:var(--accent-soft); border:1px solid var(--accent);
+       border-radius:12px; padding:1.2rem 1.3rem; margin:1.5rem 0; text-align:center}
+  .cta a.btn{display:inline-block; background:var(--accent); color:#fff; font-weight:700;
+             text-decoration:none; padding:.75rem 1.6rem; border-radius:8px; margin-top:.5rem}
+  .cta p{margin:.3rem 0}
+  .tw{overflow-x:auto; margin:1rem 0; border:1px solid var(--rule); border-radius:10px}
+  table{border-collapse:collapse; width:100%; font-size:.9rem; min-width:30rem}
+  th,td{text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--rule); vertical-align:top}
+  th{background:var(--card); font-weight:700}
+  tr:last-child td{border-bottom:none}
+  .note{border-left:4px solid var(--accent); background:var(--accent-soft);
+        padding:.85rem 1.1rem; border-radius:0 8px 8px 0; margin:1.2rem 0; font-size:.94rem}
+  .warn{border-left:4px solid var(--warn-rule); background:var(--warn-bg);
+        padding:.85rem 1.1rem; border-radius:0 8px 8px 0; margin:1.2rem 0; font-size:.94rem}
+  .ok{border-left:4px solid var(--ok-rule); background:var(--ok-bg);
+      padding:.85rem 1.1rem; border-radius:0 8px 8px 0; margin:1.2rem 0; font-size:.94rem}
+  .note p:first-child,.warn p:first-child,.ok p:first-child{margin-top:0}
+  .note p:last-child,.warn p:last-child,.ok p:last-child{margin-bottom:0}
+  ol.steps{counter-reset:s; list-style:none; padding-left:0}
+  ol.steps>li{counter-increment:s; position:relative; padding-left:2.4rem; margin:.9rem 0}
+  ol.steps>li::before{content:counter(s); position:absolute; left:0; top:.05rem;
+    width:1.65rem; height:1.65rem; border-radius:50%; background:var(--accent);
+    color:#fff; font-size:.85rem; font-weight:700; display:flex;
+    align-items:center; justify-content:center}
+  footer{margin-top:3.5rem; padding-top:1.5rem; border-top:1px solid var(--rule);
+         color:var(--muted); font-size:.87rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Delete your iMaps account</h1>
+  <p class="sub">How to permanently delete your iMaps account and the data associated with it.</p>
+  <div class="meta">
+    <dl>
+      <dt>Application</dt><dd>iMaps — Navigate. Report. Connect.</dd>
+      <dt>Package&nbsp;ID</dt><dd><code>com.americangroupllc.imaps</code></dd>
+      <dt>Developer</dt><dd>American Group LLC</dd>
+      <dt>Contact</dt><dd><a href="mailto:contact@safecodeg.com">contact@safecodeg.com</a></dd>
+      <dt>Last&nbsp;updated</dt><dd>2 August 2026</dd>
+    </dl>
+  </div>
+</header>
+
+<div class="ok">
+  <p><strong>You may not have an account at all.</strong> iMaps does not require
+  one — the app works fully as a guest, and most people never sign in. You only
+  have an account if you explicitly signed in from
+  <em>Settings&nbsp;→&nbsp;Account&nbsp;→&nbsp;Sign in</em> using an email address,
+  Google, or Apple. If you have never signed in, there is no account to delete;
+  simply uninstalling the app removes everything iMaps stored on your device.</p>
+</div>
+
+<h2>How to request deletion</h2>
+
+<p>Account deletion is handled by email request. There is no charge, and you do
+not need the app installed to make the request.</p>
+
+<div class="cta">
+  <p><strong>Send your deletion request to:</strong></p>
+  <a class="btn" href="mailto:contact@safecodeg.com?subject=iMaps%20account%20deletion%20request&amp;body=Please%20delete%20my%20iMaps%20account%20and%20its%20associated%20data.%0A%0AAccount%20email%20(or%20the%20Google%2FApple%20address%20I%20signed%20in%20with)%3A%20%0ASign-in%20method%20(email%20%2F%20Google%20%2F%20Apple)%3A%20%0A%0AI%20confirm%20I%20am%20the%20owner%20of%20this%20account.">Email contact@safecodeg.com</a>
+  <p style="margin-top:.7rem;font-size:.88rem;color:var(--muted)">Opens your mail app with the request pre-filled</p>
+</div>
+
+<ol class="steps">
+  <li><strong>Email <a href="mailto:contact@safecodeg.com">contact@safecodeg.com</a></strong>
+      with the subject line <em>“iMaps account deletion request”</em>.</li>
+  <li><strong>Include the email address associated with your account</strong> —
+      the address you registered with, or the one attached to the Google or Apple
+      account you used to sign in — and tell us which sign-in method you used.</li>
+  <li><strong>Send it from that same email address where possible.</strong> This
+      is how we verify you own the account. If you cannot, we will ask you to
+      confirm ownership another way before deleting anything.</li>
+  <li><strong>We confirm.</strong> You will receive an acknowledgement, and a
+      further confirmation once the deletion is complete.</li>
+</ol>
+
+<h2>Timeline</h2>
+
+<div class="tw">
+<table>
+  <thead><tr><th>Stage</th><th>When</th></tr></thead>
+  <tbody>
+    <tr><td>We acknowledge your request</td><td>Within <strong>7 days</strong></td></tr>
+    <tr><td>Account and associated data deleted</td><td>Within <strong>30 days</strong> of verifying ownership</td></tr>
+    <tr><td>Removal from routine encrypted backups</td><td>Within <strong>90 days</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>What gets deleted</h2>
+
+<div class="tw">
+<table>
+  <thead><tr><th>Data</th><th>Outcome</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Your account record</strong> — the authentication record held by our authentication provider (Supabase), including your email address</td>
+      <td><strong>Permanently deleted</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Your name</strong>, if you used Sign in with Apple and chose to share it</td>
+      <td><strong>Permanently deleted</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Your sign-in session</strong> and any saved credentials</td>
+      <td><strong>Invalidated and removed</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Everything iMaps stored on your device</strong> — saved language, alert preferences, cached reports, the app's randomly generated identifiers, and your sign-in state</td>
+      <td><strong>Erased when you uninstall the app</strong>, or immediately via <em>Android Settings → Apps → iMaps → Storage → Clear data</em>. You can do this yourself at any time, with or without a deletion request.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2>What is not deleted, and why</h2>
+
+<div class="warn">
+  <p><strong>Community incident reports cannot be linked back to your account.</strong>
+  When you report a pothole, an accident or a hazard, iMaps attaches a randomly
+  generated identifier that belongs to your app installation — <em>not</em> to your
+  account. Your account and your reports are never joined together, by design, so
+  that reporting stays anonymous. This also means that deleting your account does
+  not and cannot identify which reports were yours.</p>
+</div>
+
+<ul>
+  <li><strong>Incident reports</strong> remain part of the shared community map.
+      They contain no name, no email address and no account reference. Reports
+      also disappear from the app's active view automatically after two hours,
+      and any report can be disputed by other users.</li>
+  <li><strong>Aggregate usage counts.</strong> A small number of in-app
+      interaction events are recorded against a random installation identifier,
+      not against your account. They contain no location data and no directly
+      identifying information, and cannot be traced back to you once your
+      account is gone.</li>
+  <li><strong>Purchase and billing records</strong>, if you ever bought a
+      subscription. These are held by Google Play, not by iMaps, and both we and
+      Google are required to retain transaction records for tax and accounting
+      purposes. Manage subscriptions in your Google Play account.</li>
+  <li><strong>Records we are legally required to keep</strong>, for as long as
+      the law requires.</li>
+</ul>
+
+<div class="note">
+  <p><strong>Want a specific report removed?</strong> Because reports carry no
+  account link, we cannot find yours from your email address alone. Email us with
+  the approximate location, the report type and roughly when you submitted it, and
+  we will do our best to identify and remove it.</p>
+</div>
+
+<h2>Deleting only your data, without deleting your account</h2>
+
+<p>If you would rather keep your account but remove what is stored about you, you
+have two options:</p>
+<ul>
+  <li><strong>On your device:</strong> <em>Android Settings → Apps → iMaps →
+      Storage → Clear data</em>. This erases every preference and identifier
+      iMaps holds locally, including the random identifiers, and generates fresh
+      ones next time you open the app.</li>
+  <li><strong>Sign out:</strong> <em>Settings → Account → Sign out</em> in the app
+      clears your session and returns you to guest mode. Your account continues
+      to exist until you request deletion.</li>
+</ul>
+
+<h2>Questions</h2>
+
+<p>For anything about this process, or about how iMaps handles data generally,
+email <a href="mailto:contact@safecodeg.com">contact@safecodeg.com</a> or read the
+<a href="./">iMaps Privacy Policy</a>.</p>
+
+<footer>
+  <p>iMaps · <code>com.americangroupllc.imaps</code> · American Group LLC</p>
+  <p><a href="./">Privacy Policy</a></p>
+  <p>© 2026 American Group LLC. All rights reserved.</p>
+</footer>
+
+</div>
+</body>
+</html>
