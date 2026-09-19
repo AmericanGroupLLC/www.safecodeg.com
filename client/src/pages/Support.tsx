@@ -594,19 +594,19 @@ export default function Support() {
                   {[
                     {
                       label: "Support URL",
-                      url: "https://safecodeg.com/support",
+                      url: "https://www.safecodeg.com/support",
                     },
                     {
                       label: "Privacy Policy URL",
-                      url: "https://safecodeg.com/privacy-policy",
+                      url: "https://www.safecodeg.com/privacy-policy",
                     },
                     {
                       label: "Terms of Service URL",
-                      url: "https://safecodeg.com/terms",
+                      url: "https://www.safecodeg.com/terms",
                     },
                     {
                       label: "Marketing Website",
-                      url: "https://safecodeg.com",
+                      url: "https://www.safecodeg.com",
                     },
                   ].map(({ label, url }) => (
                     <div key={url} className="flex items-center gap-3">

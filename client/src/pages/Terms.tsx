@@ -516,7 +516,7 @@ export default function Terms() {
                   use, and share information about you when you use our
                   Services. Our Privacy Policy URL for app store submissions is:{" "}
                   <code className="bg-white/[0.05] px-1.5 py-0.5 rounded text-xs">
-                    https://safecodeg.com/privacy-policy
+                    https://www.safecodeg.com/privacy-policy
                   </code>
                 </p>
               </section>
@@ -731,19 +731,19 @@ export default function Terms() {
                     {[
                       {
                         label: "Terms of Service",
-                        url: "https://safecodeg.com/terms",
+                        url: "https://www.safecodeg.com/terms",
                       },
                       {
                         label: "Privacy Policy",
-                        url: "https://safecodeg.com/privacy-policy",
+                        url: "https://www.safecodeg.com/privacy-policy",
                       },
                       {
                         label: "Support URL",
-                        url: "https://safecodeg.com/support",
+                        url: "https://www.safecodeg.com/support",
                       },
                       {
                         label: "Marketing Website",
-                        url: "https://safecodeg.com",
+                        url: "https://www.safecodeg.com",
                       },
                     ].map(({ label, url }) => (
                       <div

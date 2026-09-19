@@ -94,7 +94,7 @@ jobs:
       - name: Verify site is live
         run: |
           sleep 5
-          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://safecodeg.com || echo "000")
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" https://www.safecodeg.com || echo "000")
           echo "HTTP Status: $HTTP_STATUS"
           if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ]; then
             echo "✅ safecodeg.com is live!"
@@ -107,7 +107,7 @@ jobs:
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "✅ Deployment complete!"
-          echo "🌐 https://safecodeg.com"
+          echo "🌐 https://www.safecodeg.com"
           echo "🔒 HTTPS enforced via .htaccess"
           echo "📦 Commit: ${{ github.sha }}"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

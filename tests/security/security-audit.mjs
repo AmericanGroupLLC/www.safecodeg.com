@@ -326,7 +326,7 @@ async function main() {
   // deployed site: .htaccess (lines 36-51) sets X-Frame-Options,
   // X-Content-Type-Options, X-XSS-Protection, Strict-Transport-Security,
   // Referrer-Policy and Permissions-Policy, and a live request to
-  // https://safecodeg.com returns all of them. Express never reads .htaccess,
+  // https://www.safecodeg.com returns all of them. Express never reads .htaccess,
   // so "MISSING" here is an artefact of the harness, not a finding — gating on
   // it would fail the build forever for a condition that is not true in
   // production.

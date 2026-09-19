@@ -8,7 +8,7 @@ This guide walks you through connecting your GitHub repository to HostGator so e
 
 Three things are true about the **live** site right now that a green build
 does not fix on its own. All three were measured directly against
-`https://safecodeg.com`, not inferred, and none can be resolved by this
+`https://www.safecodeg.com`, not inferred, and none can be resolved by this
 pipeline alone:
 
 1. **The live site is not reproducible from this repo.** The live page's
@@ -23,7 +23,7 @@ pipeline alone:
    (`pnpm run build && pnpm run start`) instead.
 2. **Live loads a third-party script**, `https://manus-analytics.com/umami`,
    on a site with a published Privacy Policy. Confirmed this session
-   (`curl https://safecodeg.com/` shows the tag). This pipeline's own build
+   (`curl https://www.safecodeg.com/` shows the tag). This pipeline's own build
    sets `VITE_ANALYTICS_ENDPOINT: ""` (`.github/workflows/deploy.yml`'s
    "Build production bundle" step), so this script is not something the
    current `main` branch's code requests — it is present only because of
@@ -71,7 +71,7 @@ safecodeg.com is live with the latest version ✅
 
 ## Step 1 — Get Your HostGator SSH Access
 
-1. Log in to **HostGator cPanel** → [https://safecodeg.com:2083](https://safecodeg.com:2083)
+1. Log in to **HostGator cPanel** → [https://www.safecodeg.com:2083](https://www.safecodeg.com:2083)
 2. Find **SSH Access** (Security section) and confirm SSH is enabled for this
    account — on shared hosting this sometimes needs enabling by a support
    request.
@@ -141,7 +141,7 @@ After the workflow completes:
 1. Log in to HostGator cPanel → **File Manager**
 2. Open `/public_html/`
 3. You should see `index.html`, `assets/` folder, etc.
-4. Visit [https://safecodeg.com](https://safecodeg.com) — your site is live! 🎉
+4. Visit [https://www.safecodeg.com](https://www.safecodeg.com) — your site is live! 🎉
 
 ---
 

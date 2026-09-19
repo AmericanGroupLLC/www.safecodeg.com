@@ -1399,7 +1399,7 @@ export default function PrivacyPolicyPage() {
                 {[
                   "Using the 'Delete Account' option in the app's Settings menu",
                   `Emailing us at ${PRIVACY_EMAIL} with subject line "Data Deletion Request"`,
-                  `Submitting a request through our support page at https://safecodeg.com/support`,
+                  `Submitting a request through our support page at https://www.safecodeg.com/support`,
                 ].map((item, i) => (
                   <li
                     key={i}
