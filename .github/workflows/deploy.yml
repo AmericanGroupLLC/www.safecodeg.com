@@ -76,11 +76,27 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          # printf, not echo: an OpenSSH private key is rejected outright if it
+          # lacks a trailing newline, and a rejected key makes ssh fall through
+          # to password/keyboard-interactive, which is what exhausts the
+          # server's auth-attempt limit and reports "Too many authentication
+          # failures". The failure looks like the host refusing us; it is not.
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          # Also add by hostname
           ssh-keyscan -H ftp.safecodeg.com >> ~/.ssh/known_hosts 2>/dev/null
+
+      # Fingerprint only — never the key material. If this step fails, the
+      # secret itself is malformed and no amount of ssh options will help.
+      - name: Check the deploy key parses
+        run: |
+          if ssh-keygen -l -f ~/.ssh/deploy_key; then
+            echo "deploy key parses OK"
+          else
+            echo "::error::SSH_PRIVATE_KEY is not a valid private key. \
+          Re-add the secret, including the BEGIN/END lines and a trailing newline."
+            exit 1
+          fi
 
       # ── 9. Deploy via rsync over SSH ─────────────────────────────────────
       # IdentitiesOnly=yes is load-bearing. Without it ssh offers every key the
@@ -91,7 +107,7 @@ jobs:
       - name: Deploy to HostGator via rsync
         run: |
           rsync -avz --delete \
-            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -p 22" \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o PreferredAuthentications=publickey -o PasswordAuthentication=no -o KbdInteractiveAuthentication=no -o StrictHostKeyChecking=no -p 22" \
             dist/public/ \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/public_html/
 
