@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://americangroupllc.github.io/sitemap.xml
+Sitemap: https://www.safecodeg.com/sitemap.xml
