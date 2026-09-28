@@ -24,6 +24,18 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 RewriteCond %{HTTP_HOST} ^www\.safecodeg\.com [NC]
 RewriteRule ^(.*)$ https://safecodeg.com/$1 [L,R=301]
 
+# ── Extensionless static pages ───────────────────────────────
+# The policy pages are real files: /policy/iMaps/delete-account.html and so on.
+# Without this rule a request for /policy/iMaps/delete-account is neither a file
+# nor a directory, so it falls through to the SPA catch-all below and returns
+# the site shell with HTTP 200. Google Play read that as the page not existing
+# and rejected the Data safety declaration. Serve the matching .html when one
+# exists, before the catch-all can claim the request.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
+RewriteRule ^(.+?)/?$ /$1.html [L]
+
 # ── React SPA Routing ────────────────────────────────────────
 # Serve index.html for all routes (React Router handles routing)
 RewriteCond %{REQUEST_FILENAME} !-f
